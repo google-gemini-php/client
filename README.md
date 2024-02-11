@@ -1,8 +1,8 @@
 <p align="center">
     <img src="https://raw.githubusercontent.com/google-gemini-php/client/main/art/example.png" width="600" alt="Google Gemini PHP">
     <p align="center">
-        <a href="https://packagist.org/packages/google-gemini-php/client"><img alt="Latest Version" src="https://img.shields.io/packagist/v/google-gemini-php/client"></a>
-        <a href="https://packagist.org/packages/google-gemini-php/client"><img alt="License" src="https://img.shields.io/github/license/google-gemini-php/client"></a>
+        <a href="https://packagist.org/packages/geminiphp/client"><img alt="Latest Version" src="https://img.shields.io/packagist/v/geminiphp/client"></a>
+        <a href="https://packagist.org/packages/geminiphp/client"><img alt="License" src="https://img.shields.io/github/license/google-gemini-php/client"></a>
     </p>
 </p>
 
@@ -45,7 +45,7 @@ To complete this quickstart, make sure that your development environment meets t
 First, install Gemini via the [Composer](https://getcomposer.org/) package manager:
 
 ```bash
-composer require google-gemini-php/client
+composer require geminiphp/client
 ```
 
 Ensure that the `php-http/discovery` composer plugin is allowed to run or install a client manually if your project does not already have a PSR-18 client integrated.
