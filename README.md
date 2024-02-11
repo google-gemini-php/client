@@ -1,3 +1,13 @@
+<p align="center">
+    <img src="https://raw.githubusercontent.com/google-gemini-php/client/main/art/example.png" width="600" alt="Google Gemini PHP">
+    <p align="center">
+        <a href="https://packagist.org/packages/google-gemini-php/client"><img alt="Latest Version" src="https://img.shields.io/packagist/v/google-gemini-php/client"></a>
+        <a href="https://packagist.org/packages/google-gemini-php/client"><img alt="License" src="https://img.shields.io/github/license/google-gemini-php/client"></a>
+    </p>
+</p>
+
+------
+
 **Gemini PHP** is a community-maintained PHP API client that allows you to interact with the Gemini AI API.
 
 - Fatih AYDIN [github.com/aydinfatih](https://github.com/aydinfatih)
