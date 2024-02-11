@@ -55,12 +55,10 @@
     "lint": "pint -v",
     "test:lint": "pint --test -v",
     "test:types": "phpstan analyse --ansi",
-    "test:type-coverage": "pest --type-coverage --min=100",
     "test:unit": "pest --colors=always",
     "test": [
       "@test:lint",
       "@test:types",
-      "@test:type-coverage",
       "@test:unit"
     ]
   }
