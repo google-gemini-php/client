@@ -45,7 +45,7 @@ To complete this quickstart, make sure that your development environment meets t
 First, install Gemini via the [Composer](https://getcomposer.org/) package manager:
 
 ```bash
-composer require geminiphp/client
+composer require google-gemini-php/client
 ```
 
 Ensure that the `php-http/discovery` composer plugin is allowed to run or install a client manually if your project does not already have a PSR-18 client integrated.

@@ -1,5 +1,5 @@
 {
-  "name": "geminiphp/client",
+  "name": "google-gemini-php/client",
   "description": "Gemini API is a supercharged PHP API client that allows you to interact with the Gemini API",
   "license": "MIT",
   "keywords": [
