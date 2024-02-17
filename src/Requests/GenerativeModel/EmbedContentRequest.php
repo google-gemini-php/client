@@ -7,7 +7,6 @@ namespace Gemini\Requests\GenerativeModel;
 use Gemini\Data\Blob;
 use Gemini\Data\Content;
 use Gemini\Enums\Method;
-use Gemini\Enums\ModelType;
 use Gemini\Enums\TaskType;
 use Gemini\Foundation\Request;
 use Gemini\Requests\Concerns\HasJsonBody;
@@ -22,7 +21,7 @@ class EmbedContentRequest extends Request
      * @param  string|Blob|array<string|Blob>|Content  $part
      */
     public function __construct(
-        protected readonly ModelType $model,
+        protected readonly string $model,
         protected readonly string|Blob|array|Content $part,
         protected readonly ?TaskType $taskType = null,
         protected readonly ?string $title = null
@@ -32,7 +31,7 @@ class EmbedContentRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        return "{$this->model->value}:embedContent";
+        return "{$this->model}:embedContent";
     }
 
     /**
