@@ -37,7 +37,9 @@ final class Factory
      *
      * @var array<string, string>
      */
-    private array $headers = [];
+    private array $headers = [
+        'Content-Type' => 'application/json',
+    ];
 
     /**
      * The query parameters for the requests.
