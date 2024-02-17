@@ -72,11 +72,34 @@ test('count tokens', function () {
         ->totalTokens->toBe(8);
 });
 
+test('count tokens for custom model', function () {
+    $modelType = 'models/gemini-1.0-pro-001';
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType}:countTokens", response: CountTokensResponse::fake());
+
+    $result = $client->generativeModel(model: $modelType)->countTokens('Test');
+
+    expect($result)
+        ->toBeInstanceOf(CountTokensResponse::class)
+        ->totalTokens->toBe(8);
+});
+
 test('generate content', function () {
     $modelType = ModelType::GEMINI_PRO;
     $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:generateContent", response: GenerateContentResponse::fake());
 
     $result = $client->geminiPro()->generateContent('Test');
+
+    expect($result)
+        ->toBeInstanceOf(GenerateContentResponse::class)
+        ->candidates->toBeArray()->each->toBeInstanceOf(Candidate::class)
+        ->promptFeedback->toBeInstanceOf(PromptFeedback::class);
+});
+
+test('generate content for custom model', function () {
+    $modelType = 'models/gemini-1.0-pro-001';
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType}:generateContent", response: GenerateContentResponse::fake());
+
+    $result = $client->generativeModel(model: $modelType)->generateContent('Test');
 
     expect($result)
         ->toBeInstanceOf(GenerateContentResponse::class)
@@ -109,11 +132,46 @@ test('stream generate content', function () {
 
 });
 
+test('stream generate content for custom model', function () {
+    $response = new Response(
+        body: new Stream(
+            GenerateContentResponse::fakeResource()
+        ),
+    );
+
+    $modelType = 'models/gemini-1.0-pro-001';
+    $client = mockStreamClient(method: Method::POST, endpoint: "{$modelType}:streamGenerateContent", response: $response);
+
+    $result = $client->generativeModel(model: $modelType)->streamGenerateContent('Test');
+
+    expect($result)
+        ->toBeInstanceOf(StreamResponse::class)
+        ->toBeInstanceOf(IteratorAggregate::class)
+        ->and($result->getIterator())
+        ->toBeInstanceOf(Iterator::class)
+        ->and($result->getIterator()->current())
+        ->toBeInstanceOf(GenerateContentResponse::class)
+        ->toBeInstanceOf(GenerateContentResponse::class)
+        ->candidates->toBeArray()->each->toBeInstanceOf(Candidate::class)
+        ->promptFeedback->toBeInstanceOf(PromptFeedback::class);
+
+});
+
 test('start chat', function () {
     $modelType = ModelType::GEMINI_PRO;
     $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:generateContent", response: GenerateContentResponse::fake(), times: 0);
 
     $result = $client->geminiPro()->startChat();
+
+    expect($result)
+        ->toBeInstanceOf(ChatSession::class);
+});
+
+test('start chat for custom model', function () {
+    $modelType = 'models/gemini-1.0-pro-001';
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType}:generateContent", response: GenerateContentResponse::fake(), times: 0);
+
+    $result = $client->generativeModel(model: $modelType)->startChat();
 
     expect($result)
         ->toBeInstanceOf(ChatSession::class);

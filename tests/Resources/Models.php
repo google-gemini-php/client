@@ -31,3 +31,17 @@ test('retrieve', function () {
         ->model->name->toBe($modelType->value)
         ->model->version->toBe('001');
 });
+
+test('retrieve for custom model', function () {
+    $modelType = 'models/gemini-1.0-pro-001';
+    $client = mockClient(method: Method::GET, endpoint: $modelType, response: RetrieveModelResponse::fake([
+        'name' => $modelType,
+    ]));
+
+    $result = $client->models()->retrieve(model: $modelType);
+
+    expect($result)
+        ->toBeInstanceOf(RetrieveModelResponse::class)
+        ->model->name->toBe($modelType)
+        ->model->version->toBe('001');
+});
