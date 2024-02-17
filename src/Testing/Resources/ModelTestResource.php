@@ -25,7 +25,7 @@ final class ModelTestResource implements ModelContract
         return $this->record(method: __FUNCTION__, args: func_get_args());
     }
 
-    public function retrieve(ModelType $model): RetrieveModelResponse
+    public function retrieve(ModelType|string $model): RetrieveModelResponse
     {
         return $this->record(method: __FUNCTION__, args: func_get_args());
     }

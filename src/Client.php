@@ -30,7 +30,7 @@ final class Client implements ClientContract
         return new Models(transporter: $this->transporter);
     }
 
-    public function generativeModel(ModelType $model): GenerativeModel
+    public function generativeModel(ModelType|string $model): GenerativeModel
     {
         return new GenerativeModel(transporter: $this->transporter, model: $model);
     }
@@ -45,7 +45,7 @@ final class Client implements ClientContract
         return $this->generativeModel(model: ModelType::GEMINI_PRO_VISION);
     }
 
-    public function embeddingModel(ModelType $model = ModelType::EMBEDDING): EmbeddingModel
+    public function embeddingModel(ModelType|string $model = ModelType::EMBEDDING): EmbeddingModel
     {
         return new EmbeddingModel(transporter: $this->transporter, model: $model);
     }
@@ -53,7 +53,7 @@ final class Client implements ClientContract
     /**
      * Contains an ongoing conversation with the model.
      */
-    public function chat(ModelType $model = ModelType::GEMINI_PRO): ChatSession
+    public function chat(ModelType|string $model = ModelType::GEMINI_PRO): ChatSession
     {
         return new ChatSession(model: $this->generativeModel(model: $model));
     }

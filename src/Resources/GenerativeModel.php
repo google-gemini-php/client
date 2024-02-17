@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gemini\Resources;
 
+use Gemini\Concerns\HasModel;
 use Gemini\Contracts\Resources\GenerativeModelContract;
 use Gemini\Contracts\TransporterContract;
 use Gemini\Data\Blob;
@@ -21,15 +22,20 @@ use Gemini\Transporters\DTOs\ResponseDTO;
 
 final class GenerativeModel implements GenerativeModelContract
 {
+    use HasModel;
+
+    private readonly string $model;
+
     /**
      * @param  array<SafetySetting>  $safetySettings
      */
     public function __construct(
         private readonly TransporterContract $transporter,
-        private readonly ModelType $model,
+        ModelType|string $model,
         public array $safetySettings = [],
         public ?GenerationConfig $generationConfig = null,
     ) {
+        $this->model = $this->parseModel(model: $model);
     }
 
     public function withSafetySetting(SafetySetting $safetySetting): self

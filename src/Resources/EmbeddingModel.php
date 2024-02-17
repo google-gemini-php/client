@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gemini\Resources;
 
+use Gemini\Concerns\HasModel;
 use Gemini\Contracts\Resources\EmbeddingModalContract;
 use Gemini\Contracts\TransporterContract;
 use Gemini\Data\Blob;
@@ -16,10 +17,15 @@ use Gemini\Transporters\DTOs\ResponseDTO;
 
 final class EmbeddingModel implements EmbeddingModalContract
 {
+    use HasModel;
+
+    private readonly string $model;
+
     public function __construct(
         private readonly TransporterContract $transporter,
-        private readonly ModelType $model,
+        ModelType|string $model,
     ) {
+        $this->model = $this->parseModel(model: $model);
     }
 
     /**

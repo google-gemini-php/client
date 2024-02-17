@@ -12,5 +12,5 @@ interface ModelContract
 {
     public function list(): ListModelResponse;
 
-    public function retrieve(ModelType $model): RetrieveModelResponse;
+    public function retrieve(ModelType|string $model): RetrieveModelResponse;
 }

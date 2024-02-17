@@ -38,7 +38,7 @@ class ClientFake implements ClientContract
         $this->responses = [...$this->responses, ...$responses];
     }
 
-    public function assertSent(string $resource, ?ModelType $model = null, callable|int|null $callback = null): void
+    public function assertSent(string $resource, ModelType|string|null $model = null, callable|int|null $callback = null): void
     {
         if (is_int($callback)) {
             $this->assertSentTimes(resource: $resource, model: $model, times: $callback);
@@ -52,7 +52,7 @@ class ClientFake implements ClientContract
         );
     }
 
-    private function assertSentTimes(string $resource, ?ModelType $model = null, int $times = 1): void
+    private function assertSentTimes(string $resource, ModelType|string|null $model = null, int $times = 1): void
     {
         $count = count($this->sent(resource: $resource, model: $model));
 
@@ -65,7 +65,7 @@ class ClientFake implements ClientContract
     /**
      * @return mixed[]
      */
-    private function sent(string $resource, ?ModelType $model = null, ?callable $callback = null): array
+    private function sent(string $resource, ModelType|string|null $model = null, ?callable $callback = null): array
     {
         if (! $this->hasSent(resource: $resource, model: $model)) {
             return [];
@@ -76,12 +76,12 @@ class ClientFake implements ClientContract
         return array_filter($this->resourcesOf(type: $resource), fn (TestRequest $request) => $callback($request->method(), $request->args()));
     }
 
-    private function hasSent(string $resource, ?ModelType $model = null): bool
+    private function hasSent(string $resource, ModelType|string|null $model = null): bool
     {
         return $this->resourcesOf(type: $resource, model: $model) !== [];
     }
 
-    public function assertNotSent(string $resource, ?ModelType $model = null, ?callable $callback = null): void
+    public function assertNotSent(string $resource, ModelType|string|null $model = null, ?callable $callback = null): void
     {
         PHPUnit::assertCount(
             0, $this->sent(resource: $resource, model: $model, callback: $callback),
@@ -102,7 +102,7 @@ class ClientFake implements ClientContract
     /**
      * @return array<array-key, TestRequest>
      */
-    private function resourcesOf(string $type, ?ModelType $model = null): array
+    private function resourcesOf(string $type, ModelType|string|null $model = null): array
     {
         return array_filter($this->requests, fn (TestRequest $request): bool => $request->resource() === $type && ($model === null || $request->model() === $model));
     }
@@ -132,7 +132,7 @@ class ClientFake implements ClientContract
         return new ModelTestResource(fake: $this);
     }
 
-    public function generativeModel(ModelType $model): GenerativeModelTestResource
+    public function generativeModel(ModelType|string $model): GenerativeModelTestResource
     {
         return new GenerativeModelTestResource(fake: $this, model: $model);
 
@@ -148,12 +148,12 @@ class ClientFake implements ClientContract
         return $this->generativeModel(model: ModelType::GEMINI_PRO_VISION);
     }
 
-    public function embeddingModel(ModelType $model = ModelType::EMBEDDING): EmbeddingModelTestResource
+    public function embeddingModel(ModelType|string $model = ModelType::EMBEDDING): EmbeddingModelTestResource
     {
         return new EmbeddingModelTestResource(fake: $this, model: $model);
     }
 
-    public function chat(ModelType $model = ModelType::GEMINI_PRO): ChatSessionTestResource
+    public function chat(ModelType|string $model = ModelType::GEMINI_PRO): ChatSessionTestResource
     {
         return new ChatSessionTestResource(fake: $this, model: $model);
     }

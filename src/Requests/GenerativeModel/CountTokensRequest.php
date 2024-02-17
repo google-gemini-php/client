@@ -8,7 +8,6 @@ use Gemini\Concerns\HasContents;
 use Gemini\Data\Blob;
 use Gemini\Data\Content;
 use Gemini\Enums\Method;
-use Gemini\Enums\ModelType;
 use Gemini\Foundation\Request;
 use Gemini\Requests\Concerns\HasJsonBody;
 
@@ -23,7 +22,7 @@ class CountTokensRequest extends Request
      * @param  array<string|Blob|array<string|Blob>|Content>  $parts
      */
     public function __construct(
-        protected readonly ModelType $model,
+        protected readonly string $model,
         protected readonly array $parts
     ) {
 
@@ -31,7 +30,7 @@ class CountTokensRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        return "{$this->model->value}:countTokens";
+        return "{$this->model}:countTokens";
     }
 
     /**

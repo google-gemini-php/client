@@ -10,7 +10,6 @@ use Gemini\Data\Content;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
 use Gemini\Enums\Method;
-use Gemini\Enums\ModelType;
 use Gemini\Foundation\Request;
 use Gemini\Requests\Concerns\HasJsonBody;
 
@@ -26,7 +25,7 @@ class GenerateContentRequest extends Request
      * @param  array<SafetySetting>  $safetySettings
      */
     public function __construct(
-        protected readonly ModelType $model,
+        protected readonly string $model,
         protected readonly array $parts,
         protected readonly array $safetySettings = [],
         protected readonly ?GenerationConfig $generationConfig = null
@@ -36,7 +35,7 @@ class GenerateContentRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        return "{$this->model->value}:generateContent";
+        return "{$this->model}:generateContent";
     }
 
     /**

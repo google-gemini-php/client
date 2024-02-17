@@ -14,13 +14,13 @@ interface ClientContract
 {
     public function models(): ModelContract;
 
-    public function generativeModel(ModelType $model): GenerativeModelContract;
+    public function generativeModel(ModelType|string $model): GenerativeModelContract;
 
     public function geminiPro(): GenerativeModelContract;
 
     public function geminiProVision(): GenerativeModelContract;
 
-    public function embeddingModel(ModelType $model = ModelType::EMBEDDING): EmbeddingModalContract;
+    public function embeddingModel(ModelType|string $model = ModelType::EMBEDDING): EmbeddingModalContract;
 
-    public function chat(ModelType $model = ModelType::GEMINI_PRO): ChatSessionContract;
+    public function chat(ModelType|string $model = ModelType::GEMINI_PRO): ChatSessionContract;
 }

@@ -100,7 +100,7 @@ test('request server user errors', function () {
 
 test('request server errors', function () {
     $request = new GenerateContentRequest(
-        model: ModelType::GEMINI_PRO,
+        model: ModelType::GEMINI_PRO->value,
         parts: ['Test']
     );
     $response = new Response(400, ['Content-Type' => 'application/json'], json_encode([
@@ -157,7 +157,7 @@ test('request serialization errors', function () {
 
 test('request stream', function () {
     $request = new StreamGenerateContentRequest(
-        model: ModelType::GEMINI_PRO,
+        model: ModelType::GEMINI_PRO->value,
         parts: ['Test']
     );
 
@@ -186,7 +186,7 @@ test('request stream', function () {
 
 test('request stream server errors', function () {
     $request = new StreamGenerateContentRequest(
-        model: ModelType::GEMINI_PRO,
+        model: ModelType::GEMINI_PRO->value,
         parts: ['Test']
     );
 
