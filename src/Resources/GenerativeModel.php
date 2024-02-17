@@ -26,7 +26,7 @@ final class GenerativeModel implements GenerativeModelContract
      */
     public function __construct(
         private readonly TransporterContract $transporter,
-        private readonly ModelType $model,
+        ModelType|string $model,
         public array $safetySettings = [],
         public ?GenerationConfig $generationConfig = null,
     ) {

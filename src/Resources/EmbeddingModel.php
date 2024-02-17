@@ -18,7 +18,7 @@ final class EmbeddingModel implements EmbeddingModalContract
 {
     public function __construct(
         private readonly TransporterContract $transporter,
-        private readonly ModelType $model,
+        ModelType|string $model,
     ) {
     }
 

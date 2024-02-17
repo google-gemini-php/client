@@ -11,7 +11,7 @@ final class TestRequest
     /**
      * @param  array<string, mixed>  $args
      */
-    public function __construct(protected string $resource, protected string $method, protected array $args, protected ?ModelType $model = null)
+    public function __construct(protected string $resource, protected string $method, protected array $args, protected ModelType|string|null $model = null)
     {
     }
 
@@ -33,7 +33,7 @@ final class TestRequest
         return $this->args;
     }
 
-    public function model(): ?ModelType
+    public function model(): ModelType|string|null
     {
         return $this->model;
     }

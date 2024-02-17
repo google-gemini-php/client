@@ -12,13 +12,13 @@ use Gemini\Testing\Requests\TestRequest;
 
 trait Testable
 {
-    public function __construct(protected ClientFake $fake, protected ?ModelType $model = null)
+    public function __construct(protected ClientFake $fake, protected ModelType|string|null $model = null)
     {
     }
 
     abstract protected function resource(): string;
 
-    protected function record(string $method, array $args = [], ?ModelType $model = null): ResponseContract|StreamResponse
+    protected function record(string $method, array $args = [], ModelType|string|null $model = null): ResponseContract|StreamResponse
     {
         return $this->fake->record(new TestRequest(resource: $this->resource(), method: $method, args: $args, model: $model));
     }

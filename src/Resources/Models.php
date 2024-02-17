@@ -42,7 +42,7 @@ final class Models implements ModelContract
      *
      * @see https://ai.google.dev/api/rest/v1/models/get
      */
-    public function retrieve(ModelType $model): RetrieveModelResponse
+    public function retrieve(ModelType|string $model): RetrieveModelResponse
     {
         /** @var ResponseDTO<array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, topP: ?float, topK: ?int }> $response */
         $response = $this->transporter->request(request: new RetrieveModelRequest(model: $model));
