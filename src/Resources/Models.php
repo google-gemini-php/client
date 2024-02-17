@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gemini\Resources;
 
+use Gemini\Concerns\HasModel;
 use Gemini\Contracts\Resources\ModelContract;
 use Gemini\Contracts\TransporterContract;
 use Gemini\Enums\ModelType;
@@ -15,6 +16,8 @@ use Gemini\Transporters\DTOs\ResponseDTO;
 
 final class Models implements ModelContract
 {
+    use HasModel;
+
     /**
      * Creates an instance with the given Transporter
      */
@@ -45,7 +48,7 @@ final class Models implements ModelContract
     public function retrieve(ModelType|string $model): RetrieveModelResponse
     {
         /** @var ResponseDTO<array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, topP: ?float, topK: ?int }> $response */
-        $response = $this->transporter->request(request: new RetrieveModelRequest(model: $model));
+        $response = $this->transporter->request(request: new RetrieveModelRequest(model: $this->parseModel(model: $model)));
 
         return RetrieveModelResponse::from(attributes: $response->data());
     }
