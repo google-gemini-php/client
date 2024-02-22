@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Gemini;
+
 use Gemini\Client;
 use Gemini\Factory;
 
