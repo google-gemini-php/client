@@ -42,4 +42,12 @@ final class ChatSession implements ChatSessionContract
 
         return $response;
     }
+
+    /**
+     * @param  array<Content>  $history
+     */
+    public function startChat(array $history = []): ChatSession
+    {
+        return new self(model: $this->model, history: $history);
+    }
 }
