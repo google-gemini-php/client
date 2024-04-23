@@ -15,6 +15,36 @@ test('from', function () {
         ->promptFeedback->toBeInstanceOf(PromptFeedback::class);
 });
 
+test('recitation finish reason', function () {
+    $response = GenerateContentResponse::from([
+        'candidates' => [
+            [
+                'finishReason' => FinishReason::RECITATION->value,
+                'index' => 0,
+            ],
+        ],
+    ]);
+
+    expect($response)
+        ->toBeInstanceOf(GenerateContentResponse::class)
+        ->candidates->each->toBeInstanceOf(Candidate::class)
+        ->candidates->toHaveCount(1)
+        ->candidates->{0}->content->parts->toBeEmpty()
+        ->candidates->{0}->safetyRatings->toBeEmpty()
+        ->candidates->{0}->citationMetadata->citationSources->toBeEmpty()
+        ->candidates->{0}->index->toEqual(0)
+        ->candidates->{0}->tokenCount->toBeNull()
+        ->candidates->{0}->finishReason->toEqual(FinishReason::RECITATION)
+        ->and(fn () => $response->text())
+        ->toThrow(function (ValueError $e) {
+            expect($e->getMessage())
+                ->toBe('The `GenerateContentResponse::text()` quick accessor only works when the response contains a valid '.
+                    '`Part`, but none was returned. Check the `candidate.safety_ratings` to see if the '.
+                    'response was blocked.');
+        });
+
+});
+
 test('fake', function () {
     $response = GenerateContentResponse::fake();
 

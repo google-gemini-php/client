@@ -6,6 +6,7 @@ namespace Gemini\Data;
 
 use Gemini\Contracts\Arrayable;
 use Gemini\Enums\FinishReason;
+use Gemini\Enums\Role;
 
 /**
  * A response candidate generated from the model.
@@ -33,22 +34,30 @@ final class Candidate implements Arrayable
     }
 
     /**
-     * @param  array{ content: array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: string, safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: string} } }, index: int, tokenCount: ?int }  $attributes
+     * @param  array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: string} } }, index: int, tokenCount: ?int }  $attributes
      */
     public static function from(array $attributes): self
     {
-        $safetyRatings = array_map(
-            static fn (array $rating): SafetyRating => SafetyRating::from($rating),
-            $attributes['safetyRatings'],
-        );
+        $safetyRatings = match (true) {
+            isset($attributes['safetyRatings']) => array_map(
+                static fn (array $rating): SafetyRating => SafetyRating::from($rating),
+                $attributes['safetyRatings'],
+            ),
+            default => [],
+        };
 
         $citationMetadata = match (true) {
             isset($attributes['citationMetadata']) => CitationMetadata::from($attributes['citationMetadata']),
             default => new CitationMetadata(),
         };
 
+        $content = match (true) {
+            isset($attributes['content']) => Content::from($attributes['content']),
+            default => new Content(parts: [], role: Role::MODEL),
+        };
+
         return new self(
-            content: Content::from($attributes['content']),
+            content: $content,
             finishReason: FinishReason::from($attributes['finishReason']),
             safetyRatings: $safetyRatings,
             citationMetadata: $citationMetadata,
