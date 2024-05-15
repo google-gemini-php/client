@@ -20,6 +20,7 @@ final class GenerationConfig implements Arrayable
      * @param  float|null  $temperature  Controls the randomness of the output.
      * @param  float|null  $topP  The maximum cumulative probability of tokens to consider when sampling.
      * @param  int|null  $topK  The maximum number of tokens to consider when sampling.
+     * @param  string|null  $responseMimeType  The MIME type of the response.
      */
     public function __construct(
         public readonly int $candidateCount = 1,
@@ -28,6 +29,7 @@ final class GenerationConfig implements Arrayable
         public readonly ?float $temperature = null,
         public readonly ?float $topP = null,
         public readonly ?int $topK = null,
+        public readonly ?string $responseMimeType = null,
     ) {
     }
 
@@ -40,6 +42,7 @@ final class GenerationConfig implements Arrayable
             'temperature' => $this->temperature,
             'topP' => $this->topP,
             'topK' => $this->topK,
+            'responseMimeType' => $this->responseMimeType,
         ];
     }
 }
