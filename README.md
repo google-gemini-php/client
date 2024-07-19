@@ -78,7 +78,7 @@ $yourApiKey = getenv('YOUR_API_KEY');
 
 $client = Gemini::factory()
  ->withApiKey($yourApiKey)
- ->withBaseUrl('https://generativelanguage.example.com/v1') // default: https://generativelanguage.googleapis.com/v1/
+ ->withBaseUrl('https://generativelanguage.example.com/v1') // default: https://generativelanguage.googleapis.com/v1beta/
  ->withHttpHeader('X-My-Header', 'foo')
  ->withQueryParam('my-param', 'bar')
  ->withHttpClient(new \GuzzleHttp\Client([]))  // default: HTTP client found using PSR-18 HTTP Client Discovery
