@@ -45,6 +45,26 @@ final class Client implements ClientContract
         return $this->generativeModel(model: ModelType::GEMINI_PRO_VISION);
     }
 
+    public function geminiPro1_0(): GenerativeModel
+    {
+        return $this->generativeModel(model: ModelType::GEMINI_PRO_1_0);
+    }
+
+    public function geminiProLatest1_0(): GenerativeModel
+    {
+        return $this->generativeModel(model: ModelType::GEMINI_PRO_1_0_LATEST);
+    }
+
+    public function geminiPro1_5(): GenerativeModel
+    {
+        return $this->generativeModel(model: ModelType::GEMINI_PRO_1_5);
+    }
+
+    public function geminiProFlash1_5(): GenerativeModel
+    {
+        return $this->generativeModel(model: ModelType::GEMINI_PRO_1_5_FLASH);
+    }
+
     public function embeddingModel(ModelType|string $model = ModelType::EMBEDDING): EmbeddingModel
     {
         return new EmbeddingModel(transporter: $this->transporter, model: $model);
