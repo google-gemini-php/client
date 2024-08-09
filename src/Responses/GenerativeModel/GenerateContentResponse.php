@@ -8,6 +8,7 @@ use Gemini\Contracts\ResponseContract;
 use Gemini\Data\Candidate;
 use Gemini\Data\Part;
 use Gemini\Data\PromptFeedback;
+use Gemini\Data\UsageMetadata;
 use Gemini\Testing\Responses\Concerns\Fakeable;
 use Gemini\Testing\Responses\Concerns\FakeableForStreamedResponse;
 use ValueError;
@@ -25,10 +26,12 @@ final class GenerateContentResponse implements ResponseContract
     /**
      * @param  array<Candidate>  $candidates  Candidate responses from the model.
      * @param  PromptFeedback  $promptFeedback  Returns the prompt's feedback related to the content filters.
+     * @param  UsageMetadata  $usageMetadata  Returns the usage metadata for the response.
      */
     public function __construct(
         public readonly array $candidates,
         public readonly ?PromptFeedback $promptFeedback = null,
+        public readonly ?UsageMetadata $usageMetadata = null,
     ) {
     }
 
@@ -86,7 +89,7 @@ final class GenerateContentResponse implements ResponseContract
     }
 
     /**
-     * @param  array{ candidates: ?array{ array{ content: array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: string, safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: string} } }, index: int, tokenCount: ?int } }, promptFeedback: ?array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string } }  $attributes
+     * @param  array{ candidates: ?array{ array{ content: array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: string, safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: string} } }, index: int, tokenCount: ?int } }, promptFeedback: ?array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }, usageMetadata: ["promptTokenCount": int, "candidatesTokenCount": int, "totalTokenCount": int] }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -100,9 +103,14 @@ final class GenerateContentResponse implements ResponseContract
             default => null
         };
 
+        $usageMetadata = isset($attributes['usageMetadata'])
+            ? UsageMetadata::from($attributes['usageMetadata'])
+            : null;
+
         return new self(
             candidates: $candidates,
-            promptFeedback: $promptFeedback
+            promptFeedback: $promptFeedback,
+            usageMetadata: $usageMetadata
         );
     }
 
@@ -114,6 +122,7 @@ final class GenerateContentResponse implements ResponseContract
                 $this->candidates
             ),
             'promptFeedback' => $this->promptFeedback?->toArray(),
+            'usageMetadata' => $this->usageMetadata?->toArray(),
         ];
     }
 }
