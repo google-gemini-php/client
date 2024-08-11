@@ -12,16 +12,15 @@ use Gemini\Contracts\Arrayable;
 final class UsageMetadata implements Arrayable
 {
     /**
-     * @param int $promptTokenCount The number of tokens in the prompt.
-     * @param int $candidatesTokenCount The number of tokens in the generated candidates.
-     * @param int $totalTokenCount The total number of tokens used.
+     * @param  int  $promptTokenCount  The number of tokens in the prompt.
+     * @param  int  $candidatesTokenCount  The number of tokens in the generated candidates.
+     * @param  int  $totalTokenCount  The total number of tokens used.
      */
     public function __construct(
         public readonly int $promptTokenCount,
         public readonly int $candidatesTokenCount,
         public readonly int $totalTokenCount,
-    ) {
-    }
+    ) {}
 
     /**
      * @param array{
