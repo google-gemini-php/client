@@ -14,8 +14,7 @@ class RetrieveModelResponse implements ResponseContract
 
     public function __construct(
         public readonly Model $model,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, maxTemperature: ?float, topP: ?float, topK: ?int }  $attributes

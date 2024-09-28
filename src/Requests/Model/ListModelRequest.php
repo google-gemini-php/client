@@ -21,8 +21,7 @@ class ListModelRequest extends Request
     public function __construct(
         public ?int $pageSize = null,
         public ?string $nextPageToken = null,
-    ) {
-    }
+    ) {}
 
     public function defaultQuery(): array
     {

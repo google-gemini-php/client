@@ -18,8 +18,7 @@ final class ResponseDTO
      */
     public function __construct(
         private readonly array $data,
-    ) {
-    }
+    ) {}
 
     /**
      * Creates a new ResponseDTO value object from the given data.

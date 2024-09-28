@@ -19,9 +19,7 @@ final class Client implements ClientContract
     /**
      * Creates an instance with the given Transporter
      */
-    public function __construct(private readonly TransporterContract $transporter)
-    {
-    }
+    public function __construct(private readonly TransporterContract $transporter) {}
 
     /**
      *  Lists available models.

@@ -40,8 +40,7 @@ final class Model implements Arrayable
         public readonly ?float $maxTemperature = null,
         public readonly ?float $topP = null,
         public readonly ?int $topK = null,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, maxTemperature: ?float, topP: ?float, topK: ?int }  $attributes

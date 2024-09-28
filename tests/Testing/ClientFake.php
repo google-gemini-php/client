@@ -159,7 +159,7 @@ it('throws an exception if a request was not sent n times', function () {
 })->expectException(ExpectationFailedException::class);
 
 it('asserts a request was not sent', function () {
-    $fake = new ClientFake();
+    $fake = new ClientFake;
 
     $fake->assertNotSent(GenerativeModel::class);
 });
@@ -193,7 +193,7 @@ it('asserts a request was not sent on the resource', function () {
 });
 
 it('asserts no request was sent', function () {
-    $fake = new ClientFake();
+    $fake = new ClientFake;
 
     $fake->assertNothingSent();
 });

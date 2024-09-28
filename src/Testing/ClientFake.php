@@ -26,9 +26,7 @@ class ClientFake implements ClientContract
     /**
      * @param  array<array-key, ResponseContract>  $responses
      */
-    public function __construct(protected array $responses = [])
-    {
-    }
+    public function __construct(protected array $responses = []) {}
 
     /**
      * @param  array<array-key, ResponseContract>  $responses

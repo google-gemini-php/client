@@ -17,8 +17,7 @@ final class EmbedContentResponse implements ResponseContract
 
     private function __construct(
         public readonly ContentEmbedding $embedding,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ embedding: array{ values: array<float> } }  $attributes

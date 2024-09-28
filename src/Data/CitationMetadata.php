@@ -18,8 +18,7 @@ final class CitationMetadata implements Arrayable
      */
     public function __construct(
         public readonly ?array $citationSources = null,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: string } } }  $attributes

@@ -24,9 +24,7 @@ class CountTokensRequest extends Request
     public function __construct(
         protected readonly string $model,
         protected readonly array $parts
-    ) {
-
-    }
+    ) {}
 
     public function resolveEndpoint(): string
     {

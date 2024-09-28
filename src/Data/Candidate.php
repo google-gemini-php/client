@@ -31,8 +31,7 @@ final class Candidate implements Arrayable
         public readonly ?int $index,
         public readonly ?int $tokenCount,
         public readonly ?float $avgLogprobs,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: string} } }, index: ?int, tokenCount: ?int, avgLogprobs: ?float }  $attributes
@@ -49,7 +48,7 @@ final class Candidate implements Arrayable
 
         $citationMetadata = match (true) {
             isset($attributes['citationMetadata']) => CitationMetadata::from($attributes['citationMetadata']),
-            default => new CitationMetadata(),
+            default => new CitationMetadata,
         };
 
         $content = match (true) {

@@ -12,9 +12,7 @@ use Gemini\Testing\Requests\TestRequest;
 
 trait Testable
 {
-    public function __construct(protected ClientFake $fake, protected ModelType|string|null $model = null)
-    {
-    }
+    public function __construct(protected ClientFake $fake, protected ModelType|string|null $model = null) {}
 
     abstract protected function resource(): string;
 

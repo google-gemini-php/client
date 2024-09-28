@@ -32,8 +32,7 @@ final class GenerateContentResponse implements ResponseContract
         public readonly array $candidates,
         public readonly UsageMetadata $usageMetadata,
         public readonly ?PromptFeedback $promptFeedback = null,
-    ) {
-    }
+    ) {}
 
     /**
      * A quick accessor equivalent to `$candidates[0]->content->parts`

@@ -24,8 +24,7 @@ final class UsageMetadata implements Arrayable
         public readonly int $candidatesTokenCount,
         public readonly int $totalTokenCount,
         public readonly ?int $cachedContentTokenCount = null,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int }  $attributes

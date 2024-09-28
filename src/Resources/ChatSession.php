@@ -24,8 +24,7 @@ final class ChatSession implements ChatSessionContract
     public function __construct(
         public readonly GenerativeModel $model,
         public array $history = [],
-    ) {
-    }
+    ) {}
 
     /**
      * @param  string|Blob|array<string|Blob>|Content  ...$parts

@@ -32,9 +32,7 @@ class StreamGenerateContentRequest extends Request
         protected readonly array $parts,
         protected readonly array $safetySettings = [],
         protected readonly ?GenerationConfig $generationConfig = null
-    ) {
-
-    }
+    ) {}
 
     public function resolveEndpoint(): string
     {

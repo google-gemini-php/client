@@ -19,8 +19,7 @@ class ListModelResponse implements ResponseContract
     public function __construct(
         public readonly array $models,
         public readonly ?string $nextPageToken = null,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ models: array{ array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, maxTemperature: ?float, topP: ?float, topK: ?int } }, nextPageToken: ?string }  $attributes
