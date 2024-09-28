@@ -21,20 +21,20 @@ final class Candidate implements Arrayable
      * @param  array<SafetyRating>  $safetyRatings  List of ratings for the safety of a response candidate. There is at most one rating per category.
      * @param  CitationMetadata  $citationMetadata  Output only. Citation information for model-generated candidate.
      * @param  int|null  $tokenCount  Output only. Token count for this candidate.
-     * @param  int  $index  Output only. Index of the candidate in the list of candidates.
+     * @param  int|null  $index  Output only. Index of the candidate in the list of candidates.
      */
     public function __construct(
         public readonly Content $content,
         public readonly FinishReason $finishReason,
         public readonly array $safetyRatings,
         public readonly CitationMetadata $citationMetadata,
-        public readonly int $index,
+        public readonly ?int $index,
         public readonly ?int $tokenCount,
     ) {
     }
 
     /**
-     * @param  array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: string} } }, index: int, tokenCount: ?int }  $attributes
+     * @param  array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: string} } }, index: ?int, tokenCount: ?int }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -61,7 +61,7 @@ final class Candidate implements Arrayable
             finishReason: FinishReason::from($attributes['finishReason']),
             safetyRatings: $safetyRatings,
             citationMetadata: $citationMetadata,
-            index: $attributes['index'],
+            index: $attributes['index'] ?? null,
             tokenCount: $attributes['tokenCount'] ?? null,
         );
     }
