@@ -143,6 +143,11 @@ class ClientFake implements ClientContract
         return $this->generativeModel(model: ModelType::GEMINI_PRO);
     }
 
+    /**
+     * https://ai.google.dev/gemini-api/docs/changelog#07-12-24
+     *
+     * @deprecated Use geminiFlash instead
+     */
     public function geminiProVision(): GenerativeModelTestResource
     {
         return $this->generativeModel(model: ModelType::GEMINI_PRO_VISION);

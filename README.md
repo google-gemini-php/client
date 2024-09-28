@@ -109,7 +109,7 @@ If the input contains both text and image, use the `gemini-pro-vision` model.
 ```php
 
 $result = $client
- ->geminiProVision()
+ ->geminiFlash()
  ->generateContent([
   'What is this picture?',
   new Blob(

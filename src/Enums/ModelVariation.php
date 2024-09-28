@@ -8,5 +8,4 @@ enum ModelVariation: string
 {
     case PRO = 'pro';
     case FLASH = 'flash';
-    case PRO_VISION = 'pro-vision';
 }

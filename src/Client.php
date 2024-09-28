@@ -41,6 +41,11 @@ final class Client implements ClientContract
         return $this->generativeModel(model: ModelType::GEMINI_PRO);
     }
 
+    /**
+     * https://ai.google.dev/gemini-api/docs/changelog#07-12-24
+     *
+     * @deprecated Use geminiFlash instead
+     */
     public function geminiProVision(): GenerativeModel
     {
         return $this->generativeModel(model: ModelType::GEMINI_PRO_VISION);
