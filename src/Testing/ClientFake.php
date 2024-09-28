@@ -148,6 +148,11 @@ class ClientFake implements ClientContract
         return $this->generativeModel(model: ModelType::GEMINI_PRO_VISION);
     }
 
+    public function geminiFlash(): GenerativeModelTestResource
+    {
+        return $this->generativeModel(model: ModelType::GEMINI_FLASH);
+    }
+
     public function embeddingModel(ModelType|string $model = ModelType::EMBEDDING): EmbeddingModelTestResource
     {
         return new EmbeddingModelTestResource(fake: $this, model: $model);

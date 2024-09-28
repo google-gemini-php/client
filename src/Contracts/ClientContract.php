@@ -20,6 +20,8 @@ interface ClientContract
 
     public function geminiProVision(): GenerativeModelContract;
 
+    public function geminiFlash(): GenerativeModelContract;
+
     public function embeddingModel(ModelType|string $model = ModelType::EMBEDDING): EmbeddingModalContract;
 
     public function chat(ModelType|string $model = ModelType::GEMINI_PRO): ChatSessionContract;

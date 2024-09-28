@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gemini;
 
 use Gemini\Contracts\ClientContract;
+use Gemini\Contracts\Resources\GenerativeModelContract;
 use Gemini\Contracts\TransporterContract;
 use Gemini\Data\Model;
 use Gemini\Enums\ModelType;
@@ -43,6 +44,11 @@ final class Client implements ClientContract
     public function geminiProVision(): GenerativeModel
     {
         return $this->generativeModel(model: ModelType::GEMINI_PRO_VISION);
+    }
+
+    public function geminiFlash(): GenerativeModelContract
+    {
+        return $this->generativeModel(model: ModelType::GEMINI_FLASH);
     }
 
     public function embeddingModel(ModelType|string $model = ModelType::EMBEDDING): EmbeddingModel
