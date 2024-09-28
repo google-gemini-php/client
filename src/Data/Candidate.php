@@ -30,11 +30,12 @@ final class Candidate implements Arrayable
         public readonly CitationMetadata $citationMetadata,
         public readonly ?int $index,
         public readonly ?int $tokenCount,
+        public readonly ?float $avgLogprobs,
     ) {
     }
 
     /**
-     * @param  array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: string} } }, index: ?int, tokenCount: ?int }  $attributes
+     * @param  array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: string} } }, index: ?int, tokenCount: ?int, avgLogprobs: ?float }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -63,6 +64,7 @@ final class Candidate implements Arrayable
             citationMetadata: $citationMetadata,
             index: $attributes['index'] ?? null,
             tokenCount: $attributes['tokenCount'] ?? null,
+            avgLogprobs: $attributes['avgLogprobs'] ?? null,
         );
     }
 
@@ -78,6 +80,7 @@ final class Candidate implements Arrayable
             'citationMetadata' => $this->citationMetadata->toArray(),
             'tokenCount' => $this->tokenCount,
             'index' => $this->index,
+            'avgLogprobs' => $this->avgLogprobs,
         ];
     }
 }
