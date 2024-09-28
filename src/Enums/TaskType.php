@@ -40,4 +40,14 @@ enum TaskType: string
      * Specifies that the embeddings will be used for clustering.
      */
     case CLUSTERING = 'CLUSTERING';
+
+    /**
+     * Specifies that the given text will be used for question answering.
+     */
+    case QUESTION_ANSWERING = 'QUESTION_ANSWERING';
+
+    /**
+     * Specifies that the given text will be used for fact verification.
+     */
+    case FACT_VERIFICATION = 'FACT_VERIFICATION';
 }
