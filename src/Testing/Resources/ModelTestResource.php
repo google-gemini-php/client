@@ -20,7 +20,7 @@ final class ModelTestResource implements ModelContract
         return Models::class;
     }
 
-    public function list(): ListModelResponse
+    public function list(?int $pageSize = null, ?string $nextPageToken = null): ListModelResponse
     {
         return $this->record(method: __FUNCTION__, args: func_get_args());
     }

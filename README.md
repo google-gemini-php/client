@@ -236,8 +236,18 @@ print_r($response->embedding->values);
 #### List Models
 Use list models to see the available Gemini models:
 
+- **pageSize (optional)**:
+  The maximum number of Models to return (per page). <br>
+  If unspecified, 50 models will be returned per page. This method returns at most 1000 models per page, even if you pass a larger pageSize.
+
+
+- **nextPageToken (optional)**:
+    A page token, received from a previous models.list call. <br>
+    Provide the pageToken returned by one request as an argument to the next request to retrieve the next page.
+    When paginating, all other parameters provided to models.list must match the call that provided the page token.
+
 ```php
-$response = $client->models()->list();
+$response = $client->models()->list(pageSize: 3, nextPageToken: 'ChFtb2RlbHMvZ2VtaW5pLXBybw==');
 
 $response->models;
 //[
@@ -266,6 +276,9 @@ $response->models;
 //            ...
 //        )
 //]
+```
+```php
+$response->nextPageToken // Chltb2RlbHMvZ2VtaW5pLTEuMC1wcm8tMDAx
 ```
 
 #### Get Model

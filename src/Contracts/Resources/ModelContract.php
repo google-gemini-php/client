@@ -10,7 +10,7 @@ use Gemini\Responses\Models\RetrieveModelResponse;
 
 interface ModelContract
 {
-    public function list(): ListModelResponse;
+    public function list(?int $pageSize = null, ?string $nextPageToken = null): ListModelResponse;
 
     public function retrieve(ModelType|string $model): RetrieveModelResponse;
 }
