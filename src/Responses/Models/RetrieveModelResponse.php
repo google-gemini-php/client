@@ -18,7 +18,7 @@ class RetrieveModelResponse implements ResponseContract
     }
 
     /**
-     * @param  array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, topP: ?float, topK: ?int }  $attributes
+     * @param  array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, maxTemperature: ?float, topP: ?float, topK: ?int }  $attributes
      */
     public static function from(array $attributes): self
     {

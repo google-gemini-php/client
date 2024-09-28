@@ -36,6 +36,7 @@ final class Models implements ModelContract
     {
         /** @var ResponseDTO<array{ models: array{ array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, topP: ?float, topK: ?int } } }> $response */
         $response = $this->transporter->request(request: new ListModelRequest());
+        /** @var ResponseDTO<array{ models: array{ array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, maxTemperature: ?float, topP: ?float, topK: ?int } } }> $response */
 
         return ListModelResponse::from(attributes: $response->data());
     }
@@ -47,7 +48,7 @@ final class Models implements ModelContract
      */
     public function retrieve(ModelType|string $model): RetrieveModelResponse
     {
-        /** @var ResponseDTO<array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, topP: ?float, topK: ?int }> $response */
+        /** @var ResponseDTO<array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, maxTemperature: ?float, topP: ?float, topK: ?int }> $response */
         $response = $this->transporter->request(request: new RetrieveModelRequest(model: $this->parseModel(model: $model)));
 
         return RetrieveModelResponse::from(attributes: $response->data());
