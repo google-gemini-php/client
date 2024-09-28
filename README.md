@@ -177,6 +177,7 @@ foreach ($stream as $response) {
 ```
 
 #### Structured Output
+Gemini generates unstructured text by default, but some applications require structured text. For these use cases, you can constrain Gemini to respond with JSON, a structured data format suitable for automated processing. You can also constrain the model to respond with one of the options specified in an enum.
 
 ```php
 $result = $client
