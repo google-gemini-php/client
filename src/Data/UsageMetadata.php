@@ -6,6 +6,11 @@ namespace Gemini\Data;
 
 use Gemini\Contracts\Arrayable;
 
+/**
+ * Metadata on the generation request's token usage.
+ *
+ * https://ai.google.dev/api/generate-content#UsageMetadata
+ */
 final class UsageMetadata implements Arrayable
 {
     /**
