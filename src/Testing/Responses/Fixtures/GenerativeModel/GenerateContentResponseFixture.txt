@@ -50,6 +50,11 @@
         "probability": "NEGLIGIBLE"
       }
     ]
+  },
+  "usageMetadata": {
+    "promptTokenCount": 8,
+    "candidatesTokenCount": 444,
+    "totalTokenCount": 452
   }
 }
 ,
@@ -85,7 +90,13 @@
         }
       ]
     }
-  ]
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 8,
+    "candidatesTokenCount": 444,
+    "totalTokenCount": 452
+  }
+
 }
 ,
 {
@@ -120,7 +131,12 @@
         }
       ]
     }
-  ]
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 8,
+    "candidatesTokenCount": 444,
+    "totalTokenCount": 452
+  }
 }
 ,
 {
@@ -155,7 +171,12 @@
         }
       ]
     }
-  ]
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 8,
+    "candidatesTokenCount": 444,
+    "totalTokenCount": 452
+  }
 }
 ,
 {
@@ -190,7 +211,13 @@
         }
       ]
     }
-  ]
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 8,
+    "candidatesTokenCount": 444,
+    "totalTokenCount": 452
+  }
+
 }
 ,
 {
@@ -225,6 +252,11 @@
         }
       ]
     }
-  ]
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 8,
+    "candidatesTokenCount": 444,
+    "totalTokenCount": 452
+  }
 }
 ]
