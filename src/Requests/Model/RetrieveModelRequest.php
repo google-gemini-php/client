@@ -8,7 +8,7 @@ use Gemini\Enums\Method;
 use Gemini\Foundation\Request;
 
 /**
- * https://ai.google.dev/api/rest/v1/models/get
+ * https://ai.google.dev/api/rest/v1beta/models/get
  */
 class RetrieveModelRequest extends Request
 {

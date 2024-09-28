@@ -9,7 +9,7 @@ use Gemini\Contracts\Arrayable;
 /**
  * A collection of source attributions for a piece of content.
  *
- * https://ai.google.dev/api/rest/v1/GenerateContentResponse#citationmetadata
+ * https://ai.google.dev/api/rest/v1beta/GenerateContentResponse#citationmetadata
  */
 final class CitationMetadata implements Arrayable
 {

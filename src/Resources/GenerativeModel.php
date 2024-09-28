@@ -55,7 +55,7 @@ final class GenerativeModel implements GenerativeModelContract
     /**
      * Runs a model's tokenizer on input content and returns the token count.
      *
-     * @see https://ai.google.dev/api/rest/v1/models/countTokens
+     * @see https://ai.google.dev/api/rest/v1beta/models/countTokens
      *
      * @param  string|Blob|array<string|Blob>|Content  ...$parts
      *
@@ -72,7 +72,7 @@ final class GenerativeModel implements GenerativeModelContract
     /**
      * Generates a response from the model given an input GenerateContentRequest.
      *
-     * @see https://ai.google.dev/api/rest/v1/models/generateContent
+     * @see https://ai.google.dev/api/rest/v1beta/models/generateContent
      */
     public function generateContent(string|Blob|array|Content ...$parts): GenerateContentResponse
     {
@@ -92,7 +92,7 @@ final class GenerativeModel implements GenerativeModelContract
     /**
      * Generates a streamed response from the model given an input GenerateContentRequest.
      *
-     * @see https://ai.google.dev/api/rest/v1/models/streamGenerateContent
+     * @see https://ai.google.dev/api/rest/v1beta/models/streamGenerateContent
      */
     public function streamGenerateContent(string|Blob|array|Content ...$parts): StreamResponse
     {

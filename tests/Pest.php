@@ -21,7 +21,7 @@ function mockClient(Method $method, string $endpoint, ResponseDTO|ResponseContra
         ->shouldReceive($methodName)
         ->times($times)
         ->withArgs(function (Request $request) use ($validateParams, $method, $endpoint, $params) {
-            $psrRequest = $request->toRequest(baseUrl: 'https://generativelanguage.googleapis.com/v1/');
+            $psrRequest = $request->toRequest(baseUrl: 'https://generativelanguage.googleapis.com/v1beta/');
 
             if ($validateParams) {
                 if (in_array($method, [Method::GET, Method::DELETE])) {
@@ -36,7 +36,7 @@ function mockClient(Method $method, string $endpoint, ResponseDTO|ResponseContra
             }
 
             return $psrRequest->getMethod() === $method->value
-                && $psrRequest->getUri()->getPath() === "/v1/$endpoint";
+                && $psrRequest->getUri()->getPath() === "/v1beta/$endpoint";
         })->andReturn($response);
 
     return new Client($transporter);

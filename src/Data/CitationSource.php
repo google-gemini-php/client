@@ -9,7 +9,7 @@ use Gemini\Contracts\Arrayable;
 /**
  * A citation to a source for a portion of a specific response.
  *
- * https://ai.google.dev/api/rest/v1/GenerateContentResponse#citationsource
+ * https://ai.google.dev/api/rest/v1beta/GenerateContentResponse#citationsource
  */
 final class CitationSource implements Arrayable
 {

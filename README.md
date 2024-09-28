@@ -23,6 +23,7 @@
       - [Text-and-image Input](#text-and-image-input)
       - [Multi-turn Conversations (Chat)](#multi-turn-conversations-chat)
       - [Stream Generate Content](#stream-generate-content)
+      - [Structured Output](#structured-output)
       - [Count tokens](#count-tokens)
       - [Configuration](#configuration)
     - [Embedding Resource](#embedding-resource)
@@ -67,8 +68,28 @@ $yourApiKey = getenv('YOUR_API_KEY');
 $client = Gemini::client($yourApiKey);
 
 $result = $client->geminiPro()->generateContent('Hello');
-
 $result->text(); // Hello! How can I assist you today?
+
+// Custom Model
+$result = $client->geminiPro()->generativeModel(model: 'models/gemini-1.5-flash-001');
+$result->text(); // Hello! How can I assist you today?
+
+
+// Enum usage
+$result = $client->geminiPro()->generativeModel(model: ModelType::GEMINI_FLASH);
+$result->text(); // Hello! How can I assist you today?
+
+
+// Enum method usage
+$result = $client->geminiPro()->generativeModel(
+    model: ModelType::generateGeminiModel(
+      variation: ModelVariation::FLASH,
+      generation: 1.5,
+      version: "002"
+    ), // models/gemini-1.5-flash-002
+);
+$result->text(); // Hello! How can I assist you today?
+
 ```
 
 If necessary, it is possible to configure and create a separate client.
@@ -78,7 +99,7 @@ $yourApiKey = getenv('YOUR_API_KEY');
 
 $client = Gemini::factory()
  ->withApiKey($yourApiKey)
- ->withBaseUrl('https://generativelanguage.example.com/v1') // default: https://generativelanguage.googleapis.com/v1/
+ ->withBaseUrl('https://generativelanguage.example.com/v1beta') // default: https://generativelanguage.googleapis.com/v1beta/
  ->withHttpHeader('X-My-Header', 'foo')
  ->withQueryParam('my-param', 'bar')
  ->withHttpClient(new \GuzzleHttp\Client([]))  // default: HTTP client found using PSR-18 HTTP Client Discovery
@@ -155,6 +176,56 @@ foreach ($stream as $response) {
 }
 ```
 
+#### Structured Output
+
+```php
+$result = $client
+ ->geminiFlash()
+ ->withGenerationConfig(
+  generationConfig: new GenerationConfig(
+   responseMimeType: ResponseMimeType::APPLICATION_JSON,
+   responseSchema: new Schema(
+    type: DataType::ARRAY,
+    items: new Schema(
+     type: DataType::OBJECT,
+     properties: [
+      "recipe_name" => new Schema(type: DataType::STRING),
+      "cooking_time_in_minutes" => new Schema(type: DataType::INTEGER)
+     ]
+    )
+   )
+  )
+ )
+ ->generateContent("List 5 popular cookie recipes with cooking time");
+
+
+$result->json();
+
+//[
+//    {
+//      +"cooking_time_in_minutes": 10,
+//      +"recipe_name": "Chocolate Chip Cookies",
+//    },
+//    {
+//      +"cooking_time_in_minutes": 12,
+//      +"recipe_name": "Oatmeal Raisin Cookies",
+//    },
+//    {
+//      +"cooking_time_in_minutes": 10,
+//      +"recipe_name": "Peanut Butter Cookies",
+//    },
+//    {
+//      +"cooking_time_in_minutes": 10,
+//      +"recipe_name": "Snickerdoodles",
+//    },
+//    {
+//      +"cooking_time_in_minutes": 12,
+//      +"recipe_name": "Sugar Cookies",
+//    },
+//  ]
+
+```
+
 #### Count tokens
 When using long prompts, it might be useful to count tokens before sending any content to the model.
 
@@ -229,6 +300,46 @@ print_r($response->embedding->values);
 //    [8] => 0.0057651913
 //    ...
 //]
+```
+
+```php
+$response = $client
+ ->embeddingModel()
+ ->batchEmbedContents("Bu bir testtir", "Deneme123");
+
+print_r($response->embeddings);
+// [
+// [0] => Gemini\Data\ContentEmbedding Object
+// (
+//     [values] => Array
+//         (
+//         [0] => 0.035855837
+//         [1] => -0.049537655
+//         [2] => -0.06834927
+//         [3] => -0.010445258
+//         [4] => 0.044641383
+//         [5] => 0.031156342
+//         [6] => -0.007810312
+//         [7] => -0.0106866965
+//         ...
+//         ),
+// ),
+// [1] => Gemini\Data\ContentEmbedding Object
+// (
+//     [values] => Array
+//         (
+//         [0] => 0.035855837
+//         [1] => -0.049537655
+//         [2] => -0.06834927
+//         [3] => -0.010445258
+//         [4] => 0.044641383
+//         [5] => 0.031156342
+//         [6] => -0.007810312
+//         [7] => -0.0106866965
+//         ...
+//         ),
+// ),
+// ]
 ```
 
 ### Models

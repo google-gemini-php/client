@@ -11,7 +11,7 @@ use Gemini\Enums\Role;
 /**
  * A response candidate generated from the model.
  *
- * https://ai.google.dev/api/rest/v1/GenerateContentResponse#candidate
+ * https://ai.google.dev/api/rest/v1beta/GenerateContentResponse#candidate
  */
 final class Candidate implements Arrayable
 {
