@@ -12,7 +12,7 @@ use Gemini\Enums\Role;
  * A Content includes a role field designating the producer of the Content and a parts
  * field containing multi-part data that contains the content of the message turn.
  *
- * https://ai.google.dev/api/rest/v1/Content
+ * https://ai.google.dev/api/rest/v1beta/Content
  */
 final class Content implements Arrayable
 {

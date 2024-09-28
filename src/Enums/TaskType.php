@@ -7,7 +7,7 @@ namespace Gemini\Enums;
 /**
  * Type of task for which the embedding will be used.
  *
- * https://ai.google.dev/api/rest/v1/TaskType
+ * https://ai.google.dev/api/rest/v1beta/TaskType
  */
 enum TaskType: string
 {

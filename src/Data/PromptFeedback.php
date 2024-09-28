@@ -10,7 +10,7 @@ use Gemini\Enums\BlockReason;
 /**
  * A set of the feedback metadata the prompt specified in GenerateContentRequest.content.
  *
- * https://ai.google.dev/api/rest/v1/GenerateContentResponse#promptfeedback
+ * https://ai.google.dev/api/rest/v1beta/GenerateContentResponse#promptfeedback
  */
 final class PromptFeedback implements Arrayable
 {

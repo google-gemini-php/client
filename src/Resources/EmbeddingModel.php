@@ -33,7 +33,7 @@ final class EmbeddingModel implements EmbeddingModalContract
     /**
      *  Generates an embedding from the model given an input Content.
      *
-     * @see https://ai.google.dev/api/rest/v1/models/embedContent
+     * @see https://ai.google.dev/api/rest/v1beta/models/embedContent
      *
      * @param  string|Blob|array<string|Blob>|Content  $content
      */

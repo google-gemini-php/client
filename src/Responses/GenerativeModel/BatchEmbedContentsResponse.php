@@ -9,7 +9,7 @@ use Gemini\Data\ContentEmbedding;
 use Gemini\Testing\Responses\Concerns\Fakeable;
 
 /**
- * https://ai.google.dev/api/rest/v1/models/embedContent#response-body
+ * https://ai.google.dev/api/rest/v1beta/models/embedContent#response-body
  */
 final class BatchEmbedContentsResponse implements ResponseContract
 {

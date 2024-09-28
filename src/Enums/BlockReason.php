@@ -7,7 +7,7 @@ namespace Gemini\Enums;
 /**
  * Specifies what was the reason why prompt was blocked.
  *
- * https://ai.google.dev/api/rest/v1/GenerateContentResponse#blockreason
+ * https://ai.google.dev/api/rest/v1beta/GenerateContentResponse#blockreason
  */
 enum BlockReason: string
 {
