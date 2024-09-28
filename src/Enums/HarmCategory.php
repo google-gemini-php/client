@@ -66,4 +66,9 @@ enum HarmCategory: string
      * Dangerous content.
      */
     case HARM_CATEGORY_DANGEROUS_CONTENT = 'HARM_CATEGORY_DANGEROUS_CONTENT';
+
+    /**
+     * Content that may be used to harm civic integrity.
+     */
+    case HARM_CATEGORY_CIVIC_INTEGRITY = 'HARM_CATEGORY_CIVIC_INTEGRITY';
 }
