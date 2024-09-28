@@ -21,8 +21,7 @@ final class Blob implements Arrayable
     public function __construct(
         public readonly MimeType $mimeType,
         public readonly string $data,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ mimeType: string, data: string }  $attributes

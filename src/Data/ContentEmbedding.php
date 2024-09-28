@@ -18,8 +18,7 @@ final class ContentEmbedding implements Arrayable
      */
     public function __construct(
         public readonly array $values,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ values: array<float> }  $attributes

@@ -14,9 +14,7 @@ class RetrieveModelRequest extends Request
 {
     protected Method $method = Method::GET;
 
-    public function __construct(protected readonly string $model)
-    {
-    }
+    public function __construct(protected readonly string $model) {}
 
     public function resolveEndpoint(): string
     {

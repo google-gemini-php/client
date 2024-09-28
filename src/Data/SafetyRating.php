@@ -28,8 +28,7 @@ final class SafetyRating implements Arrayable
         public readonly HarmCategory $category,
         public readonly HarmProbability $probability,
         public readonly ?bool $blocked,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ category: string, probability: string, blocked: ?bool }  $attributes

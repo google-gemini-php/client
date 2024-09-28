@@ -18,8 +18,7 @@ final class Part implements Arrayable
     public function __construct(
         public readonly ?string $text = null,
         public readonly ?Blob $inlineData = null,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ text: ?string, inlineData: ?array{ mimeType: string, data: string } }  $attributes

@@ -21,7 +21,7 @@ it('may create a client via factory', function () {
 
 it('sets a custom client via factory', function () {
     $gemini = Gemini::factory()
-        ->withHttpClient(client: new GuzzleClient())
+        ->withHttpClient(client: new GuzzleClient)
         ->make();
 
     expect($gemini)->toBeInstanceOf(Client::class);
@@ -53,7 +53,7 @@ it('sets a custom query parameter via factory', function () {
 
 it('sets a custom stream handler via factory', function () {
     $gemini = Gemini::factory()
-        ->withHttpClient($client = new GuzzleClient())
+        ->withHttpClient($client = new GuzzleClient)
         ->withStreamHandler(fn (RequestInterface $request): ResponseInterface => $client->send($request, ['stream' => true]))
         ->make();
 

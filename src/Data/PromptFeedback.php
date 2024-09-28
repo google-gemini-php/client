@@ -21,8 +21,7 @@ final class PromptFeedback implements Arrayable
     public function __construct(
         public readonly array $safetyRatings,
         public readonly ?BlockReason $blockReason,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }  $attributes

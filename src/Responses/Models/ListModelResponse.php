@@ -13,15 +13,16 @@ class ListModelResponse implements ResponseContract
     use Fakeable;
 
     /**
-     * @param  array<Model>  $models
+     * @param  array<Model>  $models  The returned Models.
+     * @param  string|null  $nextPageToken  A token, which can be sent as pageToken to retrieve the next page.
      */
     public function __construct(
         public readonly array $models,
-    ) {
-    }
+        public readonly ?string $nextPageToken = null,
+    ) {}
 
     /**
-     * @param  array{ models: array{ array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, topP: ?float, topK: ?int } } }  $attributes
+     * @param  array{ models: array{ array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, maxTemperature: ?float, topP: ?float, topK: ?int } }, nextPageToken: ?string }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -30,7 +31,10 @@ class ListModelResponse implements ResponseContract
             $attributes['models'],
         );
 
-        return new self(models: $models);
+        return new self(
+            models: $models,
+            nextPageToken: $attributes['nextPageToken'] ?? null
+        );
     }
 
     public function toArray(): array
@@ -40,6 +44,7 @@ class ListModelResponse implements ResponseContract
                 static fn (Model $model): array => $model->toArray(),
                 $this->models
             ),
+            'nextPageToken' => $this->nextPageToken,
         ];
     }
 }

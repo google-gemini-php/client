@@ -9,6 +9,7 @@ use Gemini\Contracts\Resources\EmbeddingModalContract;
 use Gemini\Contracts\Resources\GenerativeModelContract;
 use Gemini\Contracts\Resources\ModelContract;
 use Gemini\Enums\ModelType;
+use JetBrains\PhpStorm\Deprecated;
 
 interface ClientContract
 {
@@ -18,7 +19,14 @@ interface ClientContract
 
     public function geminiPro(): GenerativeModelContract;
 
+    /**
+     * https://ai.google.dev/gemini-api/docs/changelog#07-12-24
+     *
+     * @deprecated Use geminiFlash instead
+     */
     public function geminiProVision(): GenerativeModelContract;
+
+    public function geminiFlash(): GenerativeModelContract;
 
     public function embeddingModel(ModelType|string $model = ModelType::EMBEDDING): EmbeddingModalContract;
 

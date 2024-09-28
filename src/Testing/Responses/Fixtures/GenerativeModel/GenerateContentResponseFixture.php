@@ -59,5 +59,10 @@ final class GenerateContentResponseFixture
                 ],
             ],
         ],
+        'usageMetadata' => [
+            'promptTokenCount' => 8,
+            'candidatesTokenCount' => 444,
+            'totalTokenCount' => 452,
+        ],
     ];
 }

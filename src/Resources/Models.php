@@ -21,9 +21,7 @@ final class Models implements ModelContract
     /**
      * Creates an instance with the given Transporter
      */
-    public function __construct(private readonly TransporterContract $transporter)
-    {
-    }
+    public function __construct(private readonly TransporterContract $transporter) {}
 
     /**
      * Lists available models.
@@ -32,10 +30,10 @@ final class Models implements ModelContract
      *
      * @throws \JsonException
      */
-    public function list(): ListModelResponse
+    public function list(?int $pageSize = null, ?string $nextPageToken = null): ListModelResponse
     {
-        /** @var ResponseDTO<array{ models: array{ array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, topP: ?float, topK: ?int } } }> $response */
-        $response = $this->transporter->request(request: new ListModelRequest());
+        /** @var ResponseDTO<array{ models: array{ array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, maxTemperature: ?float, topP: ?float, topK: ?int } }, nextPageToken: ?string }> $response */
+        $response = $this->transporter->request(request: new ListModelRequest(pageSize: $pageSize, nextPageToken: $nextPageToken));
 
         return ListModelResponse::from(attributes: $response->data());
     }
@@ -47,7 +45,7 @@ final class Models implements ModelContract
      */
     public function retrieve(ModelType|string $model): RetrieveModelResponse
     {
-        /** @var ResponseDTO<array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, topP: ?float, topK: ?int }> $response */
+        /** @var ResponseDTO<array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, maxTemperature: ?float, topP: ?float, topK: ?int }> $response */
         $response = $this->transporter->request(request: new RetrieveModelRequest(model: $this->parseModel(model: $model)));
 
         return RetrieveModelResponse::from(attributes: $response->data());

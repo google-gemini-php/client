@@ -25,9 +25,7 @@ class EmbedContentRequest extends Request
         protected readonly string|Blob|array|Content $part,
         protected readonly ?TaskType $taskType = null,
         protected readonly ?string $title = null
-    ) {
-
-    }
+    ) {}
 
     public function resolveEndpoint(): string
     {

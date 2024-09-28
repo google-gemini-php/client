@@ -22,8 +22,7 @@ final class SafetySetting implements Arrayable
     public function __construct(
         public readonly HarmCategory $category,
         public readonly HarmBlockThreshold $threshold,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {

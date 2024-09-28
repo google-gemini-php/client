@@ -23,8 +23,7 @@ final class Content implements Arrayable
     public function __construct(
         public readonly array $parts,
         public readonly Role $role,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  string|Blob|array<string|Blob>|Content  $part

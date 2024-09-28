@@ -18,6 +18,7 @@ final class RetrieveModelResponseFixture
             'countTokens',
         ],
         'temperature' => 0.9,
+        'maxTemperature' => 2.0,
         'topP' => 1.0,
         'topK' => 1,
     ];

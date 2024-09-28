@@ -51,5 +51,6 @@ final class ListModelResponseFixture
                 ],
             ],
         ],
+        'nextPageToken' => null,
     ];
 }

@@ -23,6 +23,7 @@ final class Model implements Arrayable
      * @param  array<string>  $supportedGenerationMethods  The model's supported generation methods.
      * @param  ?string  $baseModelId  The name of the base model, pass this to the generation request.
      * @param  float|null  $temperature  Controls the randomness of the output.
+     * @param  float|null  $maxTemperature  The maximum temperature this model can use.
      * @param  float|null  $topP  For Nucleus sampling.
      * @param  int|null  $topK  For Top-k sampling.
      */
@@ -36,13 +37,13 @@ final class Model implements Arrayable
         public readonly array $supportedGenerationMethods,
         public readonly ?string $baseModelId = null,
         public readonly ?float $temperature = null,
+        public readonly ?float $maxTemperature = null,
         public readonly ?float $topP = null,
         public readonly ?int $topK = null,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param  array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, topP: ?float, topK: ?int }  $attributes
+     * @param  array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, maxTemperature: ?float, topP: ?float, topK: ?int }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -56,6 +57,7 @@ final class Model implements Arrayable
             supportedGenerationMethods: $attributes['supportedGenerationMethods'],
             baseModelId: $attributes['baseModelId'] ?? null,
             temperature: $attributes['temperature'] ?? null,
+            maxTemperature: $attributes['maxTemperature'] ?? null,
             topP: $attributes['topP'] ?? null,
             topK: $attributes['topK'] ?? null,
         );
@@ -73,6 +75,7 @@ final class Model implements Arrayable
             'supportedGenerationMethods' => $this->supportedGenerationMethods,
             'baseModelId' => $this->baseModelId,
             'temperature' => $this->temperature,
+            'maxTemperature' => $this->maxTemperature,
             'topP' => $this->topP,
             'topK' => $this->topK,
         ];

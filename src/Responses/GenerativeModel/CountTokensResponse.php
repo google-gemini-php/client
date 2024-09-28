@@ -16,8 +16,7 @@ final class CountTokensResponse implements ResponseContract
 
     private function __construct(
         public readonly int $totalTokens,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{ totalTokens: int }  $attributes

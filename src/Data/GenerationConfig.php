@@ -28,8 +28,7 @@ final class GenerationConfig implements Arrayable
         public readonly ?float $temperature = null,
         public readonly ?float $topP = null,
         public readonly ?int $topK = null,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {

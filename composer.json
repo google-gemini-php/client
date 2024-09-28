@@ -27,7 +27,7 @@
     "guzzlehttp/guzzle": "^7.8.1",
     "guzzlehttp/psr7": "^2.6.2",
     "pestphp/pest": "^2.30",
-    "laravel/pint": "^1.13.10",
+    "laravel/pint": "^1.18.1",
     "mockery/mockery": "^1.6.7",
     "phpstan/phpstan": "^1.10"
   },

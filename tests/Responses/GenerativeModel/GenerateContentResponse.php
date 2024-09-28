@@ -2,6 +2,7 @@
 
 use Gemini\Data\Candidate;
 use Gemini\Data\PromptFeedback;
+use Gemini\Data\UsageMetadata;
 use Gemini\Enums\FinishReason;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
 
@@ -12,7 +13,9 @@ test('from', function () {
     expect($response)
         ->toBeInstanceOf(GenerateContentResponse::class)
         ->candidates->each->toBeInstanceOf(Candidate::class)
-        ->promptFeedback->toBeInstanceOf(PromptFeedback::class);
+        ->promptFeedback->toBeInstanceOf(PromptFeedback::class)
+        ->usageMetadata->toBeInstanceOf(UsageMetadata::class);
+
 });
 
 test('recitation finish reason', function () {
@@ -22,6 +25,11 @@ test('recitation finish reason', function () {
                 'finishReason' => FinishReason::RECITATION->value,
                 'index' => 0,
             ],
+        ],
+        'usageMetadata' => [
+            'promptTokenCount' => 0,
+            'candidatesTokenCount' => 0,
+            'totalTokenCount' => 0,
         ],
     ]);
 

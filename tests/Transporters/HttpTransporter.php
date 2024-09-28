@@ -34,7 +34,7 @@ beforeEach(function () {
 });
 
 test('request', function () {
-    $request = new ListModelRequest();
+    $request = new ListModelRequest;
 
     $response = new Response(200, ['Content-Type' => 'application/json; charset=utf-8'], json_encode([
         'test',
@@ -57,7 +57,7 @@ test('request', function () {
 });
 
 test('request response', function () {
-    $request = new ListModelRequest();
+    $request = new ListModelRequest;
 
     $data = ListModelResponse::fake()->toArray();
     $response = new Response(200, ['Content-Type' => 'application/json; charset=utf-8'], json_encode($data, JSON_PRESERVE_ZERO_FRACTION));
@@ -73,7 +73,7 @@ test('request response', function () {
 });
 
 test('request server user errors', function () {
-    $request = new ListModelRequest();
+    $request = new ListModelRequest;
 
     $response = new Response(400, ['Content-Type' => 'application/json; charset=utf-8'], json_encode([
         'error' => [
@@ -127,7 +127,7 @@ test('request server errors', function () {
 });
 
 test('request client errors', function () {
-    $request = new ListModelRequest();
+    $request = new ListModelRequest;
 
     $this->client
         ->shouldReceive('sendRequest')
@@ -142,7 +142,7 @@ test('request client errors', function () {
 });
 
 test('request serialization errors', function () {
-    $request = new ListModelRequest();
+    $request = new ListModelRequest;
 
     $response = new Response(200, ['Content-Type' => 'application/json; charset=utf-8'], 'err');
 

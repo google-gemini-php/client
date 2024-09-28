@@ -26,9 +26,7 @@ class ClientFake implements ClientContract
     /**
      * @param  array<array-key, ResponseContract>  $responses
      */
-    public function __construct(protected array $responses = [])
-    {
-    }
+    public function __construct(protected array $responses = []) {}
 
     /**
      * @param  array<array-key, ResponseContract>  $responses
@@ -143,9 +141,19 @@ class ClientFake implements ClientContract
         return $this->generativeModel(model: ModelType::GEMINI_PRO);
     }
 
+    /**
+     * https://ai.google.dev/gemini-api/docs/changelog#07-12-24
+     *
+     * @deprecated Use geminiFlash instead
+     */
     public function geminiProVision(): GenerativeModelTestResource
     {
         return $this->generativeModel(model: ModelType::GEMINI_PRO_VISION);
+    }
+
+    public function geminiFlash(): GenerativeModelTestResource
+    {
+        return $this->generativeModel(model: ModelType::GEMINI_FLASH);
     }
 
     public function embeddingModel(ModelType|string $model = ModelType::EMBEDDING): EmbeddingModelTestResource

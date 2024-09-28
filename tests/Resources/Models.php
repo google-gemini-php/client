@@ -17,6 +17,22 @@ test('list', function () {
         ->models->each->toBeInstanceOf(Model::class)
         ->and($result)
         ->models->{0}->name->toBe('models/gemini-pro');
+});
+
+test('list with page size', function () {
+    $client = mockClient(method: Method::GET, endpoint: 'models', response: ListModelResponse::fake([
+        'nextPageToken' => 'next',
+    ]));
+
+    $result = $client->models()->list(pageSize: 1);
+
+    expect($result)
+        ->toBeInstanceOf(ListModelResponse::class)
+        ->models->toBeArray()->toHaveCount(3)
+        ->models->each->toBeInstanceOf(Model::class)
+        ->and($result)
+        ->models->{0}->name->toBe('models/gemini-pro')
+        ->nextPageToken->toBe('next');
 
 });
 
