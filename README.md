@@ -67,8 +67,28 @@ $yourApiKey = getenv('YOUR_API_KEY');
 $client = Gemini::client($yourApiKey);
 
 $result = $client->geminiPro()->generateContent('Hello');
-
 $result->text(); // Hello! How can I assist you today?
+
+// Custom Model
+$result = $client->geminiPro()->generativeModel(model: 'models/gemini-1.5-flash-001');
+$result->text(); // Hello! How can I assist you today?
+
+
+// Enum usage
+$result = $client->geminiPro()->generativeModel(model: ModelType::GEMINI_FLASH);
+$result->text(); // Hello! How can I assist you today?
+
+
+// Enum method usage
+$result = $client->geminiPro()->generativeModel(
+    model: ModelType::generateGeminiModel(
+      variation: ModelVariation::FLASH,
+      generation: 1.5,
+      version: "002"
+    ), // models/gemini-1.5-flash-002
+);
+$result->text(); // Hello! How can I assist you today?
+
 ```
 
 If necessary, it is possible to configure and create a separate client.
@@ -229,6 +249,46 @@ print_r($response->embedding->values);
 //    [8] => 0.0057651913
 //    ...
 //]
+```
+
+```php
+$response = $client
+ ->embeddingModel()
+ ->batchEmbedContents("Bu bir testtir", "Deneme123");
+
+print_r($response->embeddings);
+// [
+// [0] => Gemini\Data\ContentEmbedding Object
+// (
+//     [values] => Array
+//         (
+//         [0] => 0.035855837
+//         [1] => -0.049537655
+//         [2] => -0.06834927
+//         [3] => -0.010445258
+//         [4] => 0.044641383
+//         [5] => 0.031156342
+//         [6] => -0.007810312
+//         [7] => -0.0106866965
+//         ...
+//         ),
+// ),
+// [1] => Gemini\Data\ContentEmbedding Object
+// (
+//     [values] => Array
+//         (
+//         [0] => 0.035855837
+//         [1] => -0.049537655
+//         [2] => -0.06834927
+//         [3] => -0.010445258
+//         [4] => 0.044641383
+//         [5] => 0.031156342
+//         [6] => -0.007810312
+//         [7] => -0.0106866965
+//         ...
+//         ),
+// ),
+// ]
 ```
 
 ### Models
