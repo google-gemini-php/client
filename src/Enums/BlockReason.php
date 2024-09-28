@@ -25,4 +25,14 @@ enum BlockReason: string
      * Prompt was blocked due to unknown reasons.
      */
     case OTHER = 'OTHER';
+
+    /**
+     * Prompt was blocked due to the terms which are included from the terminology blocklist.
+     */
+    case BLOCKLIST = 'BLOCKLIST';
+
+    /**
+     * Prompt was blocked due to prohibited content.
+     */
+    case PROHIBITED_CONTENT = 'PROHIBITED_CONTENT';
 }
