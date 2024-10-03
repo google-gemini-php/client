@@ -33,7 +33,7 @@ final class UsageMetadata implements Arrayable
     {
         return new self(
             promptTokenCount: $attributes['promptTokenCount'],
-            candidatesTokenCount: $attributes['candidatesTokenCount'],
+            candidatesTokenCount: $attributes['candidatesTokenCount'] ?? null,
             totalTokenCount: $attributes['totalTokenCount'],
             cachedContentTokenCount: $attributes['cachedContentTokenCount'] ?? null
         );
