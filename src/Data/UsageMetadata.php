@@ -21,7 +21,7 @@ final class UsageMetadata implements Arrayable
      */
     public function __construct(
         public readonly int $promptTokenCount,
-        public readonly int $candidatesTokenCount,
+        public readonly ?int $candidatesTokenCount = null,
         public readonly int $totalTokenCount,
         public readonly ?int $cachedContentTokenCount = null,
     ) {}
