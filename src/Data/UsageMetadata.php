@@ -21,7 +21,7 @@ final class UsageMetadata implements Arrayable
      */
     public function __construct(
         public readonly int $promptTokenCount,
-        public readonly int $candidatesTokenCount,
+        public readonly ?int $candidatesTokenCount = null,
         public readonly int $totalTokenCount,
         public readonly ?int $cachedContentTokenCount = null,
     ) {}
@@ -33,7 +33,7 @@ final class UsageMetadata implements Arrayable
     {
         return new self(
             promptTokenCount: $attributes['promptTokenCount'],
-            candidatesTokenCount: $attributes['candidatesTokenCount'],
+            candidatesTokenCount: $attributes['candidatesTokenCount'] ?? null,
             totalTokenCount: $attributes['totalTokenCount'],
             cachedContentTokenCount: $attributes['cachedContentTokenCount'] ?? null
         );
