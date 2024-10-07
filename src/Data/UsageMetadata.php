@@ -20,9 +20,9 @@ final class UsageMetadata implements Arrayable
      * @param  int|null  $cachedContentTokenCount  Number of tokens in the cached part of the prompt (the cached content)
      */
     public function __construct(
-        public readonly int $promptTokenCount,
+        public readonly ?int $promptTokenCount = null,
         public readonly ?int $candidatesTokenCount = null,
-        public readonly int $totalTokenCount,
+        public readonly ?int $totalTokenCount = null,
         public readonly ?int $cachedContentTokenCount = null,
     ) {}
 
@@ -32,9 +32,9 @@ final class UsageMetadata implements Arrayable
     public static function from(array $attributes): self
     {
         return new self(
-            promptTokenCount: $attributes['promptTokenCount'],
+            promptTokenCount: $attributes['promptTokenCount'] ?? null,
             candidatesTokenCount: $attributes['candidatesTokenCount'] ?? null,
-            totalTokenCount: $attributes['totalTokenCount'],
+            totalTokenCount: $attributes['totalTokenCount'] ?? null,
             cachedContentTokenCount: $attributes['cachedContentTokenCount'] ?? null
         );
     }
