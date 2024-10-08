@@ -21,20 +21,20 @@ final class UsageMetadata implements Arrayable
      */
     public function __construct(
         public readonly int $promptTokenCount,
-        public readonly ?int $candidatesTokenCount = null,
         public readonly int $totalTokenCount,
+        public readonly ?int $candidatesTokenCount = null,
         public readonly ?int $cachedContentTokenCount = null,
     ) {}
 
     /**
-     * @param  array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int }  $attributes
+     * @param  array{ promptTokenCount: int, candidatesTokenCount: ?int, totalTokenCount: int, cachedContentTokenCount: ?int }  $attributes
      */
     public static function from(array $attributes): self
     {
         return new self(
             promptTokenCount: $attributes['promptTokenCount'],
-            candidatesTokenCount: $attributes['candidatesTokenCount'] ?? null,
             totalTokenCount: $attributes['totalTokenCount'],
+            candidatesTokenCount: $attributes['candidatesTokenCount'] ?? null,
             cachedContentTokenCount: $attributes['cachedContentTokenCount'] ?? null
         );
     }
