@@ -178,3 +178,49 @@ test('start chat for custom model', function () {
     expect($result)
         ->toBeInstanceOf(ChatSession::class);
 });
+
+test('with system instruction', function () {
+    $modelType = ModelType::GEMINI_PRO;
+    $systemInstruction = new Content(parts: ['You are a helpful assistant.'], role: 'system');
+    
+    $client = mockClient(
+        method: Method::POST, 
+        endpoint: "{$modelType->value}:generateContent", 
+        response: GenerateContentResponse::fake(),
+        params: [
+            'contents' => [['parts' => [['text' => 'Hello']], 'role' => 'user']],
+            'systemInstruction' => $systemInstruction->toArray(),
+        ],
+        validateParams: true
+    );
+
+    $result = $client->generativeModel(model: $modelType)
+        ->withSystemInstruction($systemInstruction)
+        ->generateContent('Hello');
+
+    expect($result)
+        ->toBeInstanceOf(GenerateContentResponse::class);
+});
+
+test('system instruction is included in the request', function () {
+    $modelType = ModelType::GEMINI_PRO;
+    $systemInstruction = new Content(parts: ['You are a helpful assistant.'], role: 'system');
+    
+    $client = mockClient(
+        method: Method::POST, 
+        endpoint: "{$modelType->value}:generateContent", 
+        response: GenerateContentResponse::fake(),
+        validateParams: true
+    );
+
+    $generativeModel = $client->generativeModel(model: $modelType)
+        ->withSystemInstruction($systemInstruction);
+
+    $generativeModel->generateContent('Hello');
+
+    $generativeModel->assertSent(function (string $method, array $parameters) use ($systemInstruction) {
+        return $method === 'generateContent' &&
+            $parameters[0] === 'Hello' &&
+            $parameters['systemInstruction'] === $systemInstruction;
+    });
+});

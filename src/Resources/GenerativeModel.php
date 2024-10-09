@@ -34,6 +34,7 @@ final class GenerativeModel implements GenerativeModelContract
         ModelType|string $model,
         public array $safetySettings = [],
         public ?GenerationConfig $generationConfig = null,
+        public ?Content $systemInstruction = null,
     ) {
         $this->model = $this->parseModel(model: $model);
     }
@@ -48,6 +49,13 @@ final class GenerativeModel implements GenerativeModelContract
     public function withGenerationConfig(GenerationConfig $generationConfig): self
     {
         $this->generationConfig = $generationConfig;
+
+        return $this;
+    }
+
+    public function withSystemInstruction(Content $systemInstruction): self
+    {
+        $this->systemInstruction = $systemInstruction;
 
         return $this;
     }

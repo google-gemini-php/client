@@ -29,9 +29,19 @@ final class Client implements ClientContract
         return new Models(transporter: $this->transporter);
     }
 
-    public function generativeModel(ModelType|string $model): GenerativeModel
-    {
-        return new GenerativeModel(transporter: $this->transporter, model: $model);
+    public function generativeModel(
+        ModelType|string $model,
+        array $safetySettings = [],
+        ?GenerationConfig $generationConfig = null,
+        ?Content $systemInstruction = null
+    ): GenerativeModel {
+        return new GenerativeModel(
+            transporter: $this->transporter,
+            model: $model,
+            safetySettings: $safetySettings,
+            generationConfig: $generationConfig,
+            systemInstruction: $systemInstruction
+        );
     }
 
     public function geminiPro(): GenerativeModel
