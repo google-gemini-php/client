@@ -16,7 +16,7 @@ use ValueError;
 /**
  * ResponseDTO from the model supporting multiple candidates.
  *
- * https://ai.google.dev/api/rest/v1/GenerateContentResponse
+ * https://ai.google.dev/api/rest/v1beta/GenerateContentResponse
  */
 final class GenerateContentResponse implements ResponseContract
 {
@@ -85,6 +85,14 @@ final class GenerateContentResponse implements ResponseContract
         }
 
         return $parts[0]->text;
+    }
+
+    /**
+     * A quick accessor equivalent to `json_decode($candidates[0].parts[0].text)`
+     */
+    public function json(): mixed
+    {
+        return json_decode($this->text());
     }
 
     /**

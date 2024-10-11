@@ -30,7 +30,7 @@ final class Factory
     /**
      * The base URI for the requests.
      */
-    private string $baseUrl = 'https://generativelanguage.googleapis.com/v1/';
+    private string $baseUrl = 'https://generativelanguage.googleapis.com/v1beta/';
 
     /**
      * The HTTP headers for the requests.

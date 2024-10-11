@@ -21,7 +21,7 @@ beforeEach(function () {
 
     $this->http = new HttpTransporter(
         client: $this->client,
-        baseUrl: 'https://generativelanguage.googleapis.com/v1/',
+        baseUrl: 'https://generativelanguage.googleapis.com/v1beta/',
         headers: [
             'x-goog-api-key' => 'foo',
         ],
@@ -48,7 +48,7 @@ test('request', function () {
                 ->and($request->getUri())
                 ->getHost()->toBe('generativelanguage.googleapis.com')
                 ->getScheme()->toBe('https')
-                ->getPath()->toBe('/v1/models');
+                ->getPath()->toBe('/v1beta/models');
 
             return true;
         })->andReturn($response);
@@ -173,7 +173,7 @@ test('request stream', function () {
                 ->and($request->getUri())
                 ->getHost()->toBe('generativelanguage.googleapis.com')
                 ->getScheme()->toBe('https')
-                ->getPath()->toBe('/v1/models/gemini-pro:streamGenerateContent');
+                ->getPath()->toBe('/v1beta/models/gemini-pro:streamGenerateContent');
 
             return true;
         })->andReturn($response);

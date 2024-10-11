@@ -7,7 +7,7 @@ namespace Gemini\Enums;
 /**
  * Defines the reason why the model stopped generating tokens.
  *
- * https://ai.google.dev/api/rest/v1/GenerateContentResponse#finishreason
+ * https://ai.google.dev/api/rest/v1beta/GenerateContentResponse#finishreason
  */
 enum FinishReason: string
 {

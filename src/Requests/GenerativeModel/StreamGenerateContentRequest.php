@@ -14,7 +14,7 @@ use Gemini\Foundation\Request;
 use Gemini\Requests\Concerns\HasJsonBody;
 
 /**
- * https://ai.google.dev/api/rest/v1/models/streamGenerateContent
+ * https://ai.google.dev/api/rest/v1beta/models/streamGenerateContent
  */
 class StreamGenerateContentRequest extends Request
 {

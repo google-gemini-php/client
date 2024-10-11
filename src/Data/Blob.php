@@ -10,7 +10,7 @@ use Gemini\Enums\MimeType;
 /**
  * Raw media bytes.
  *
- * https://ai.google.dev/api/rest/v1/Content#blob
+ * https://ai.google.dev/api/rest/v1beta/Content#blob
  */
 final class Blob implements Arrayable
 {
