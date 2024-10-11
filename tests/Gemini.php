@@ -35,6 +35,26 @@ it('sets a custom base url via factory', function () {
     expect($gemini)->toBeInstanceOf(Client::class);
 });
 
+it('sets the beta API URL via factory', function () {
+    $gemini = Gemini::factory()
+        ->useBetaApi()
+        ->make();
+
+    expect($gemini)->toBeInstanceOf(Client::class);
+
+    // You might need to use reflection to check the actual base URL
+    $reflection = new ReflectionClass($gemini);
+    $transporter = $reflection->getProperty('transporter');
+    $transporter->setAccessible(true);
+    $transporterInstance = $transporter->getValue($gemini);
+
+    $baseUrlProperty = (new ReflectionClass($transporterInstance))->getProperty('baseUrl');
+    $baseUrlProperty->setAccessible(true);
+    $baseUrl = $baseUrlProperty->getValue($transporterInstance);
+
+    expect($baseUrl)->toBe('https://generativelanguage.googleapis.com/v1beta/');
+});
+
 it('sets a custom header via factory', function () {
     $gemini = Gemini::factory()
         ->withHttpHeader(name: 'Custom-Header', value: 'foo')

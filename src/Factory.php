@@ -73,6 +73,16 @@ final class Factory
     }
 
     /**
+     * Sets the base URL to the beta API endpoint.
+     */
+    public function useBetaApi(): self
+    {
+        $this->baseUrl = 'https://generativelanguage.googleapis.com/v1beta/';
+
+        return $this;
+    }
+
+    /**
      * Adds a custom HTTP header to the requests.
      */
     public function withHttpHeader(string $name, string $value): self

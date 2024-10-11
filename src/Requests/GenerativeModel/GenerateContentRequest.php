@@ -57,7 +57,7 @@ class GenerateContentRequest extends Request
         ];
 
         if ($this->systemInstruction !== null) {
-            $body['systemInstruction'] = $this->systemInstruction->toArray();
+            $body['system_instruction'] = $this->systemInstruction->toArray();
         }
 
         return $body;
