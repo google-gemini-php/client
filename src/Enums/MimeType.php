@@ -54,4 +54,6 @@ enum MimeType: string
     case APPLICATION_RTF = 'application/rtf';
     case TEXT_RTF = 'text/rtf';
 
+    // Pdf
+    case APPLICATION_PDF = 'application/pdf';
 }
