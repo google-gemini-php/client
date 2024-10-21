@@ -17,7 +17,7 @@ final class Candidate implements Arrayable
 {
     /**
      * @param  Content  $content  Output only. Generated content returned from the model.
-     * @param  FinishReason  $finishReason  The reason why the model stopped generating tokens.If empty, the model has not stopped generating the tokens.
+     * @param  FinishReason|null  $finishReason  The reason why the model stopped generating tokens.If empty, the model has not stopped generating the tokens.
      * @param  array<SafetyRating>  $safetyRatings  List of ratings for the safety of a response candidate. There is at most one rating per category.
      * @param  CitationMetadata  $citationMetadata  Output only. Citation information for model-generated candidate.
      * @param  int|null  $tokenCount  Output only. Token count for this candidate.
@@ -25,7 +25,7 @@ final class Candidate implements Arrayable
      */
     public function __construct(
         public readonly Content $content,
-        public readonly FinishReason $finishReason,
+        public readonly ?FinishReason $finishReason,
         public readonly array $safetyRatings,
         public readonly CitationMetadata $citationMetadata,
         public readonly ?int $index,
@@ -34,7 +34,7 @@ final class Candidate implements Arrayable
     ) {}
 
     /**
-     * @param  array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: string} } }, index: ?int, tokenCount: ?int, avgLogprobs: ?float }  $attributes
+     * @param  array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: ?string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: string} } }, index: ?int, tokenCount: ?int, avgLogprobs: ?float }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -56,9 +56,14 @@ final class Candidate implements Arrayable
             default => new Content(parts: [], role: Role::MODEL),
         };
 
+        $finishReason = match (true) {
+            isset($attributes['finishReason']) => FinishReason::from($attributes['finishReason']),
+            default => null,
+        };
+
         return new self(
             content: $content,
-            finishReason: FinishReason::from($attributes['finishReason']),
+            finishReason: $finishReason,
             safetyRatings: $safetyRatings,
             citationMetadata: $citationMetadata,
             index: $attributes['index'] ?? null,
@@ -71,7 +76,7 @@ final class Candidate implements Arrayable
     {
         return [
             'content' => $this->content->toArray(),
-            'finishReason' => $this->finishReason->value,
+            'finishReason' => $this->finishReason?->value,
             'safetyRatings' => array_map(
                 static fn (SafetyRating $rating): array => $rating->toArray(),
                 $this->safetyRatings
