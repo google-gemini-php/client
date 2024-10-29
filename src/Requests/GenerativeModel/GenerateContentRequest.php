@@ -28,7 +28,8 @@ class GenerateContentRequest extends Request
         protected readonly string $model,
         protected readonly array $parts,
         protected readonly array $safetySettings = [],
-        protected readonly ?GenerationConfig $generationConfig = null
+        protected readonly ?GenerationConfig $generationConfig = null,
+        protected readonly ?Content $systemInstruction = null
     ) {}
 
     public function resolveEndpoint(): string
@@ -53,6 +54,7 @@ class GenerateContentRequest extends Request
                 $this->safetySettings ?? []
             ),
             'generationConfig' => $this->generationConfig?->toArray(),
+            'systemInstruction' => $this->systemInstruction?->toArray(),
         ];
     }
 }

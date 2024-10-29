@@ -7,7 +7,6 @@ namespace Gemini;
 use Gemini\Contracts\ClientContract;
 use Gemini\Contracts\Resources\GenerativeModelContract;
 use Gemini\Contracts\TransporterContract;
-use Gemini\Data\Model;
 use Gemini\Enums\ModelType;
 use Gemini\Resources\ChatSession;
 use Gemini\Resources\EmbeddingModel;
