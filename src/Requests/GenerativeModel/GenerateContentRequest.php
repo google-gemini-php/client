@@ -44,7 +44,7 @@ class GenerateContentRequest extends Request
      */
     protected function defaultBody(): array
     {
-        $body = [
+        return [
             'contents' => array_map(
                 static fn (Content $content): array => $content->toArray(),
                 $this->partsToContents(...$this->parts)
@@ -54,12 +54,7 @@ class GenerateContentRequest extends Request
                 $this->safetySettings ?? []
             ),
             'generationConfig' => $this->generationConfig?->toArray(),
+            'systemInstruction' => $this->systemInstruction?->toArray(),
         ];
-
-        if ($this->systemInstruction !== null) {
-            $body['system_instruction'] = $this->systemInstruction->toArray();
-        }
-
-        return $body;
     }
 }

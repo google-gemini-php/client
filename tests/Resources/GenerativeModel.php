@@ -212,9 +212,9 @@ test('generative model with system instruction', function () {
 
     expect($body)
         ->toHaveKey('contents')
-        ->toHaveKey('system_instruction')
+        ->toHaveKey('systemInstruction')
         ->and($body['contents'][0]['parts'][0]['text'])->toBe($userMessage)
-        ->and($body['system_instruction']['parts'][0]['text'])->toBe($systemInstruction);
+        ->and($body['systemInstruction']['parts'][0]['text'])->toBe($systemInstruction);
 
     expect($model)
         ->toHaveProperty('systemInstruction')
@@ -233,7 +233,7 @@ test('system instruction is included in the request', function () {
             $body = $request->body();
 
             return $body['contents'][0]['parts'][0]['text'] === 'Hello' &&
-                $body['system_instruction']['parts'][0]['text'] === $systemInstruction;
+                $body['systemInstruction']['parts'][0]['text'] === $systemInstruction;
         })
         ->andReturn(new ResponseDTO(GenerateContentResponse::fake()->toArray()));
 
