@@ -17,7 +17,7 @@ final class CitationSource implements Arrayable
      * @param  int  $startIndex  Start of segment of the response that is attributed to this source. Index indicates the start of the segment, measured in bytes.
      * @param  int  $endIndex  End of the attributed segment, exclusive.
      * @param  string  $uri  URI that is attributed as a source for a portion of the text.
-     * @param  string  $license  License for the GitHub project that is attributed as a source for segment. License info is required for code citations.
+     * @param  string|null  $license  License for the GitHub project that is attributed as a source for segment. License info is required for code citations.
      */
     public function __construct(
         public readonly int $startIndex,
@@ -27,7 +27,7 @@ final class CitationSource implements Arrayable
     ) {}
 
     /**
-     * @param  array{ startIndex: int, endIndex: int, uri: string, license: string}  $attributes
+     * @param  array{ startIndex: int, endIndex: int, uri: string, license: ?string}  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -35,7 +35,7 @@ final class CitationSource implements Arrayable
             startIndex: $attributes['startIndex'],
             endIndex: $attributes['endIndex'],
             uri: $attributes['uri'],
-            license: $attributes['license'],
+            license: $attributes['license'] ?? null,
         );
     }
 
