@@ -38,6 +38,7 @@ To complete this quickstart, make sure that your development environment meets t
 
 - Requires [PHP 8.1+](https://php.net/releases/)
 
+
 ## Setup
 
 ### Installation
@@ -47,6 +48,14 @@ First, install Gemini via the [Composer](https://getcomposer.org/) package manag
 ```bash
 composer require google-gemini-php/client
 ```
+
+If you want to use beta features you should install beta branch:
+
+```bash
+composer require google-gemini-php/client:1.0.4-beta
+```
+
+For beta documentation: https://github.com/google-gemini-php/client/tree/beta
 
 Ensure that the `php-http/discovery` composer plugin is allowed to run or install a client manually if your project does not already have a PSR-18 client integrated.
 ```bash
