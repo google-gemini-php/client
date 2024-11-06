@@ -21,7 +21,7 @@ final class CitationMetadata implements Arrayable
     ) {}
 
     /**
-     * @param  array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: string, license: ?string } } }  $attributes
+     * @param  array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string } } }  $attributes
      */
     public static function from(array $attributes): self
     {
