@@ -74,3 +74,22 @@ it('records a "withGenerationConfig" function call', function () {
             $parameters[0] === $generationConfig;
     });
 });
+
+it('records both content request and function call', function () {
+	$fake = new ClientFake([
+		GenerateContentResponse::fake(),
+	]);
+
+	$generationConfig = new GenerationConfig;
+
+	$fake->geminiPro()->withGenerationConfig($generationConfig)->generateContent('Hello');
+
+	$fake->geminiPro()->assertSent(function (string $method, array $parameters) {
+		return $method === 'generateContent' &&
+			$parameters[0] === 'Hello';
+	});
+	$fake->geminiPro()->assertFunctionCalled(function (string $method, array $parameters) use ($generationConfig) {
+		return $method === 'withGenerationConfig' &&
+			$parameters[0] === $generationConfig;
+	});
+});
