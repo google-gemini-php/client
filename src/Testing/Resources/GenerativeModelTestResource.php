@@ -47,11 +47,15 @@ final class GenerativeModelTestResource implements GenerativeModelContract
 
     public function withSafetySetting(SafetySetting $safetySetting): self
     {
-        return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+        $this->recordFunctionCall(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+
+        return $this;
     }
 
     public function withGenerationConfig(GenerationConfig $generationConfig): self
     {
-        return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+        $this->recordFunctionCall(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+
+        return $this;
     }
 }
