@@ -7,6 +7,8 @@ namespace Gemini\Testing\Resources;
 use Gemini\Contracts\Resources\GenerativeModelContract;
 use Gemini\Data\Blob;
 use Gemini\Data\Content;
+use Gemini\Data\GenerationConfig;
+use Gemini\Data\SafetySetting;
 use Gemini\Resources\ChatSession;
 use Gemini\Resources\GenerativeModel;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
@@ -39,6 +41,16 @@ final class GenerativeModelTestResource implements GenerativeModelContract
     }
 
     public function startChat(array $history = []): ChatSession
+    {
+        return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+    }
+
+    public function withSafetySetting(SafetySetting $safetySetting): self
+    {
+        return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+    }
+
+    public function withGenerationConfig(GenerationConfig $generationConfig): self
     {
         return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
     }
