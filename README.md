@@ -79,7 +79,7 @@ $result = $client->geminiPro()->generateContent('Hello');
 $result->text(); // Hello! How can I assist you today?
 
 // Custom Model
-$result = $client->geminiPro()->generativeModel(model: 'models/gemini-1.5-flash-001');
+$result = $client->generativeModel(model: 'models/gemini-1.5-flash-001')->generateContent('Hello');
 $result->text(); // Hello! How can I assist you today?
 
 
