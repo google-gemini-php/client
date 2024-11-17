@@ -8,7 +8,7 @@ use Gemini\Foundation\Request;
 use Gemini\Transporters\DTOs\ResponseDTO;
 use Psr\Http\Message\ResponseInterface;
 
-function mockClient(Method $method, string $endpoint, ResponseDTO|ResponseContract|ResponseInterface|string $response, array $params = [], int $times = 1, $methodName = 'request', bool $validateParams = false): Client
+function mockClient(Method $method, string $endpoint, ResponseDTO|ResponseContract|ResponseInterface|string $response, array $params = [], int $times = 1, $methodName = 'request', bool $validateParams = false, string $rootPath = '/v1beta/'): Client
 {
     $transporter = Mockery::mock(TransporterContract::class);
 
@@ -20,7 +20,7 @@ function mockClient(Method $method, string $endpoint, ResponseDTO|ResponseContra
     $transporter
         ->shouldReceive($methodName)
         ->times($times)
-        ->withArgs(function (Request $request) use ($validateParams, $method, $endpoint, $params) {
+        ->withArgs(function (Request $request) use ($validateParams, $method, $endpoint, $params, $rootPath) {
             $psrRequest = $request->toRequest(baseUrl: 'https://generativelanguage.googleapis.com/v1beta/');
 
             if ($validateParams) {
@@ -36,7 +36,7 @@ function mockClient(Method $method, string $endpoint, ResponseDTO|ResponseContra
             }
 
             return $psrRequest->getMethod() === $method->value
-                && $psrRequest->getUri()->getPath() === "/v1beta/$endpoint";
+                && $psrRequest->getUri()->getPath() === $rootPath.$endpoint;
         })->andReturn($response);
 
     return new Client($transporter);

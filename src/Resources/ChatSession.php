@@ -8,6 +8,7 @@ use Gemini\Concerns\HasContents;
 use Gemini\Contracts\Resources\ChatSessionContract;
 use Gemini\Data\Blob;
 use Gemini\Data\Content;
+use Gemini\Data\UploadedFile;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
 
 /**
@@ -27,9 +28,9 @@ final class ChatSession implements ChatSessionContract
     ) {}
 
     /**
-     * @param  string|Blob|array<string|Blob>|Content  ...$parts
+     * @param  string|Blob|array<string|Blob|UploadedFile>|Content|UploadedFile  ...$parts
      */
-    public function sendMessage(string|Blob|array|Content ...$parts): GenerateContentResponse
+    public function sendMessage(string|Blob|array|Content|UploadedFile ...$parts): GenerateContentResponse
     {
         $this->history = array_merge($this->history, $this->partsToContents(...$parts));
 
