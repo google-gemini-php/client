@@ -9,6 +9,7 @@ use Gemini\Data\Blob;
 use Gemini\Data\Content;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
+use Gemini\Data\UploadedFile;
 use Gemini\Enums\Method;
 use Gemini\Foundation\Request;
 use Gemini\Requests\Concerns\HasJsonBody;
@@ -21,7 +22,7 @@ class GenerateContentRequest extends Request
     protected Method $method = Method::POST;
 
     /**
-     * @param  array<string|Blob|array<string|Blob>|Content>  $parts
+     * @param  array<string|Blob|array<string|Blob|UploadedFile>|Content|UploadedFile>  $parts
      * @param  array<SafetySetting>  $safetySettings
      */
     public function __construct(

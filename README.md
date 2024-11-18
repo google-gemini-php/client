@@ -21,6 +21,8 @@
     - [Chat Resource](#chat-resource)
       - [Text-only Input](#text-only-input)
       - [Text-and-image Input](#text-and-image-input)
+      - [File Upload](#file-upload)
+      - [Text-and-video Input](#text-and-video-input)
       - [Multi-turn Conversations (Chat)](#multi-turn-conversations-chat)
       - [Stream Generate Content](#stream-generate-content)
       - [Structured Output](#structured-output)
@@ -147,6 +149,50 @@ $result = $client
    data: base64_encode(
     file_get_contents('https://storage.googleapis.com/generativeai-downloads/images/scones.jpg')
    )
+  )
+ ]);
+ 
+$result->text(); //  The picture shows a table with a white tablecloth. On the table are two cups of coffee, a bowl of blueberries, a silver spoon, and some flowers. There are also some blueberry scones on the table.
+```
+
+#### File Upload
+To reference larger files and videos with various prompts, upload them to Gemini storage. 
+
+```php
+$files = $client->files();
+echo "Uploading\n";
+$meta = $files->upload(
+    filename: 'video.mp4',
+    mimeType: MimeType::VIDEO_MP4,
+    displayName: 'Video'
+);
+echo "Processing";
+do {
+    echo ".";
+    sleep(2);
+    $meta = $files->metadataGet($meta->uri);
+} while (!$meta->state->complete());
+echo "\n";
+
+if ($meta->state == FileState::Failed) {
+    die("Upload failed:\n" . json_encode($meta->toArray(), JSON_PRETTY_PRINT));
+}
+
+echo "Processing complete\n" . json_encode($meta->toArray(), JSON_PRETTY_PRINT);
+echo "\n{$meta->uri}";
+```
+
+#### Text-and-video Input
+If the input contains both text and video, use the `gemini-pro-vision` model and upload the file beforehand.
+
+```php
+$result = $client
+ ->geminiFlash()
+ ->generateContent([
+  'What is this video?',
+  new UploadedFile(
+   fileUri: '123-456', // accepts just the name or the full URI
+   mimeType: MimeType::VIDEO_MP4
   )
  ]);
  

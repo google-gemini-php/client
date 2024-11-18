@@ -31,6 +31,9 @@
     "mockery/mockery": "^1.6.7",
     "phpstan/phpstan": "^1.10"
   },
+  "suggest": {
+    "ext-fileinfo": "Reads upload file size and mime type if not provided"
+  },
   "autoload": {
     "psr-4": {
       "Gemini\\": "src/"
