@@ -8,6 +8,7 @@ use Gemini\Contracts\ClientContract;
 use Gemini\Contracts\ResponseContract;
 use Gemini\Enums\ModelType;
 use Gemini\Responses\StreamResponse;
+use Gemini\Testing\FunctionCalls\TestFunctionCall;
 use Gemini\Testing\Requests\TestRequest;
 use Gemini\Testing\Resources\ChatSessionTestResource;
 use Gemini\Testing\Resources\EmbeddingModelTestResource;
@@ -22,6 +23,11 @@ class ClientFake implements ClientContract
      * @var array<array-key, TestRequest>
      */
     private array $requests = [];
+
+    /**
+     * @var array<array-key, TestFunctionCall>
+     */
+    private array $functionCalls = [];
 
     /**
      * @param  array<array-key, ResponseContract>  $responses
@@ -123,6 +129,80 @@ class ClientFake implements ClientContract
         }
 
         return $response;
+    }
+
+    public function assertFunctionCalled(string $resource, ModelType|string|null $model = null, callable|int|null $callback = null): void
+    {
+        if (is_int($callback)) {
+            $this->assertFunctionCalledTimes(resource: $resource, model: $model, times: $callback);
+
+            return;
+        }
+
+        PHPUnit::assertTrue(
+            $this->functionCalled(resource: $resource, model: $model, callback: $callback) !== [],
+            "The expected [{$resource}] function was not called."
+        );
+    }
+
+    private function assertFunctionCalledTimes(string $resource, ModelType|string|null $model = null, int $times = 1): void
+    {
+        $count = count($this->functionCalled(resource: $resource, model: $model));
+
+        PHPUnit::assertSame(
+            $times, $count,
+            "The expected [{$resource}] resource was called {$count} times instead of {$times} times."
+        );
+    }
+
+    /**
+     * @return mixed[]
+     */
+    private function functionCalled(string $resource, ModelType|string|null $model = null, ?callable $callback = null): array
+    {
+        if (! $this->hasFunctionCalled(resource: $resource, model: $model)) {
+            return [];
+        }
+
+        $callback = $callback ?: fn (): bool => true;
+
+        return array_filter($this->resourcesOfFunctionCalls(type: $resource), fn (TestFunctionCall $functionCall) => $callback($functionCall->method(), $functionCall->args()));
+    }
+
+    private function hasFunctionCalled(string $resource, ModelType|string|null $model = null): bool
+    {
+        return $this->resourcesOfFunctionCalls(type: $resource, model: $model) !== [];
+    }
+
+    public function assertFunctionNotCalled(string $resource, ModelType|string|null $model = null, ?callable $callback = null): void
+    {
+        PHPUnit::assertCount(
+            0, $this->functionCalled(resource: $resource, model: $model, callback: $callback),
+            "The unexpected [{$resource}] function was called."
+        );
+    }
+
+    public function assertNoFunctionsCalled(): void
+    {
+        $resourceNames = implode(
+            separator: ', ',
+            array: array_map(fn (TestFunctionCall $functionCall): string => $functionCall->resource(), $this->functionCalls)
+        );
+
+        PHPUnit::assertEmpty($this->functionCalls, 'The following functions were called unexpectedly: '.$resourceNames);
+    }
+
+    /**
+     * @return array<array-key, TestFunctionCall>
+     */
+    private function resourcesOfFunctionCalls(string $type, ModelType|string|null $model = null): array
+    {
+        return array_filter($this->functionCalls, fn (TestFunctionCall $functionCall): bool => $functionCall->resource() === $type && ($model === null || $functionCall->model() === $model));
+    }
+
+    public function recordFunctionCall(TestFunctionCall $call): void
+    {
+        $this->functionCalls[] = $call;
     }
 
     public function models(): ModelTestResource

@@ -6,6 +6,8 @@ namespace Gemini\Contracts\Resources;
 
 use Gemini\Data\Blob;
 use Gemini\Data\Content;
+use Gemini\Data\GenerationConfig;
+use Gemini\Data\SafetySetting;
 use Gemini\Resources\ChatSession;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
@@ -35,4 +37,8 @@ interface GenerativeModelContract
      * @param  array<Content>  $history
      */
     public function startChat(array $history = []): ChatSession;
+
+    public function withSafetySetting(SafetySetting $safetySetting): self;
+
+    public function withGenerationConfig(GenerationConfig $generationConfig): self;
 }
