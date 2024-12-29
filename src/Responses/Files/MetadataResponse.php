@@ -31,7 +31,7 @@ class MetadataResponse implements ResponseContract
     ) {}
 
     /**
-     * @param array{ name: string, displayName: string, mimeType: string, sizeBytes: string, createTime: string, updateTime: string, expirationTime: string, sha256Hash: string, uri: string, state: string, videoMetadata: ?array{ videoDuration: string } } $attributes
+     * @param  array{ name: string, displayName: string, mimeType: string, sizeBytes: string, createTime: string, updateTime: string, expirationTime: string, sha256Hash: string, uri: string, state: string, videoMetadata: ?array{ videoDuration: string } }  $attributes
      */
     public static function from(array $attributes): self
     {
