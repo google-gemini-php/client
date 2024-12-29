@@ -6,10 +6,12 @@ use Gemini\Data\Content;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\PromptFeedback;
 use Gemini\Data\SafetySetting;
+use Gemini\Data\UploadedFile;
 use Gemini\Data\UsageMetadata;
 use Gemini\Enums\HarmBlockThreshold;
 use Gemini\Enums\HarmCategory;
 use Gemini\Enums\Method;
+use Gemini\Enums\MimeType;
 use Gemini\Enums\ModelType;
 use Gemini\Resources\ChatSession;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
@@ -156,6 +158,19 @@ test('stream generate content for custom model', function () {
         ->and($result->getIterator())
         ->toBeInstanceOf(Iterator::class)
         ->and($result->getIterator()->current())
+        ->toBeInstanceOf(GenerateContentResponse::class)
+        ->candidates->toBeArray()->each->toBeInstanceOf(Candidate::class)
+        ->promptFeedback->toBeInstanceOf(PromptFeedback::class)
+        ->usageMetadata->toBeInstanceOf(UsageMetadata::class);
+});
+
+test('generate content with uploaded file', function () {
+    $modelType = ModelType::GEMINI_PRO;
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:generateContent", response: GenerateContentResponse::fake());
+
+    $result = $client->geminiPro()->generateContent(['Analyze file', new UploadedFile('123-456', MimeType::TEXT_PLAIN)]);
+
+    expect($result)
         ->toBeInstanceOf(GenerateContentResponse::class)
         ->candidates->toBeArray()->each->toBeInstanceOf(Candidate::class)
         ->promptFeedback->toBeInstanceOf(PromptFeedback::class)

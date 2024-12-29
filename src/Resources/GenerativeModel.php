@@ -11,6 +11,7 @@ use Gemini\Data\Blob;
 use Gemini\Data\Content;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
+use Gemini\Data\UploadedFile;
 use Gemini\Enums\ModelType;
 use Gemini\Requests\GenerativeModel\CountTokensRequest;
 use Gemini\Requests\GenerativeModel\GenerateContentRequest;
@@ -82,9 +83,9 @@ final class GenerativeModel implements GenerativeModelContract
      *
      * @see https://ai.google.dev/api/rest/v1beta/models/generateContent
      */
-    public function generateContent(string|Blob|array|Content ...$parts): GenerateContentResponse
+    public function generateContent(string|Blob|array|Content|UploadedFile ...$parts): GenerateContentResponse
     {
-        /** @var ResponseDTO<array{ candidates: ?array{ array{ content: array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: string, safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: int, tokenCount: ?int, avgLogprobs: ?float } }, promptFeedback: ?array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int } }> $response */
+        /** @var ResponseDTO<array{ candidates: ?array{ array{ content: array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string }, fileData: array{ fileUri: string, mimeType: string } } }, role: string }, finishReason: string, safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: int, tokenCount: ?int, avgLogprobs: ?float } }, promptFeedback: ?array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int } }> $response */
         $response = $this->transporter->request(
             request: new GenerateContentRequest(
                 model: $this->model,
