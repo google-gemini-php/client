@@ -37,7 +37,7 @@ final class EmbeddingModel implements EmbeddingModalContract
      *
      * @param  string|Blob|array<string|Blob>|Content  $content
      */
-    public function embedContent(string|Blob|array|Content $content, ?TaskType $taskType = null, ?string $title = null): EmbedContentResponse
+    public function embedContent(string|Blob|array|Content $content, ?TaskType $taskType = null, ?string $title = null, ?int $outputDimensionality = null): EmbedContentResponse
     {
         /** @var ResponseDTO<array{ embedding: array{ values: array<float> } }> $response */
         $response = $this->transporter->request(
@@ -46,6 +46,7 @@ final class EmbeddingModel implements EmbeddingModalContract
                 part: $content,
                 taskType: $taskType,
                 title: $title,
+                outputDimensionality: $outputDimensionality
             )
         );
 

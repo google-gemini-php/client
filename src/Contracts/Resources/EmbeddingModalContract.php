@@ -16,7 +16,7 @@ interface EmbeddingModalContract
     /**
      * @param  string|Blob|array<string|Blob>|Content  $content
      */
-    public function embedContent(string|Blob|array|Content $content, ?TaskType $taskType = null, ?string $title = null): EmbedContentResponse;
+    public function embedContent(string|Blob|array|Content $content, ?TaskType $taskType = null, ?string $title = null, ?int $outputDimensionality = null): EmbedContentResponse;
 
     /**
      * Generates multiple embedding vectors from the input Content which consists of a batch of strings represented as EmbedContentRequest objects.

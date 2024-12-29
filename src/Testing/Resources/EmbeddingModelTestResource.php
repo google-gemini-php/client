@@ -23,7 +23,7 @@ final class EmbeddingModelTestResource implements EmbeddingModalContract
         return EmbeddingModel::class;
     }
 
-    public function embedContent(Blob|Content|array|string $content, ?TaskType $taskType = null, ?string $title = null): EmbedContentResponse
+    public function embedContent(Blob|Content|array|string $content, ?TaskType $taskType = null, ?string $title = null, ?int $outputDimensionality = null): EmbedContentResponse
     {
         return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
     }
