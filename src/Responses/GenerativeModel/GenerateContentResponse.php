@@ -90,9 +90,9 @@ final class GenerateContentResponse implements ResponseContract
     /**
      * A quick accessor equivalent to `json_decode($candidates[0].parts[0].text)`
      */
-    public function json(): mixed
+    public function json(bool $associative = false, int $flags = 0): mixed
     {
-        return json_decode($this->text());
+        return json_decode($this->text(), associative: $associative, flags: $flags);
     }
 
     /**
