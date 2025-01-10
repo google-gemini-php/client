@@ -9,6 +9,8 @@ use Gemini\Data\Blob;
 use Gemini\Data\Content;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
+use Gemini\Data\Tool;
+use Gemini\Data\ToolConfig;
 use Gemini\Enums\Method;
 use Gemini\Foundation\Request;
 use Gemini\Requests\Concerns\HasJsonBody;
@@ -26,12 +28,16 @@ class StreamGenerateContentRequest extends Request
     /**
      * @param  array<string|Blob|array<string|Blob>|Content>  $parts
      * @param  array<SafetySetting>  $safetySettings
+     * @param  array<Tool>  $tools
      */
     public function __construct(
         protected readonly string $model,
         protected readonly array $parts,
         protected readonly array $safetySettings = [],
-        protected readonly ?GenerationConfig $generationConfig = null
+        protected readonly ?GenerationConfig $generationConfig = null,
+        protected readonly ?Content $systemInstruction = null,
+        protected readonly array $tools = [],
+        protected readonly ?ToolConfig $toolConfig = null,
     ) {}
 
     public function resolveEndpoint(): string
@@ -56,6 +62,12 @@ class StreamGenerateContentRequest extends Request
                 $this->safetySettings ?? []
             ),
             'generationConfig' => $this->generationConfig?->toArray(),
+            'systemInstruction' => $this->systemInstruction?->toArray(),
+            'tools' => array_map(
+                static fn (Tool $tool): array => $tool->toArray(),
+                $this->tools ?? []
+            ),
+            'toolConfig' => $this->toolConfig?->toArray(),
         ];
     }
 }
