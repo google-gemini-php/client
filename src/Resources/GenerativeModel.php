@@ -11,6 +11,8 @@ use Gemini\Data\Blob;
 use Gemini\Data\Content;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
+use Gemini\Data\Tool;
+use Gemini\Data\ToolConfig;
 use Gemini\Data\UploadedFile;
 use Gemini\Enums\ModelType;
 use Gemini\Requests\GenerativeModel\CountTokensRequest;
@@ -29,6 +31,7 @@ final class GenerativeModel implements GenerativeModelContract
 
     /**
      * @param  array<SafetySetting>  $safetySettings
+     * @param  array<array-key, Tool>  $tools
      */
     public function __construct(
         private readonly TransporterContract $transporter,
@@ -36,6 +39,8 @@ final class GenerativeModel implements GenerativeModelContract
         public array $safetySettings = [],
         public ?GenerationConfig $generationConfig = null,
         public ?Content $systemInstruction = null,
+        public array $tools = [],
+        public ?ToolConfig $toolConfig = null,
     ) {
         $this->model = $this->parseModel(model: $model);
     }
@@ -57,6 +62,20 @@ final class GenerativeModel implements GenerativeModelContract
     public function withSystemInstruction(Content $systemInstruction): self
     {
         $this->systemInstruction = $systemInstruction;
+
+        return $this;
+    }
+
+    public function withTool(Tool $tool): self
+    {
+        $this->tools[] = $tool;
+
+        return $this;
+    }
+
+    public function withToolConfig(ToolConfig $toolConfig): self
+    {
+        $this->toolConfig = $toolConfig;
 
         return $this;
     }
@@ -85,7 +104,7 @@ final class GenerativeModel implements GenerativeModelContract
      */
     public function generateContent(string|Blob|array|Content|UploadedFile ...$parts): GenerateContentResponse
     {
-        /** @var ResponseDTO<array{ candidates: ?array{ array{ content: array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string }, fileData: array{ fileUri: string, mimeType: string } } }, role: string }, finishReason: string, safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: int, tokenCount: ?int, avgLogprobs: ?float } }, promptFeedback: ?array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int } }> $response */
+        /** @var ResponseDTO<array{ candidates: ?array{ array{ content: array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }, finishReason: string, safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: int, tokenCount: ?int, avgLogprobs: ?float } }, promptFeedback: ?array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int } }> $response */
         $response = $this->transporter->request(
             request: new GenerateContentRequest(
                 model: $this->model,
@@ -93,6 +112,8 @@ final class GenerativeModel implements GenerativeModelContract
                 safetySettings: $this->safetySettings,
                 generationConfig: $this->generationConfig,
                 systemInstruction: $this->systemInstruction,
+                tools: $this->tools,
+                toolConfig: $this->toolConfig,
             )
         );
 
