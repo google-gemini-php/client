@@ -48,7 +48,9 @@ final class GenerativeModelTestResource implements GenerativeModelContract
 
     public function withSystemInstruction(Content $systemInstruction): self
     {
-        return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+        $this->recordFunctionCall(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+
+        return $this;
     }
 
     public function withSafetySetting(SafetySetting $safetySetting): self
