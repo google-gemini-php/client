@@ -12,6 +12,7 @@ use Gemini\Testing\FunctionCalls\TestFunctionCall;
 use Gemini\Testing\Requests\TestRequest;
 use Gemini\Testing\Resources\ChatSessionTestResource;
 use Gemini\Testing\Resources\EmbeddingModelTestResource;
+use Gemini\Testing\Resources\FilesTestResource;
 use Gemini\Testing\Resources\GenerativeModelTestResource;
 use Gemini\Testing\Resources\ModelTestResource;
 use PHPUnit\Framework\Assert as PHPUnit;
@@ -244,5 +245,10 @@ class ClientFake implements ClientContract
     public function chat(ModelType|string $model = ModelType::GEMINI_PRO): ChatSessionTestResource
     {
         return new ChatSessionTestResource(fake: $this, model: $model);
+    }
+
+    public function files(): FilesTestResource
+    {
+        return new FilesTestResource(fake: $this);
     }
 }
