@@ -75,10 +75,10 @@ final class GenerativeModelTestResource implements GenerativeModelContract
         return $this;
     }
 
-	public function withToolConfig(ToolConfig $toolConfig): self
-	{
-		$this->recordFunctionCall(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+    public function withToolConfig(ToolConfig $toolConfig): self
+    {
+        $this->recordFunctionCall(method: __FUNCTION__, args: func_get_args(), model: $this->model);
 
-		return $this;
-	}
+        return $this;
+    }
 }
