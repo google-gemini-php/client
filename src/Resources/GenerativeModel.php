@@ -112,6 +112,7 @@ final class GenerativeModel implements GenerativeModelContract
                 parts: $parts,
                 safetySettings: $this->safetySettings,
                 generationConfig: $this->generationConfig,
+                systemInstruction: $this->systemInstruction,
             )
         );
 
