@@ -28,6 +28,11 @@ final class Factory
     private ?string $apiKey = null;
 
     /**
+     * The oAuth access key for the requests.
+     */
+    private ?string $accessToken = null;
+
+    /**
      * The base URI for the requests.
      */
     private string $baseUrl = 'https://generativelanguage.googleapis.com/v1/';
@@ -56,6 +61,16 @@ final class Factory
     public function withApiKey(string $apiKey): self
     {
         $this->apiKey = trim($apiKey);
+
+        return $this;
+    }
+
+    /**
+     * Sets the oAuth access key for the requests.
+     */
+    public function withAccessToken(string $accessToken): self
+    {
+        $this->accessToken = trim($accessToken);
 
         return $this;
     }
@@ -119,6 +134,10 @@ final class Factory
 
         if ($this->apiKey !== null) {
             $this->headers['x-goog-api-key'] = trim($this->apiKey);
+        }
+
+        if($this->accessToken !== null) {
+            $this->headers['Authorization'] = 'Bearer ' . trim($this->accessToken);
         }
 
         $streamHandler = $this->makeStreamHandler($client);
