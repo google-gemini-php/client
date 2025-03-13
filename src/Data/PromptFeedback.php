@@ -30,7 +30,7 @@ final class PromptFeedback implements Arrayable
     {
         $safetyRatings = array_map(
             static fn (array $rating): SafetyRating => SafetyRating::from($rating),
-            $attributes['safetyRatings'],
+            $attributes['safetyRatings'] ?? [],
         );
 
         return new self(
