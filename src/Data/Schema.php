@@ -26,6 +26,7 @@ class Schema implements Arrayable
      * @param  string|null  $minItems  Minimum number of the elements for Type.ARRAY.
      * @param  array<string, Schema>|null  $properties  Properties of Type.OBJECT.
      * @param  array<string>|null  $required  Required properties of Type.OBJECT.
+     * @param  array<string>|null  $propertyOrdering  PropertyOrdering of Type.OBJECT.
      * @param  Schema|null  $items  Schema of the elements of Type.ARRAY.
      */
     public function __construct(
@@ -38,6 +39,7 @@ class Schema implements Arrayable
         public readonly ?string $minItems = null,
         public readonly ?array $properties = null,
         public readonly ?array $required = null,
+        public readonly ?array $propertyOrdering = null,
         public readonly ?Schema $items = null
     ) {}
 
@@ -54,6 +56,7 @@ class Schema implements Arrayable
                 'minItems' => $this->minItems,
                 'properties' => array_map(fn ($property) => $property->toArray(), $this->properties ?? []),
                 'required' => $this->required,
+                'propertyOrdering' => $this->propertyOrdering,
                 'items' => $this->items?->toArray(),
             ]
         );
