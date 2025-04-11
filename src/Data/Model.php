@@ -51,7 +51,7 @@ final class Model implements Arrayable
             name: $attributes['name'],
             version: $attributes['version'],
             displayName: $attributes['displayName'],
-            description: $attributes['description'],
+            description: $attributes['description'] ?? 'No description provided.',
             inputTokenLimit: $attributes['inputTokenLimit'],
             outputTokenLimit: $attributes['outputTokenLimit'],
             supportedGenerationMethods: $attributes['supportedGenerationMethods'],
