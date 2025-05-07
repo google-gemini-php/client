@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Gemini\Data;
 
@@ -14,26 +14,25 @@ use Gemini\Contracts\Arrayable;
 final class GroundingChunk implements Arrayable
 {
     /**
-     * @param GroundingChunkRetrievedContext|null $retrievedContext Grounding chunk from context retrieved by the retrieval tools
-     * @param GroundingChunkWeb|null $web Grounding chunk from the web
+     * @param  GroundingChunkRetrievedContext|null  $retrievedContext  Grounding chunk from context retrieved by the retrieval tools
+     * @param  GroundingChunkWeb|null  $web  Grounding chunk from the web
      */
     public function __construct(
         public readonly ?GroundingChunkRetrievedContext $retrievedContext = null,
         public readonly ?GroundingChunkWeb $web = null
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array{ retrievedContext: array, web: array } $attributes
+     * @param  array{ retrievedContext: null|array{ text: ?string, title: ?string, uri: ?string }, web: null|array{ domain: ?string, title: ?string, uri: ?string } }  $attributes
      */
     public static function from(array $attributes): self
     {
-        $retrievedContext = match(true) {
+        $retrievedContext = match (true) {
             isset($attributes['retrievedContext']) => GroundingChunkRetrievedContext::from($attributes['retrievedContext']),
             default => null,
         };
 
-        $web = match(true) {
+        $web = match (true) {
             isset($attributes['web']) => GroundingChunkWeb::from($attributes['web']),
             default => null,
         };

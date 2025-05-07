@@ -14,8 +14,8 @@ use Gemini\Contracts\Arrayable;
 final class SearchEntryPoint implements Arrayable
 {
     /**
-     * @param string $renderedContent Web content snippet that can be embedded in a web page or an app webview
-     * @param string $sdkBlob Base64 encoded JSON representing array of tuple
+     * @param  string  $renderedContent  Web content snippet that can be embedded in a web page or an app webview
+     * @param  string  $sdkBlob  Base64 encoded JSON representing array of tuple
      */
     public function __construct(
         public readonly ?string $renderedContent = null,
@@ -23,7 +23,7 @@ final class SearchEntryPoint implements Arrayable
     ) {}
 
     /**
-     * @param  array{ renderedContent: string }  $attributes
+     * @param  array{ renderedContent: ?string, sdkBlob: ?string }  $attributes
      */
     public static function from(array $attributes): self
     {

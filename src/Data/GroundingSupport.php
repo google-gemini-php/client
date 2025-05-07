@@ -14,9 +14,9 @@ use Gemini\Contracts\Arrayable;
 final class GroundingSupport implements Arrayable
 {
     /**
-     * @param array<integer> $confidenceScores  Confidence score of the support references. Ranges from 0 to 1. 1 is the most confident. This list must have the same size as the grounding_chunk_indices.
-     * @param array<integer> $groundingChunkIndices  A list of indices (into 'grounding_chunk') specifying the citations associated with the claim. For instance [1,3,4] means that grounding_chunk[1], grounding_chunk[3], grounding_chunk[4] are the retrieved content attributed to the claim.
-     * @param null|Segment $segment Segment of the content this support belongs to
+     * @param  array<int>  $confidenceScores  Confidence score of the support references. Ranges from 0 to 1. 1 is the most confident. This list must have the same size as the grounding_chunk_indices.
+     * @param  array<int>  $groundingChunkIndices  A list of indices (into 'grounding_chunk') specifying the citations associated with the claim. For instance [1,3,4] means that grounding_chunk[1], grounding_chunk[3], grounding_chunk[4] are the retrieved content attributed to the claim.
+     * @param  null|Segment  $segment  Segment of the content this support belongs to
      */
     public function __construct(
         public readonly ?array $confidenceScores = null,
@@ -25,7 +25,7 @@ final class GroundingSupport implements Arrayable
     ) {}
 
     /**
-     * @param  array{ confidenceScores: array<integer>, groundingChunkIndices: array<integer>, segment: array }  $attributes
+     * @param  array{ confidenceScores: null|array<int>, groundingChunkIndices: null|array<int>, segment: null|array{ endIndex: ?int, partIndex: ?int, startIndex: ?int, text: ?string } }  $attributes
      */
     public static function from(array $attributes): self
     {

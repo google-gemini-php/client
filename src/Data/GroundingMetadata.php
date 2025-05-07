@@ -14,53 +14,46 @@ use Gemini\Contracts\Arrayable;
 final class GroundingMetadata implements Arrayable
 {
     /**
-     * @param array<GroundingChunk> $groundingChunks List of supporting references retrieved from specified grounding source
-     * @param array<GroundingSupport> $groundingSupports List of grounding support
-     * @param RetrievalMetadata|null $retrievalMetadata Retrieval metadata
-     * @param array<string> $retrievalQueries Queries executed by the retrieval tools
-     * @param SearchEntryPoint|null $searchEntryPoint Provided code for implementing Google Search Suggestions
-     * @param array<string> $webSearchQueries Web search queries for the following-up web search
+     * @param  array<GroundingChunk>  $groundingChunks  List of supporting references retrieved from specified grounding source
+     * @param  array<GroundingSupport>  $groundingSupports  List of grounding support
+     * @param  RetrievalMetadata|null  $retrievalMetadata  Retrieval metadata
+     * @param  array<string>  $retrievalQueries  Queries executed by the retrieval tools
+     * @param  SearchEntryPoint|null  $searchEntryPoint  Provided code for implementing Google Search Suggestions
+     * @param  array<string>  $webSearchQueries  Web search queries for the following-up web search
      */
     public function __construct(
-        public readonly ?array $groundingChunks  = null,
-        public readonly ?array $groundingSupports  = null,
-        public readonly ?RetrievalMetadata $retrievalMetadata  = null,
-        public readonly ?array $retrievalQueries  = null,
+        public readonly ?array $groundingChunks = null,
+        public readonly ?array $groundingSupports = null,
+        public readonly ?RetrievalMetadata $retrievalMetadata = null,
+        public readonly ?array $retrievalQueries = null,
         public readonly ?SearchEntryPoint $searchEntryPoint = null,
-        public readonly ?array $webSearchQueries  = null,
+        public readonly ?array $webSearchQueries = null,
     ) {}
 
     /**
-     * @param  array{
-     *      groundingChunks: array,
-     *      groundingSupports: array,
-     *      retrievalMetadata: array,
-     *      retrievalQueries: array<string>,
-     *      searchEntryPoint: array,
-     *      webSearchQueries: array<string>,
-     * }  $attributes
+     * @param  array{groundingChunks: null|array<array{ retrievedContext: null|array{ text: ?string, title: ?string, uri: ?string }, web: null|array{ domain: ?string, title: ?string, uri: ?string } }>, groundingSupports: null|array<array{ confidenceScores: null|array<int>, groundingChunkIndices: null|array<int>, segment: null|array{ endIndex: ?int, partIndex: ?int, startIndex: ?int, text: ?string } }>, retrievalMetadata: null|array{ googleSearchDynamicRetrievalScore: ?string }, retrievalQueries: null|array<string>, searchEntryPoint: null|array{ renderedContent: ?string, sdkBlob: ?string }, webSearchQueries: null|array<string>}  $attributes
      */
     public static function from(array $attributes): self
     {
-        $groundingChunks = match(true) {
+        $groundingChunks = match (true) {
             isset($attributes['groundingChunks']) => array_map(
                 static fn (array $groundingChunk): GroundingChunk => GroundingChunk::from($groundingChunk),
                 $attributes['groundingChunks'],
             ),
             default => null,
         };
-        $groundingSupports = match(true) {
+        $groundingSupports = match (true) {
             isset($attributes['groundingSupports']) => array_map(
                 static fn (array $groundingSupport): GroundingSupport => GroundingSupport::from($groundingSupport),
                 $attributes['groundingSupports'],
             ),
             default => null,
         };
-        $retrievalMetadata = match(true) {
+        $retrievalMetadata = match (true) {
             isset($attributes['retrievalMetadata']) => RetrievalMetadata::from($attributes['retrievalMetadata']),
             default => null,
         };
-        $searchEntryPoint = match(true) {
+        $searchEntryPoint = match (true) {
             isset($attributes['searchEntryPoint']) => SearchEntryPoint::from($attributes['searchEntryPoint']),
             default => null,
         };

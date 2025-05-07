@@ -7,7 +7,6 @@ namespace Gemini\Testing\Resources;
 use Gemini\Contracts\Resources\GenerativeModelContract;
 use Gemini\Data\Blob;
 use Gemini\Data\Content;
-use Gemini\Data\FunctionCallingTool;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
 use Gemini\Data\Tool;

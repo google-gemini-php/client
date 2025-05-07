@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Gemini\Data;
 
@@ -14,19 +14,18 @@ use Gemini\Contracts\Arrayable;
 final class GroundingChunkRetrievedContext implements Arrayable
 {
     /**
-     * @param string|null $text Text of the attribution
-     * @param string|null $title Title of the attribution
-     * @param string|null $uri URI reference of the attribution
+     * @param  string|null  $text  Text of the attribution
+     * @param  string|null  $title  Title of the attribution
+     * @param  string|null  $uri  URI reference of the attribution
      */
     public function __construct(
         public readonly ?string $text = null,
         public readonly ?string $title = null,
         public readonly ?string $uri = null,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array{ text: string, title: string, uri: string } $attributes
+     * @param  array{ text: ?string, title: ?string, uri: ?string }  $attributes
      */
     public static function from(array $attributes): self
     {

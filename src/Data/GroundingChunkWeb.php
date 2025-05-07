@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Gemini\Data;
 
@@ -14,19 +14,18 @@ use Gemini\Contracts\Arrayable;
 final class GroundingChunkWeb implements Arrayable
 {
     /**
-     * @param string|null $domain Domain of the (original) URI
-     * @param string|null $title Title of the chunk
-     * @param string|null $uri URI reference of the chunk
+     * @param  string|null  $domain  Domain of the (original) URI
+     * @param  string|null  $title  Title of the chunk
+     * @param  string|null  $uri  URI reference of the chunk
      */
     public function __construct(
         public readonly ?string $domain = null,
         public readonly ?string $title = null,
         public readonly ?string $uri = null,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array{ domain: string, title: string, uri: string } $attributes
+     * @param  array{ domain: ?string, title: ?string, uri: ?string }  $attributes
      */
     public static function from(array $attributes): self
     {
