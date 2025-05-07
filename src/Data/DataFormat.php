@@ -15,6 +15,6 @@ enum DataFormat: string
     case INT64 = 'int64';
 
     // for String
-    case ENUM     = 'enum';
+    case ENUM = 'enum';
     case DATETIME = 'date-time';
 }
