@@ -50,7 +50,7 @@ final class Content implements Arrayable
     }
 
     /**
-     * @param  array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string }, fileData: array{ fileUri: string, mimeType: string } } }, role: string }  $attributes
+     * @param  array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }  $attributes
      */
     public static function from(array $attributes): self
     {
