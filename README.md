@@ -26,6 +26,7 @@
       - [Multi-turn Conversations (Chat)](#multi-turn-conversations-chat)
       - [Stream Generate Content](#stream-generate-content)
       - [Structured Output](#structured-output)
+      - [Function calling](#function-calling)
       - [Count tokens](#count-tokens)
       - [Configuration](#configuration)
     - [Embedding Resource](#embedding-resource)
@@ -136,7 +137,7 @@ $result->text(); // Hello! How can I assist you today?
 ```
 
 #### Text-and-image Input
-If the input contains both text and image, use the `gemini-pro-vision` model. 
+If the input contains both text and image, use the `gemini-pro-vision` model.
 
 ```php
 
@@ -151,12 +152,12 @@ $result = $client
    )
   )
  ]);
- 
+
 $result->text(); //  The picture shows a table with a white tablecloth. On the table are two cups of coffee, a bowl of blueberries, a silver spoon, and some flowers. There are also some blueberry scones on the table.
 ```
 
 #### File Upload
-To reference larger files and videos with various prompts, upload them to Gemini storage. 
+To reference larger files and videos with various prompts, upload them to Gemini storage.
 
 ```php
 $files = $client->files();
@@ -195,7 +196,7 @@ $result = $client
    mimeType: MimeType::VIDEO_MP4
   )
  ]);
- 
+
 $result->text(); //  The picture shows a table with a white tablecloth. On the table are two cups of coffee, a bowl of blueberries, a silver spoon, and some flowers. There are also some blueberry scones on the table.
 ```
 #### Multi-turn Conversations (Chat)
@@ -280,6 +281,78 @@ $result->json();
 //    },
 //  ]
 
+```
+
+#### Function calling
+Gemini provides the ability to define and utilize custom functions that the model can call during conversations. This enables the model to perform specific actions or calculations through your defined functions.
+
+```php
+<?php
+
+use Gemini\Data\Content;
+use Gemini\Data\FunctionCall;
+use Gemini\Data\FunctionDeclaration;
+use Gemini\Data\FunctionResponse;
+use Gemini\Data\Part;
+use Gemini\Data\Schema;
+use Gemini\Data\Tool;
+use Gemini\Enums\DataType;
+use Gemini\Enums\Role;
+
+function handleResponse(FunctionCall $functionCall): Content
+{
+    if ($functionCall->name === 'addition') {
+        return new Content(
+            parts: [
+                new Part(
+                    functionResponse: new FunctionResponse(
+                        name: 'addition',
+                        response: ['answer' => $functionCall->args['number1'] + $functionCall->args['number2']],
+                    )
+                )
+            ],
+            role: Role::USER
+        );
+    }
+
+    //Handle other function calls
+}
+
+$chat = $client
+    ->geminiFlash()
+    ->withTool(new Tool(
+        functionDeclarations: [
+            new FunctionDeclaration(
+                name: 'addition',
+                description: 'Performs addition',
+                parameters: new Schema(
+                    type: DataType::OBJECT,
+                    properties: [
+                        'number1' => new Schema(
+                            type: DataType::NUMBER,
+                            description: 'First number'
+                        ),
+                        'number2' => new Schema(
+                            type: DataType::NUMBER,
+                            description: 'Second number'
+                        ),
+                    ],
+                    required: ['number1', 'number2']
+                )
+            )
+        ]
+    ))
+    ->startChat();
+
+$response = $chat->sendMessage('What is 4 + 3?');
+
+if ($response->parts()[0]->functionCall !== null) {
+    $functionResponse = handleResponse($response->parts()[0]->functionCall);
+
+    $response = $chat->sendMessage($functionResponse);
+}
+
+echo $response->text(); // 4 + 3 = 7
 ```
 
 #### Count tokens
