@@ -1,18 +1,23 @@
 <?php
 
+use Gemini\Client;
 use Gemini\Data\Candidate;
+use Gemini\Data\Content;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\PromptFeedback;
 use Gemini\Data\SafetySetting;
+use Gemini\Data\UploadedFile;
 use Gemini\Data\UsageMetadata;
 use Gemini\Enums\HarmBlockThreshold;
 use Gemini\Enums\HarmCategory;
 use Gemini\Enums\Method;
+use Gemini\Enums\MimeType;
 use Gemini\Enums\ModelType;
 use Gemini\Resources\ChatSession;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
 use Gemini\Responses\StreamResponse;
+use Gemini\Transporters\DTOs\ResponseDTO;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Stream;
 
@@ -159,6 +164,19 @@ test('stream generate content for custom model', function () {
         ->usageMetadata->toBeInstanceOf(UsageMetadata::class);
 });
 
+test('generate content with uploaded file', function () {
+    $modelType = ModelType::GEMINI_PRO;
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:generateContent", response: GenerateContentResponse::fake());
+
+    $result = $client->geminiPro()->generateContent(['Analyze file', new UploadedFile('123-456', MimeType::TEXT_PLAIN)]);
+
+    expect($result)
+        ->toBeInstanceOf(GenerateContentResponse::class)
+        ->candidates->toBeArray()->each->toBeInstanceOf(Candidate::class)
+        ->promptFeedback->toBeInstanceOf(PromptFeedback::class)
+        ->usageMetadata->toBeInstanceOf(UsageMetadata::class);
+});
+
 test('start chat', function () {
     $modelType = ModelType::GEMINI_PRO;
     $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:generateContent", response: GenerateContentResponse::fake(), times: 0);
@@ -177,4 +195,68 @@ test('start chat for custom model', function () {
 
     expect($result)
         ->toBeInstanceOf(ChatSession::class);
+});
+
+test('generative model with system instruction', function () {
+    $modelType = ModelType::GEMINI_PRO;
+    $systemInstruction = 'You are a helpful assistant.';
+    $userMessage = 'Hello';
+
+    $mockTransporter = Mockery::mock(\Gemini\Contracts\TransporterContract::class);
+    $mockTransporter->shouldReceive('request')
+        ->once()
+        ->andReturnUsing(function ($request) use (&$capturedRequest) {
+            $capturedRequest = $request;
+
+            return new ResponseDTO(GenerateContentResponse::fake()->toArray());
+        });
+
+    $client = new Client($mockTransporter);
+    $model = $client->generativeModel(model: $modelType)
+        ->withSystemInstruction(Content::parse($systemInstruction));
+
+    $result = $model->generateContent($userMessage);
+
+    expect($result)->toBeInstanceOf(GenerateContentResponse::class);
+
+    expect($capturedRequest)
+        ->toBeInstanceOf(\Gemini\Requests\GenerativeModel\GenerateContentRequest::class)
+        ->and($capturedRequest->resolveEndpoint())->toBe("{$modelType->value}:generateContent");
+
+    $body = $capturedRequest->body();
+
+    expect($body)
+        ->toHaveKey('contents')
+        ->toHaveKey('systemInstruction')
+        ->and($body['contents'][0]['parts'][0]['text'])->toBe($userMessage)
+        ->and($body['systemInstruction']['parts'][0]['text'])->toBe($systemInstruction);
+
+    expect($model)
+        ->toHaveProperty('systemInstruction')
+        ->and($model->systemInstruction)->toBeInstanceOf(Content::class)
+        ->and($model->systemInstruction->parts[0]->text)->toBe($systemInstruction);
+});
+
+test('system instruction is included in the request', function () {
+    $modelType = ModelType::GEMINI_PRO;
+    $systemInstruction = 'You are a helpful assistant.';
+
+    $mockTransporter = Mockery::mock(\Gemini\Contracts\TransporterContract::class);
+    $mockTransporter->shouldReceive('request')
+        ->once()
+        ->withArgs(function (\Gemini\Requests\GenerativeModel\GenerateContentRequest $request) use ($systemInstruction) {
+            $body = $request->body();
+
+            return $body['contents'][0]['parts'][0]['text'] === 'Hello' &&
+                $body['systemInstruction']['parts'][0]['text'] === $systemInstruction;
+        })
+        ->andReturn(new ResponseDTO(GenerateContentResponse::fake()->toArray()));
+
+    $client = new \Gemini\Client($mockTransporter);
+
+    $parsedSystemInstruction = Content::parse($systemInstruction);
+    $generativeModel = $client->generativeModel(model: $modelType)
+        ->withSystemInstruction($parsedSystemInstruction);
+
+    $generativeModel->generateContent('Hello');
 });

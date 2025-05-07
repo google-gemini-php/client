@@ -21,8 +21,11 @@
     - [Chat Resource](#chat-resource)
       - [Text-only Input](#text-only-input)
       - [Text-and-image Input](#text-and-image-input)
+      - [File Upload](#file-upload)
+      - [Text-and-video Input](#text-and-video-input)
       - [Multi-turn Conversations (Chat)](#multi-turn-conversations-chat)
       - [Stream Generate Content](#stream-generate-content)
+      - [Structured Output](#structured-output)
       - [Count tokens](#count-tokens)
       - [Configuration](#configuration)
     - [Embedding Resource](#embedding-resource)
@@ -107,7 +110,7 @@ $yourApiKey = getenv('YOUR_API_KEY');
 
 $client = Gemini::factory()
  ->withApiKey($yourApiKey)
- ->withBaseUrl('https://generativelanguage.example.com/v1') // default: https://generativelanguage.googleapis.com/v1/
+ ->withBaseUrl('https://generativelanguage.example.com/v1beta') // default: https://generativelanguage.googleapis.com/v1beta/
  ->withHttpHeader('X-My-Header', 'foo')
  ->withQueryParam('my-param', 'bar')
  ->withHttpClient(new \GuzzleHttp\Client([]))  // default: HTTP client found using PSR-18 HTTP Client Discovery
@@ -151,6 +154,50 @@ $result = $client
  
 $result->text(); //  The picture shows a table with a white tablecloth. On the table are two cups of coffee, a bowl of blueberries, a silver spoon, and some flowers. There are also some blueberry scones on the table.
 ```
+
+#### File Upload
+To reference larger files and videos with various prompts, upload them to Gemini storage. 
+
+```php
+$files = $client->files();
+echo "Uploading\n";
+$meta = $files->upload(
+    filename: 'video.mp4',
+    mimeType: MimeType::VIDEO_MP4,
+    displayName: 'Video'
+);
+echo "Processing";
+do {
+    echo ".";
+    sleep(2);
+    $meta = $files->metadataGet($meta->uri);
+} while (!$meta->state->complete());
+echo "\n";
+
+if ($meta->state == FileState::Failed) {
+    die("Upload failed:\n" . json_encode($meta->toArray(), JSON_PRETTY_PRINT));
+}
+
+echo "Processing complete\n" . json_encode($meta->toArray(), JSON_PRETTY_PRINT);
+echo "\n{$meta->uri}";
+```
+
+#### Text-and-video Input
+If the input contains both text and video, use the `gemini-pro-vision` model and upload the file beforehand.
+
+```php
+$result = $client
+ ->geminiFlash()
+ ->generateContent([
+  'What is this video?',
+  new UploadedFile(
+   fileUri: '123-456', // accepts just the name or the full URI
+   mimeType: MimeType::VIDEO_MP4
+  )
+ ]);
+ 
+$result->text(); //  The picture shows a table with a white tablecloth. On the table are two cups of coffee, a bowl of blueberries, a silver spoon, and some flowers. There are also some blueberry scones on the table.
+```
 #### Multi-turn Conversations (Chat)
 Using Gemini, you can build freeform conversations across multiple turns.
 
@@ -182,6 +229,57 @@ $stream = $client
 foreach ($stream as $response) {
  echo $response->text();
 }
+```
+
+#### Structured Output
+Gemini generates unstructured text by default, but some applications require structured text. For these use cases, you can constrain Gemini to respond with JSON, a structured data format suitable for automated processing. You can also constrain the model to respond with one of the options specified in an enum.
+
+```php
+$result = $client
+ ->geminiFlash()
+ ->withGenerationConfig(
+  generationConfig: new GenerationConfig(
+   responseMimeType: ResponseMimeType::APPLICATION_JSON,
+   responseSchema: new Schema(
+    type: DataType::ARRAY,
+    items: new Schema(
+     type: DataType::OBJECT,
+     properties: [
+      "recipe_name" => new Schema(type: DataType::STRING),
+      "cooking_time_in_minutes" => new Schema(type: DataType::INTEGER)
+     ]
+    )
+   )
+  )
+ )
+ ->generateContent("List 5 popular cookie recipes with cooking time");
+
+
+$result->json();
+
+//[
+//    {
+//      +"cooking_time_in_minutes": 10,
+//      +"recipe_name": "Chocolate Chip Cookies",
+//    },
+//    {
+//      +"cooking_time_in_minutes": 12,
+//      +"recipe_name": "Oatmeal Raisin Cookies",
+//    },
+//    {
+//      +"cooking_time_in_minutes": 10,
+//      +"recipe_name": "Peanut Butter Cookies",
+//    },
+//    {
+//      +"cooking_time_in_minutes": 10,
+//      +"recipe_name": "Snickerdoodles",
+//    },
+//    {
+//      +"cooking_time_in_minutes": 12,
+//      +"recipe_name": "Sugar Cookies",
+//    },
+//  ]
+
 ```
 
 #### Count tokens

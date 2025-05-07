@@ -24,7 +24,8 @@ class EmbedContentRequest extends Request
         protected readonly string $model,
         protected readonly string|Blob|array|Content $part,
         protected readonly ?TaskType $taskType = null,
-        protected readonly ?string $title = null
+        protected readonly ?string $title = null,
+        protected readonly ?int $outputDimensionality = null
     ) {}
 
     public function resolveEndpoint(): string
@@ -43,6 +44,7 @@ class EmbedContentRequest extends Request
             'content' => Content::parse(part: $this->part)->toArray(),
             'taskType' => $this->taskType?->value,
             'title' => $this->title,
+            'outputDimensionality' => $this->outputDimensionality,
         ];
     }
 }

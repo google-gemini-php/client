@@ -7,10 +7,10 @@ namespace Gemini;
 use Gemini\Contracts\ClientContract;
 use Gemini\Contracts\Resources\GenerativeModelContract;
 use Gemini\Contracts\TransporterContract;
-use Gemini\Data\Model;
 use Gemini\Enums\ModelType;
 use Gemini\Resources\ChatSession;
 use Gemini\Resources\EmbeddingModel;
+use Gemini\Resources\Files;
 use Gemini\Resources\GenerativeModel;
 use Gemini\Resources\Models;
 
@@ -65,5 +65,15 @@ final class Client implements ClientContract
     public function chat(ModelType|string $model = ModelType::GEMINI_PRO): ChatSession
     {
         return new ChatSession(model: $this->generativeModel(model: $model));
+    }
+
+    /**
+     * Resource to manage media file uploads to be reused across multiple requests and prompts.
+     *
+     * @link https://ai.google.dev/api/files
+     */
+    public function files(): Files
+    {
+        return new Files($this->transporter);
     }
 }

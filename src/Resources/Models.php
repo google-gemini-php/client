@@ -26,7 +26,7 @@ final class Models implements ModelContract
     /**
      * Lists available models.
      *
-     * @see https://ai.google.dev/api/rest/v1/models/list
+     * @see https://ai.google.dev/api/rest/v1beta/models/list
      *
      * @throws \JsonException
      */
@@ -41,7 +41,7 @@ final class Models implements ModelContract
     /**
      * Retrieves a model instance, providing basic information about the model such as the owner and permissioning.
      *
-     * @see https://ai.google.dev/api/rest/v1/models/get
+     * @see https://ai.google.dev/api/rest/v1beta/models/get
      */
     public function retrieve(ModelType|string $model): RetrieveModelResponse
     {

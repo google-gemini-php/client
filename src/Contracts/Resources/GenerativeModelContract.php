@@ -31,6 +31,8 @@ interface GenerativeModelContract
      */
     public function streamGenerateContent(string|Blob|array|Content ...$parts): StreamResponse;
 
+    public function withSystemInstruction(Content $systemInstruction): self;
+
     /**
      * @param  array<Content>  $history
      */

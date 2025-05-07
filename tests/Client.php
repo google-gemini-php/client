@@ -1,6 +1,7 @@
 <?php
 
 use Gemini\Enums\ModelType;
+use Gemini\Resources\Files;
 use Gemini\Resources\GenerativeModel;
 use Gemini\Resources\Models;
 
@@ -14,4 +15,10 @@ it('has generative model', function () {
     $gemini = Gemini::client(apiKey: 'foo');
 
     expect($gemini->generativeModel(model: ModelType::GEMINI_PRO))->toBeInstanceOf(GenerativeModel::class);
+});
+
+it('has files', function () {
+    $gemini = Gemini::client(apiKey: 'foo');
+
+    expect($gemini->files())->toBeInstanceOf(Files::class);
 });

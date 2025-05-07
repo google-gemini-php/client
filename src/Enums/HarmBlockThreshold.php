@@ -7,7 +7,7 @@ namespace Gemini\Enums;
 /**
  * Controls the probability threshold at which harm is blocked.
  *
- * https://ai.google.dev/api/rest/v1/SafetySetting#harmblockthreshold
+ * https://ai.google.dev/api/rest/v1beta/SafetySetting#harmblockthreshold
  */
 enum HarmBlockThreshold: int
 {

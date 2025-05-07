@@ -11,6 +11,7 @@ use Gemini\Data\Blob;
 use Gemini\Data\Content;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
+use Gemini\Data\UploadedFile;
 use Gemini\Enums\ModelType;
 use Gemini\Requests\GenerativeModel\CountTokensRequest;
 use Gemini\Requests\GenerativeModel\GenerateContentRequest;
@@ -34,6 +35,7 @@ final class GenerativeModel implements GenerativeModelContract
         ModelType|string $model,
         public array $safetySettings = [],
         public ?GenerationConfig $generationConfig = null,
+        public ?Content $systemInstruction = null,
     ) {
         $this->model = $this->parseModel(model: $model);
     }
@@ -52,10 +54,17 @@ final class GenerativeModel implements GenerativeModelContract
         return $this;
     }
 
+    public function withSystemInstruction(Content $systemInstruction): self
+    {
+        $this->systemInstruction = $systemInstruction;
+
+        return $this;
+    }
+
     /**
      * Runs a model's tokenizer on input content and returns the token count.
      *
-     * @see https://ai.google.dev/api/rest/v1/models/countTokens
+     * @see https://ai.google.dev/api/rest/v1beta/models/countTokens
      *
      * @param  string|Blob|array<string|Blob>|Content  ...$parts
      *
@@ -72,17 +81,18 @@ final class GenerativeModel implements GenerativeModelContract
     /**
      * Generates a response from the model given an input GenerateContentRequest.
      *
-     * @see https://ai.google.dev/api/rest/v1/models/generateContent
+     * @see https://ai.google.dev/api/rest/v1beta/models/generateContent
      */
-    public function generateContent(string|Blob|array|Content ...$parts): GenerateContentResponse
+    public function generateContent(string|Blob|array|Content|UploadedFile ...$parts): GenerateContentResponse
     {
-        /** @var ResponseDTO<array{ candidates: ?array{ array{ content: array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }, finishReason: string, safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: int, tokenCount: ?int, avgLogprobs: ?float } }, promptFeedback: ?array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int } }> $response */
+        /** @var ResponseDTO<array{ candidates: ?array{ array{ content: array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string }, fileData: array{ fileUri: string, mimeType: string } } }, role: string }, finishReason: string, safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: int, tokenCount: ?int, avgLogprobs: ?float } }, promptFeedback: ?array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int } }> $response */
         $response = $this->transporter->request(
             request: new GenerateContentRequest(
                 model: $this->model,
                 parts: $parts,
                 safetySettings: $this->safetySettings,
                 generationConfig: $this->generationConfig,
+                systemInstruction: $this->systemInstruction,
             )
         );
 
@@ -92,7 +102,7 @@ final class GenerativeModel implements GenerativeModelContract
     /**
      * Generates a streamed response from the model given an input GenerateContentRequest.
      *
-     * @see https://ai.google.dev/api/rest/v1/models/streamGenerateContent
+     * @see https://ai.google.dev/api/rest/v1beta/models/streamGenerateContent
      */
     public function streamGenerateContent(string|Blob|array|Content ...$parts): StreamResponse
     {
