@@ -22,6 +22,7 @@ final class Candidate implements Arrayable
      * @param  CitationMetadata  $citationMetadata  Output only. Citation information for model-generated candidate.
      * @param  int|null  $tokenCount  Output only. Token count for this candidate.
      * @param  int|null  $index  Output only. Index of the candidate in the list of candidates.
+     * @param  GroundingMetadata|null  $groundingMetadata  Output only. Metadata specifies sources used to ground generated content.
      */
     public function __construct(
         public readonly Content $content,
@@ -31,10 +32,11 @@ final class Candidate implements Arrayable
         public readonly ?int $index,
         public readonly ?int $tokenCount,
         public readonly ?float $avgLogprobs,
+        public readonly ?GroundingMetadata $groundingMetadata,
     ) {}
 
     /**
-     * @param  array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }, finishReason: ?string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: ?int, tokenCount: ?int, avgLogprobs: ?float }  $attributes
+     * @param  array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }, finishReason: ?string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: ?int, tokenCount: ?int, avgLogprobs: ?float, groundingMetadata: array }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -65,6 +67,11 @@ final class Candidate implements Arrayable
             $attributes['avgLogprobs'] = INF;
         }
 
+        $groundingMetadata = match (true) {
+            isset($attributes['groundingMetadata']) => GroundingMetadata::from($attributes['groundingMetadata']),
+            default => null,
+        };
+
         return new self(
             content: $content,
             finishReason: $finishReason,
@@ -73,6 +80,7 @@ final class Candidate implements Arrayable
             index: $attributes['index'] ?? null,
             tokenCount: $attributes['tokenCount'] ?? null,
             avgLogprobs: $attributes['avgLogprobs'] ?? null,
+            groundingMetadata: $groundingMetadata,
         );
     }
 
@@ -89,6 +97,7 @@ final class Candidate implements Arrayable
             'tokenCount' => $this->tokenCount,
             'index' => $this->index,
             'avgLogprobs' => $this->avgLogprobs,
+            'groundingMetadata' => $this->groundingMetadata?->toArray(),
         ];
     }
 }
