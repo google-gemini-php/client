@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gemini\Resources;
 
+use BackedEnum;
 use Gemini\Concerns\HasModel;
 use Gemini\Contracts\Resources\GenerativeModelContract;
 use Gemini\Contracts\TransporterContract;
@@ -14,7 +15,6 @@ use Gemini\Data\SafetySetting;
 use Gemini\Data\Tool;
 use Gemini\Data\ToolConfig;
 use Gemini\Data\UploadedFile;
-use Gemini\Enums\ModelType;
 use Gemini\Requests\GenerativeModel\CountTokensRequest;
 use Gemini\Requests\GenerativeModel\GenerateContentRequest;
 use Gemini\Requests\GenerativeModel\StreamGenerateContentRequest;
@@ -35,7 +35,7 @@ final class GenerativeModel implements GenerativeModelContract
      */
     public function __construct(
         private readonly TransporterContract $transporter,
-        ModelType|string $model,
+        BackedEnum|string $model,
         public array $safetySettings = [],
         public ?GenerationConfig $generationConfig = null,
         public ?Content $systemInstruction = null,

@@ -2,7 +2,6 @@
 
 use Gemini\Data\Model;
 use Gemini\Enums\Method;
-use Gemini\Enums\ModelType;
 use Gemini\Responses\Models\ListModelResponse;
 use Gemini\Responses\Models\RetrieveModelResponse;
 
@@ -37,14 +36,14 @@ test('list with page size', function () {
 });
 
 test('retrieve', function () {
-    $modelType = ModelType::GEMINI_PRO;
-    $client = mockClient(method: Method::GET, endpoint: $modelType->value, response: RetrieveModelResponse::fake());
+    $modelType = 'models/gemini-1.5-pro';
+    $client = mockClient(method: Method::GET, endpoint: $modelType, response: RetrieveModelResponse::fake());
 
     $result = $client->models()->retrieve(model: $modelType);
 
     expect($result)
         ->toBeInstanceOf(RetrieveModelResponse::class)
-        ->model->name->toBe($modelType->value)
+        ->model->name->toBe('models/gemini-pro')
         ->model->version->toBe('001');
 });
 

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Gemini\Enums\ModelType;
 use Gemini\Resources\Models;
 use Gemini\Responses\Models\ListModelResponse;
 use Gemini\Responses\Models\RetrieveModelResponse;
@@ -13,11 +12,11 @@ it('records a model retrieve request', function () {
         RetrieveModelResponse::fake(),
     ]);
 
-    $fake->models()->retrieve(model: ModelType::GEMINI_PRO);
+    $fake->models()->retrieve(model: 'models/gemini-1.5-pro');
 
     $fake->assertSent(resource: Models::class, callback: function ($method, $parameters) {
         return $method === 'retrieve' &&
-            $parameters[0] === ModelType::GEMINI_PRO;
+            $parameters[0] === 'models/gemini-1.5-pro';
     });
 });
 

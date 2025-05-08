@@ -12,7 +12,6 @@ use Gemini\Enums\HarmBlockThreshold;
 use Gemini\Enums\HarmCategory;
 use Gemini\Enums\Method;
 use Gemini\Enums\MimeType;
-use Gemini\Enums\ModelType;
 use Gemini\Resources\ChatSession;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
@@ -22,8 +21,8 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Stream;
 
 test('with safety setting', function () {
-    $modelType = ModelType::GEMINI_PRO;
-    $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:generateContent", response: GenerateContentResponse::fake(), times: 0);
+    $modelType = 'models/gemini-1.5-pro';
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType}:generateContent", response: GenerateContentResponse::fake(), times: 0);
 
     $firstSafetySetting = new SafetySetting(
         category: HarmCategory::HARM_CATEGORY_DANGEROUS_CONTENT,
@@ -46,8 +45,8 @@ test('with safety setting', function () {
 });
 
 test('with generation config', function () {
-    $modelType = ModelType::GEMINI_PRO;
-    $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:generateContent", response: GenerateContentResponse::fake(), times: 0);
+    $modelType = 'models/gemini-1.5-pro';
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType}:generateContent", response: GenerateContentResponse::fake(), times: 0);
 
     $generationConfig = new GenerationConfig(
         stopSequences: [
@@ -68,8 +67,8 @@ test('with generation config', function () {
 });
 
 test('count tokens', function () {
-    $modelType = ModelType::GEMINI_PRO;
-    $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:countTokens", response: CountTokensResponse::fake());
+    $modelType = 'models/gemini-1.5-pro';
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType}:countTokens", response: CountTokensResponse::fake());
 
     $result = $client->generativeModel(model: $modelType)->countTokens('Test');
 
@@ -90,10 +89,10 @@ test('count tokens for custom model', function () {
 });
 
 test('generate content', function () {
-    $modelType = ModelType::GEMINI_PRO;
-    $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:generateContent", response: GenerateContentResponse::fake());
+    $modelType = 'models/gemini-1.5-pro';
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType}:generateContent", response: GenerateContentResponse::fake());
 
-    $result = $client->geminiPro()->generateContent('Test');
+    $result = $client->generativeModel($modelType)->generateContent('Test');
 
     expect($result)
         ->toBeInstanceOf(GenerateContentResponse::class)
@@ -122,10 +121,10 @@ test('stream generate content', function () {
         ),
     );
 
-    $modelType = ModelType::GEMINI_PRO;
-    $client = mockStreamClient(method: Method::POST, endpoint: "{$modelType->value}:streamGenerateContent", response: $response);
+    $modelType = 'models/gemini-1.5-pro';
+    $client = mockStreamClient(method: Method::POST, endpoint: "{$modelType}:streamGenerateContent", response: $response);
 
-    $result = $client->geminiPro()->streamGenerateContent('Test');
+    $result = $client->generativeModel($modelType)->streamGenerateContent('Test');
 
     expect($result)
         ->toBeInstanceOf(StreamResponse::class)
@@ -165,10 +164,10 @@ test('stream generate content for custom model', function () {
 });
 
 test('generate content with uploaded file', function () {
-    $modelType = ModelType::GEMINI_PRO;
-    $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:generateContent", response: GenerateContentResponse::fake());
+    $modelType = 'models/gemini-1.5-pro';
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType}:generateContent", response: GenerateContentResponse::fake());
 
-    $result = $client->geminiPro()->generateContent(['Analyze file', new UploadedFile('123-456', MimeType::TEXT_PLAIN)]);
+    $result = $client->generativeModel($modelType)->generateContent(['Analyze file', new UploadedFile('123-456', MimeType::TEXT_PLAIN)]);
 
     expect($result)
         ->toBeInstanceOf(GenerateContentResponse::class)
@@ -178,10 +177,10 @@ test('generate content with uploaded file', function () {
 });
 
 test('start chat', function () {
-    $modelType = ModelType::GEMINI_PRO;
-    $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:generateContent", response: GenerateContentResponse::fake(), times: 0);
+    $modelType = 'models/gemini-1.5-pro';
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType}:generateContent", response: GenerateContentResponse::fake(), times: 0);
 
-    $result = $client->geminiPro()->startChat();
+    $result = $client->generativeModel($modelType)->startChat();
 
     expect($result)
         ->toBeInstanceOf(ChatSession::class);
@@ -198,7 +197,7 @@ test('start chat for custom model', function () {
 });
 
 test('generative model with system instruction', function () {
-    $modelType = ModelType::GEMINI_PRO;
+    $modelType = 'models/gemini-1.5-pro';
     $systemInstruction = 'You are a helpful assistant.';
     $userMessage = 'Hello';
 
@@ -221,7 +220,7 @@ test('generative model with system instruction', function () {
 
     expect($capturedRequest)
         ->toBeInstanceOf(\Gemini\Requests\GenerativeModel\GenerateContentRequest::class)
-        ->and($capturedRequest->resolveEndpoint())->toBe("{$modelType->value}:generateContent");
+        ->and($capturedRequest->resolveEndpoint())->toBe("{$modelType}:generateContent");
 
     $body = $capturedRequest->body();
 
@@ -238,7 +237,7 @@ test('generative model with system instruction', function () {
 });
 
 test('system instruction is included in the request', function () {
-    $modelType = ModelType::GEMINI_PRO;
+    $modelType = 'models/gemini-1.5-pro';
     $systemInstruction = 'You are a helpful assistant.';
 
     $mockTransporter = Mockery::mock(\Gemini\Contracts\TransporterContract::class);

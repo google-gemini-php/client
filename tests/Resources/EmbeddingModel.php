@@ -2,15 +2,14 @@
 
 use Gemini\Data\ContentEmbedding;
 use Gemini\Enums\Method;
-use Gemini\Enums\ModelType;
 use Gemini\Responses\GenerativeModel\BatchEmbedContentsResponse;
 use Gemini\Responses\GenerativeModel\EmbedContentResponse;
 
 test('embed content', function () {
-    $modelType = ModelType::EMBEDDING;
-    $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:embedContent", response: EmbedContentResponse::fake());
+    $modelType = 'models/text-embedding-004';
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType}:embedContent", response: EmbedContentResponse::fake());
 
-    $result = $client->embeddingModel()->embedContent('Test');
+    $result = $client->embeddingModel($modelType)->embedContent('Test');
 
     expect($result)
         ->toBeInstanceOf(EmbedContentResponse::class)
@@ -18,10 +17,10 @@ test('embed content', function () {
         ->embedding->values->toBeArray()->toHaveCount(7);
 });
 test('batch embed contents', function () {
-    $modelType = ModelType::EMBEDDING;
-    $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:batchEmbedContents", response: BatchEmbedContentsResponse::fake());
+    $modelType = 'models/text-embedding-004';
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType}:batchEmbedContents", response: BatchEmbedContentsResponse::fake());
 
-    $result = $client->embeddingModel()->batchEmbedContents('Test', 'Test2');
+    $result = $client->embeddingModel($modelType)->batchEmbedContents('Test', 'Test2');
 
     expect($result)
         ->toBeInstanceOf(BatchEmbedContentsResponse::class)

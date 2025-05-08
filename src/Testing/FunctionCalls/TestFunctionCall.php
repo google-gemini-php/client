@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Gemini\Testing\FunctionCalls;
 
-use Gemini\Enums\ModelType;
+use BackedEnum;
 
 final class TestFunctionCall
 {
     /**
      * @param  array<string, mixed>  $args
      */
-    public function __construct(protected string $resource, protected string $method, protected array $args, protected ModelType|string|null $model = null) {}
+    public function __construct(protected string $resource, protected string $method, protected array $args, protected BackedEnum|string|null $model = null) {}
 
     public function resource(): string
     {
@@ -31,7 +31,7 @@ final class TestFunctionCall
         return $this->args;
     }
 
-    public function model(): ModelType|string|null
+    public function model(): BackedEnum|string|null
     {
         return $this->model;
     }
