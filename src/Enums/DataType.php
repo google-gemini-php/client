@@ -18,4 +18,5 @@ enum DataType: string
     case BOOLEAN = 'BOOLEAN';
     case ARRAY = 'ARRAY';
     case OBJECT = 'OBJECT';
+    case NULL = 'NULL';
 }

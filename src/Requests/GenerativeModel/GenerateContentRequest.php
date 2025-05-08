@@ -36,6 +36,7 @@ class GenerateContentRequest extends Request
         protected readonly ?Content $systemInstruction = null,
         protected readonly array $tools = [],
         protected readonly ?ToolConfig $toolConfig = null,
+        protected readonly ?string $cachedContent = null,
     ) {}
 
     public function resolveEndpoint(): string
@@ -55,17 +56,18 @@ class GenerateContentRequest extends Request
                 static fn (Content $content): array => $content->toArray(),
                 $this->partsToContents(...$this->parts)
             ),
-            'safetySettings' => array_map(
-                static fn (SafetySetting $setting): array => $setting->toArray(),
-                $this->safetySettings ?? []
-            ),
-            'generationConfig' => $this->generationConfig?->toArray(),
-            'systemInstruction' => $this->systemInstruction?->toArray(),
             'tools' => array_map(
                 static fn (Tool $tool): array => $tool->toArray(),
                 $this->tools ?? []
             ),
             'toolConfig' => $this->toolConfig?->toArray(),
+            'safetySettings' => array_map(
+                static fn (SafetySetting $setting): array => $setting->toArray(),
+                $this->safetySettings ?? []
+            ),
+            'systemInstruction' => $this->systemInstruction?->toArray(),
+            'generationConfig' => $this->generationConfig?->toArray(),
+            'cachedContent' => $this->cachedContent,
         ];
     }
 }

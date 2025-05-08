@@ -12,7 +12,7 @@ use Gemini\Enums\Role;
  * A Content includes a role field designating the producer of the Content and a parts
  * field containing multi-part data that contains the content of the message turn.
  *
- * https://ai.google.dev/api/rest/v1beta/Content
+ * https://ai.google.dev/api/caching#Content
  */
 final class Content implements Arrayable
 {
@@ -54,13 +54,11 @@ final class Content implements Arrayable
      */
     public static function from(array $attributes): self
     {
-        $parts = array_map(
-            static fn (array $candidate): Part => Part::from($candidate),
-            $attributes['parts'],
-        );
-
         return new self(
-            parts: $parts,
+            parts: array_map(
+                static fn (array $candidate): Part => Part::from($candidate),
+                $attributes['parts'],
+            ),
             role: Role::from($attributes['role'])
         );
     }

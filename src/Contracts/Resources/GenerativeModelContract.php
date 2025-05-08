@@ -47,4 +47,6 @@ interface GenerativeModelContract
     public function withTool(Tool $tool): self;
 
     public function withToolConfig(ToolConfig $toolConfig): self;
+
+    public function withCachedContent(?string $cachedContent): self;
 }
