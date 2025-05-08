@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Gemini\Enums;
 
 /**
- * Specifies what was the reason why prompt was blocked.
+ * Specifies the reason why the prompt was blocked.
  *
- * https://ai.google.dev/api/rest/v1beta/GenerateContentResponse#blockreason
+ * https://ai.google.dev/api/generate-content#BlockReason
  */
 enum BlockReason: string
 {
@@ -35,4 +35,9 @@ enum BlockReason: string
      * Prompt was blocked due to prohibited content.
      */
     case PROHIBITED_CONTENT = 'PROHIBITED_CONTENT';
+
+    /**
+     * Candidates blocked due to unsafe image generation content.
+     */
+    case IMAGE_SAFETY = 'IMAGE_SAFETY';
 }

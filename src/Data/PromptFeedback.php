@@ -10,12 +10,12 @@ use Gemini\Enums\BlockReason;
 /**
  * A set of the feedback metadata the prompt specified in GenerateContentRequest.content.
  *
- * https://ai.google.dev/api/rest/v1beta/GenerateContentResponse#promptfeedback
+ * https://ai.google.dev/api/generate-content#PromptFeedback
  */
 final class PromptFeedback implements Arrayable
 {
     /**
-     * @param  ?BlockReason  $blockReason  If set, the prompt was blocked and no candidates are returned. Rephrase your prompt.
+     * @param  BlockReason|null  $blockReason  If set, the prompt was blocked and no candidates are returned. Rephrase your prompt.
      * @param  array<SafetyRating>  $safetyRatings  Ratings for safety of the prompt. There is at most one rating per category.
      */
     public function __construct(

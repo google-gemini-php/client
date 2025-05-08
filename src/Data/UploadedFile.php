@@ -7,6 +7,11 @@ namespace Gemini\Data;
 use Gemini\Contracts\Arrayable;
 use Gemini\Enums\MimeType;
 
+/**
+ * URI based data.
+ *
+ * https://ai.google.dev/api/caching#FileData
+ */
 final class UploadedFile implements Arrayable
 {
     /**

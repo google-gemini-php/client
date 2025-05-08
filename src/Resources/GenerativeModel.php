@@ -41,6 +41,7 @@ final class GenerativeModel implements GenerativeModelContract
         public ?Content $systemInstruction = null,
         public array $tools = [],
         public ?ToolConfig $toolConfig = null,
+        public ?string $cachedContent = null,
     ) {
         $this->model = $this->parseModel(model: $model);
     }
@@ -80,6 +81,13 @@ final class GenerativeModel implements GenerativeModelContract
         return $this;
     }
 
+    public function withCachedContent(?string $cachedContent): self
+    {
+        $this->cachedContent = $cachedContent;
+
+        return $this;
+    }
+
     /**
      * Runs a model's tokenizer on input content and returns the token count.
      *
@@ -104,7 +112,7 @@ final class GenerativeModel implements GenerativeModelContract
      */
     public function generateContent(string|Blob|array|Content|UploadedFile ...$parts): GenerateContentResponse
     {
-        /** @var ResponseDTO<array{ candidates: ?array{ array{ content: array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }, finishReason: string, safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: int, tokenCount: ?int, avgLogprobs: ?float } }, promptFeedback: ?array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int }, usageMetadata: array{ promptTokenCount: int, candidatesTokenCount: int, totalTokenCount: int, cachedContentTokenCount: ?int } }> $response */
+        /** @var ResponseDTO<array{ candidates: ?array<array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }, finishReason: ?string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: ?int, tokenCount: ?int, avgLogprobs: ?float, groundingAttributions: ?array<array{ sourceId: array{ groundingPassage?: array{ passageId: string, partIndex: int }, semanticRetrieverChunk?: array{ source: string, chunk: string } }, content: array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string } }>, groundingMetadata?: array{ groundingChunks: array<array{ web?: array{ uri: string, title: string } }>, groundingSupports: array<array{ groundingChunkIndices: array<int>, confidenceScores: array<float>, segment: array{ partIndex: int, startIndex: int, endIndex: int, text: string } }>, webSearchQueries: array<string>, searchEntryPoint?: array{ renderedContent?: string|null, sdkBlob?: string|null }, retrievalMetadata: array{ googleSearchDynamicRetrievalScore?: float|null } }, logprobsResult?: array{ topCandidates: array<array{ candidates: array<array{ token: string, tokenId: int, logProbability: float }> }>, chosenCandidates: array<array{ token: string, tokenId: int, logProbability: float }> }, urlRetrievalMetadata?: array{ urlRetrievalContexts: array<array{ retrievedUrl: string }> } }>, promptFeedback: ?array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }, usageMetadata: array{ promptTokenCount: int, totalTokenCount: int, candidatesTokenCount: ?int, cachedContentTokenCount: ?int, toolUsePromptTokenCount: ?int, thoughtsTokenCount: ?int, promptTokensDetails: list<array{ modality: string, tokenCount: int}>|null, cacheTokensDetails: list<array{ modality: string, tokenCount: int}>|null, candidatesTokensDetails: list<array{ modality: string, tokenCount: int}>|null, toolUsePromptTokensDetails: list<array{ modality: string, tokenCount: int}>|null }, modelVersion: ?string }> $response */
         $response = $this->transporter->request(
             request: new GenerateContentRequest(
                 model: $this->model,
@@ -114,6 +122,7 @@ final class GenerativeModel implements GenerativeModelContract
                 systemInstruction: $this->systemInstruction,
                 tools: $this->tools,
                 toolConfig: $this->toolConfig,
+                cachedContent: $this->cachedContent,
             )
         );
 
@@ -136,6 +145,7 @@ final class GenerativeModel implements GenerativeModelContract
                 systemInstruction: $this->systemInstruction,
                 tools: $this->tools,
                 toolConfig: $this->toolConfig,
+                cachedContent: $this->cachedContent,
             )
         );
 

@@ -81,4 +81,11 @@ final class GenerativeModelTestResource implements GenerativeModelContract
 
         return $this;
     }
+
+    public function withCachedContent(?string $cachedContent): self
+    {
+        $this->recordFunctionCall(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+
+        return $this;
+    }
 }

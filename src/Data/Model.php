@@ -9,7 +9,7 @@ use Gemini\Contracts\Arrayable;
 /**
  * Information about a Generative Language Model.
  *
- * https://ai.google.dev/api/rest/v1beta/models#resource:-model
+ * https://ai.google.dev/api/models#Model
  */
 final class Model implements Arrayable
 {
