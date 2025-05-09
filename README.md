@@ -69,6 +69,12 @@ To use the Gemini API, you'll need an API key. If you don't already have one, cr
 
 Starting 2.0 release this package will work only with Gemini v1beta API ([see API versions](https://ai.google.dev/gemini-api/docs/api-versions)).
 
+To update, run this command:
+
+```bash
+composer require google-gemini-php/client:^2.0
+```
+
 This release introduces support for new features:
 * Structured output
 * System instructions
