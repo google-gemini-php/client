@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Gemini\Data;
 
 use Gemini\Contracts\Arrayable;
-use Gemini\Enums\ModelVariation;
 
 /**
  * Information about a Generative Language Model.
@@ -80,25 +79,5 @@ final class Model implements Arrayable
             'topP' => $this->topP,
             'topK' => $this->topK,
         ];
-    }
-
-    /**
-     * https://ai.google.dev/gemini-api/docs/models/gemini#model-variations
-     */
-    public static function generateGeminiModel(ModelVariation $variation, ?float $generation = null, ?string $version = null): string
-    {
-        $model = 'models/gemini';
-
-        if ($generation != null) {
-            $model .= '-'.number_format($generation, 1);
-        }
-
-        $model .= "-{$variation->value}";
-
-        if ($version) {
-            $model .= "-{$version}";
-        }
-
-        return $model;
     }
 }

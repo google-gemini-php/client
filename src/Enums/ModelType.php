@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Gemini\Enums;
 
-use Gemini\Data\Model;
+use Gemini\GeminiHelper;
 
 /**
  * @deprecated Will be removed in the next major version. We suggest implementing your own string backed enum for convenience.
@@ -24,10 +24,10 @@ enum ModelType: string
     case TEXT_EMBEDDING = 'models/text-embedding-004';
 
     /**
-     * Alias of \Gemini\Data\Model::generateGeminiModel()
+     * @deprecated Alias of \Gemini\GeminiHelper::generateGeminiModel()
      */
     public static function generateGeminiModel(ModelVariation $variation, ?float $generation = null, ?string $version = null): string
     {
-        return Model::generateGeminiModel($variation, $generation, $version);
+        return GeminiHelper::generateGeminiModel($variation, $generation, $version);
     }
 }
