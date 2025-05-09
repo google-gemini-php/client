@@ -50,14 +50,14 @@ final class Content implements Arrayable
     }
 
     /**
-     * @param  array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }  $attributes
+     * @param  array{ parts?: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }  $attributes
      */
     public static function from(array $attributes): self
     {
         return new self(
             parts: array_map(
                 static fn (array $candidate): Part => Part::from($candidate),
-                $attributes['parts'],
+                $attributes['parts'] ?? [],
             ),
             role: Role::from($attributes['role'])
         );
