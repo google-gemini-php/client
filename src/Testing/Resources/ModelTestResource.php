@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Gemini\Testing\Resources;
 
+use BackedEnum;
 use Gemini\Contracts\Resources\ModelContract;
-use Gemini\Enums\ModelType;
 use Gemini\Resources\Models;
 use Gemini\Responses\Models\ListModelResponse;
 use Gemini\Responses\Models\RetrieveModelResponse;
@@ -25,7 +25,7 @@ final class ModelTestResource implements ModelContract
         return $this->record(method: __FUNCTION__, args: func_get_args());
     }
 
-    public function retrieve(ModelType|string $model): RetrieveModelResponse
+    public function retrieve(BackedEnum|string $model): RetrieveModelResponse
     {
         return $this->record(method: __FUNCTION__, args: func_get_args());
     }

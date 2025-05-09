@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Gemini\Enums;
 
+use Gemini\GeminiHelper;
+
+/**
+ * @deprecated Will be removed in the next major version. We suggest implementing your own string backed enum for convenience.
+ */
 enum ModelType: string
 {
     case GEMINI_PRO = 'models/gemini-pro';
@@ -19,22 +24,10 @@ enum ModelType: string
     case TEXT_EMBEDDING = 'models/text-embedding-004';
 
     /**
-     * https://ai.google.dev/gemini-api/docs/models/gemini#model-variations
+     * @deprecated Alias of \Gemini\GeminiHelper::generateGeminiModel()
      */
     public static function generateGeminiModel(ModelVariation $variation, ?float $generation = null, ?string $version = null): string
     {
-        $model = 'models/gemini';
-
-        if ($generation != null) {
-            $model .= '-'.number_format($generation, 1);
-        }
-
-        $model .= "-{$variation->value}";
-
-        if ($version) {
-            $model .= "-{$version}";
-        }
-
-        return $model;
+        return GeminiHelper::generateGeminiModel($variation, $generation, $version);
     }
 }

@@ -15,9 +15,9 @@ it('records a count tokens request', function () {
         CountTokensResponse::fake(),
     ]);
 
-    $fake->geminiPro()->countTokens('Hello');
+    $fake->generativeModel('models/gemini-1.5-pro')->countTokens('Hello');
 
-    $fake->geminiPro()->assertSent(function (string $method, array $parameters) {
+    $fake->generativeModel('models/gemini-1.5-pro')->assertSent(function (string $method, array $parameters) {
         return $method === 'countTokens' &&
             $parameters[0] === 'Hello';
     });
@@ -28,9 +28,9 @@ it('records a generate content request', function () {
         GenerateContentResponse::fake(),
     ]);
 
-    $fake->geminiPro()->generateContent('Hello');
+    $fake->generativeModel('models/gemini-1.5-pro')->generateContent('Hello');
 
-    $fake->geminiPro()->assertSent(function (string $method, array $parameters) {
+    $fake->generativeModel('models/gemini-1.5-pro')->assertSent(function (string $method, array $parameters) {
         return $method === 'generateContent' &&
             $parameters[0] === 'Hello';
     });
@@ -41,9 +41,9 @@ it('records a stream generate content request', function () {
         GenerateContentResponse::fakeStream(),
     ]);
 
-    $fake->geminiPro()->streamGenerateContent('Hello');
+    $fake->generativeModel('models/gemini-1.5-pro')->streamGenerateContent('Hello');
 
-    $fake->geminiPro()->assertSent(function (string $method, array $parameters) {
+    $fake->generativeModel('models/gemini-1.5-pro')->assertSent(function (string $method, array $parameters) {
         return $method === 'streamGenerateContent' &&
             $parameters[0] === 'Hello';
     });
@@ -54,9 +54,9 @@ it('records a "withSafetySetting" function call', function () {
 
     $safetySetting = new SafetySetting(HarmCategory::HARM_CATEGORY_DANGEROUS, HarmBlockThreshold::BLOCK_ONLY_HIGH);
 
-    $fake->geminiPro()->withSafetySetting($safetySetting);
+    $fake->generativeModel('models/gemini-1.5-pro')->withSafetySetting($safetySetting);
 
-    $fake->geminiPro()->assertFunctionCalled(function (string $method, array $parameters) use ($safetySetting) {
+    $fake->generativeModel('models/gemini-1.5-pro')->assertFunctionCalled(function (string $method, array $parameters) use ($safetySetting) {
         return $method === 'withSafetySetting' &&
             $parameters[0] === $safetySetting;
     });
@@ -67,9 +67,9 @@ it('records a "withGenerationConfig" function call', function () {
 
     $generationConfig = new GenerationConfig;
 
-    $fake->geminiPro()->withGenerationConfig($generationConfig);
+    $fake->generativeModel('models/gemini-1.5-pro')->withGenerationConfig($generationConfig);
 
-    $fake->geminiPro()->assertFunctionCalled(function (string $method, array $parameters) use ($generationConfig) {
+    $fake->generativeModel('models/gemini-1.5-pro')->assertFunctionCalled(function (string $method, array $parameters) use ($generationConfig) {
         return $method === 'withGenerationConfig' &&
             $parameters[0] === $generationConfig;
     });
@@ -82,13 +82,13 @@ it('records both content request and function call', function () {
 
     $generationConfig = new GenerationConfig;
 
-    $fake->geminiPro()->withGenerationConfig($generationConfig)->generateContent('Hello');
+    $fake->generativeModel('models/gemini-1.5-pro')->withGenerationConfig($generationConfig)->generateContent('Hello');
 
-    $fake->geminiPro()->assertSent(function (string $method, array $parameters) {
+    $fake->generativeModel('models/gemini-1.5-pro')->assertSent(function (string $method, array $parameters) {
         return $method === 'generateContent' &&
             $parameters[0] === 'Hello';
     });
-    $fake->geminiPro()->assertFunctionCalled(function (string $method, array $parameters) use ($generationConfig) {
+    $fake->generativeModel('models/gemini-1.5-pro')->assertFunctionCalled(function (string $method, array $parameters) use ($generationConfig) {
         return $method === 'withGenerationConfig' &&
             $parameters[0] === $generationConfig;
     });

@@ -1,24 +1,22 @@
 <?php
 
 use Gemini\Enums\Method;
-use Gemini\Enums\ModelType;
 use Gemini\Resources\ChatSession;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
 
 test('send message', function () {
     $client = mockClient(method: Method::POST, endpoint: 'generateContent', response: GenerateContentResponse::fake(), times: 0);
 
-    $result = $client->geminiPro()->startChat();
+    $result = $client->generativeModel('models/gemini-1.5-flash')->startChat();
 
     expect($result)
         ->toBeInstanceOf(ChatSession::class);
 });
 
 test('start chat', function () {
-    $modelType = ModelType::GEMINI_PRO;
-    $client = mockClient(method: Method::POST, endpoint: "{$modelType->value}:generateContent", response: GenerateContentResponse::fake(), times: 0);
+    $client = mockClient(method: Method::POST, endpoint: 'models/gemini-1.5-flash:generateContent', response: GenerateContentResponse::fake(), times: 0);
 
-    $result = $client->chat()->startChat();
+    $result = $client->chat('models/gemini-1.5-flash')->startChat();
 
     expect($result)
         ->toBeInstanceOf(ChatSession::class);
