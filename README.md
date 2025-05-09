@@ -348,7 +348,7 @@ function handleFunctionCall(FunctionCall $functionCall): Content
 }
 
 $chat = $client
-    ->geminiFlash()
+    ->generativeModel(model: 'gemini-2.0-flash')
     ->withTool(new Tool(
         functionDeclarations: [
             new FunctionDeclaration(
