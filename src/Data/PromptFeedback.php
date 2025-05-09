@@ -24,13 +24,13 @@ final class PromptFeedback implements Arrayable
     ) {}
 
     /**
-     * @param  array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }  $attributes
+     * @param  array{ safetyRatings?: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }  $attributes
      */
     public static function from(array $attributes): self
     {
         $safetyRatings = array_map(
             static fn (array $rating): SafetyRating => SafetyRating::from($rating),
-            $attributes['safetyRatings'],
+            $attributes['safetyRatings'] ?? [],
         );
 
         return new self(
