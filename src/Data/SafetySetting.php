@@ -11,7 +11,7 @@ use Gemini\Enums\HarmCategory;
 /**
  * Safety setting, affecting the safety-blocking behavior.
  *
- * https://ai.google.dev/api/rest/v1/SafetySetting
+ * https://ai.google.dev/api/generate-content#safetysetting
  */
 final class SafetySetting implements Arrayable
 {

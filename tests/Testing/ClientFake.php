@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Gemini\Enums\ModelType;
 use Gemini\Exceptions\ErrorException;
 use Gemini\Resources\GenerativeModel;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
@@ -26,7 +25,7 @@ it('returns a fake response', function () {
         ]),
     ]);
 
-    $result = $fake->geminiPro()->generateContent('test');
+    $result = $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
     expect($result->text())->toBe('success');
 });
@@ -40,7 +39,7 @@ it('throws fake exceptions', function () {
         ]),
     ]);
 
-    $fake->geminiPro()->generateContent('test');
+    $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 })->expectExceptionMessage('The model `gemini-basic` does not exist');
 
 it('throws an exception if there is no more fake response', function () {
@@ -48,9 +47,9 @@ it('throws an exception if there is no more fake response', function () {
         GenerateContentResponse::fake(),
     ]);
 
-    $fake->geminiPro()->generateContent('test');
+    $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
-    $fake->geminiPro()->generateContent('test');
+    $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
 })->expectExceptionMessage('No fake responses left');
 
@@ -71,7 +70,7 @@ it('allows to add more responses', function () {
         ]),
     ]);
 
-    $result = $fake->geminiPro()->generateContent('test');
+    $result = $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
     expect($result->text())->toBe('response-1');
 
@@ -91,7 +90,7 @@ it('allows to add more responses', function () {
         ]),
     ]);
 
-    $result = $fake->geminiPro()->generateContent('test');
+    $result = $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
     expect($result->text())->toBe('response-2');
 });
@@ -101,9 +100,9 @@ it('asserts a request was sent', function () {
         GenerateContentResponse::fake(),
     ]);
 
-    $fake->geminiPro()->generateContent('test');
+    $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
-    $fake->assertSent(resource: GenerativeModel::class, model: ModelType::GEMINI_PRO, callback: function (string $method, array $parameters) {
+    $fake->assertSent(resource: GenerativeModel::class, model: 'models/gemini-1.5-pro', callback: function (string $method, array $parameters) {
         return $method === 'generateContent';
     });
 });
@@ -125,9 +124,9 @@ it('asserts a request was sent on the resource', function () {
         GenerateContentResponse::fake(),
     ]);
 
-    $fake->geminiPro()->generateContent('test');
+    $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
-    $fake->geminiPro()->assertSent(function (string $method, array $parameters) {
+    $fake->generativeModel('models/gemini-1.5-pro')->assertSent(function (string $method, array $parameters) {
         return
             $method === 'generateContent' &&
             $parameters[0] === 'test';
@@ -140,11 +139,11 @@ it('asserts a request was sent n times', function () {
         GenerateContentResponse::fake(),
     ]);
 
-    $fake->geminiPro()->generateContent('test');
+    $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
-    $fake->geminiPro()->generateContent('test');
+    $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
-    $fake->assertSent(resource: GenerativeModel::class, model: ModelType::GEMINI_PRO, callback: 2);
+    $fake->assertSent(resource: GenerativeModel::class, model: 'models/gemini-1.5-pro', callback: 2);
 });
 
 it('throws an exception if a request was not sent n times', function () {
@@ -153,9 +152,9 @@ it('throws an exception if a request was not sent n times', function () {
         GenerateContentResponse::fake(),
     ]);
 
-    $fake->geminiPro()->generateContent('test');
+    $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
-    $fake->assertSent(resource: GenerativeModel::class, model: ModelType::GEMINI_PRO, callback: 2);
+    $fake->assertSent(resource: GenerativeModel::class, model: 'models/gemini-1.5-pro', callback: 2);
 })->expectException(ExpectationFailedException::class);
 
 it('asserts a request was not sent', function () {
@@ -169,7 +168,7 @@ it('throws an exception if an unexpected request was sent', function () {
         GenerateContentResponse::fake(),
     ]);
 
-    $fake->geminiPro()->generateContent('test');
+    $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
     $fake->assertNotSent(GenerativeModel::class);
 })->expectException(ExpectationFailedException::class);
@@ -179,9 +178,9 @@ it('asserts a request was not sent for a model on the resource', function () {
         GenerateContentResponse::fake(),
     ]);
 
-    $fake->geminiPro()->generateContent('test');
+    $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
-    $fake->assertNotSent(resource: GenerativeModel::class, model: ModelType::GEMINI_PRO_VISION);
+    $fake->assertNotSent(resource: GenerativeModel::class, model: 'models/gemini-1.5-flash');
 });
 
 it('asserts a request was not sent on the resource', function () {
@@ -189,7 +188,7 @@ it('asserts a request was not sent on the resource', function () {
         GenerateContentResponse::fake(),
     ]);
 
-    $fake->geminiPro()->assertNotSent();
+    $fake->generativeModel('models/gemini-1.5-pro')->assertNotSent();
 });
 
 it('asserts no request was sent', function () {
@@ -203,7 +202,7 @@ it('throws an exception if any request was sent when non was expected', function
         GenerateContentResponse::fake(),
     ]);
 
-    $fake->geminiPro()->generateContent('test');
+    $fake->generativeModel('models/gemini-1.5-pro')->generateContent('test');
 
     $fake->assertNothingSent();
 })->expectException(ExpectationFailedException::class);

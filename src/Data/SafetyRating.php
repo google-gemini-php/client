@@ -15,7 +15,7 @@ use Gemini\Enums\HarmProbability;
  * for a piece of content. Content is classified for safety across a number of harm categories
  * and the probability of the harm classification is included here.
  *
- * https://ai.google.dev/api/rest/v1/GenerateContentResponse#safetyrating
+ * https://ai.google.dev/api/generate-content#safetyrating
  */
 final class SafetyRating implements Arrayable
 {

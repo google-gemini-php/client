@@ -8,7 +8,7 @@ namespace Gemini\Enums;
  * The probability that a piece of content is harmful.
  * The classification system gives the probability of the content being unsafe. This does not indicate the severity of harm for a piece of content.
  *
- * https://ai.google.dev/api/rest/v1/GenerateContentResponse#harmprobability
+ * https://ai.google.dev/api/generate-content#HarmProbability
  */
 enum HarmProbability: string
 {

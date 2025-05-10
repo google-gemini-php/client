@@ -9,7 +9,7 @@ use Gemini\Contracts\Arrayable;
 /**
  * Information about a Generative Language Model.
  *
- * https://ai.google.dev/api/rest/v1/models#resource:-model
+ * https://ai.google.dev/api/models#Model
  */
 final class Model implements Arrayable
 {
@@ -17,7 +17,7 @@ final class Model implements Arrayable
      * @param  string  $name  The resource name of the Model.
      * @param  string  $version  The version number of the model.
      * @param  string  $displayName  The human-readable name of the model. E.g. "ChatSession Bison".
-     * @param  string  $description  A short description of the model.
+     * @param  string|null  $description  A short description of the model.
      * @param  int  $inputTokenLimit  Maximum number of input tokens allowed for this model.
      * @param  int  $outputTokenLimit  Maximum number of output tokens available for this model.
      * @param  array<string>  $supportedGenerationMethods  The model's supported generation methods.
@@ -31,7 +31,7 @@ final class Model implements Arrayable
         public readonly string $name,
         public readonly string $version,
         public readonly string $displayName,
-        public readonly string $description,
+        public readonly ?string $description,
         public readonly int $inputTokenLimit,
         public readonly int $outputTokenLimit,
         public readonly array $supportedGenerationMethods,
@@ -43,7 +43,7 @@ final class Model implements Arrayable
     ) {}
 
     /**
-     * @param  array{ name: string, version: string, displayName: string, description: string, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, maxTemperature: ?float, topP: ?float, topK: ?int }  $attributes
+     * @param  array{ name: string, version: string, displayName: string, description: string|null, inputTokenLimit: int, outputTokenLimit: int, supportedGenerationMethods: array<string>, baseModelId: ?string, temperature: ?float, maxTemperature: ?float, topP: ?float, topK: ?int }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -51,7 +51,7 @@ final class Model implements Arrayable
             name: $attributes['name'],
             version: $attributes['version'],
             displayName: $attributes['displayName'],
-            description: $attributes['description'],
+            description: $attributes['description'] ?? null,
             inputTokenLimit: $attributes['inputTokenLimit'],
             outputTokenLimit: $attributes['outputTokenLimit'],
             supportedGenerationMethods: $attributes['supportedGenerationMethods'],

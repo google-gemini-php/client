@@ -12,7 +12,7 @@ use Gemini\Enums\Role;
  * A Content includes a role field designating the producer of the Content and a parts
  * field containing multi-part data that contains the content of the message turn.
  *
- * https://ai.google.dev/api/rest/v1/Content
+ * https://ai.google.dev/api/caching#Content
  */
 final class Content implements Arrayable
 {
@@ -26,18 +26,20 @@ final class Content implements Arrayable
     ) {}
 
     /**
-     * @param  string|Blob|array<string|Blob>|Content  $part
+     * @param  string|Blob|array<string|Blob|UploadedFile>|Content|UploadedFile  $part
      */
-    public static function parse(string|Blob|array|Content $part, Role $role = Role::USER): self
+    public static function parse(string|Blob|array|Content|UploadedFile $part, Role $role = Role::USER): self
     {
         return match (true) {
             $part instanceof self => $part,
             $part instanceof Blob => new Content(parts: [new Part(inlineData: $part)], role: $role),
+            $part instanceof UploadedFile => new Content(parts: [new Part(fileData: $part)], role: $role),
             is_array($part) => new Content(
                 parts: array_map(
                     callback: static fn ($subPart) => match (true) {
                         is_string($subPart) => new Part(text: $subPart),
                         $subPart instanceof Blob => new Part(inlineData: $subPart),
+                        $subPart instanceof UploadedFile => new Part(fileData: $subPart),
                     },
                     array: $part,
                 ),
@@ -48,17 +50,15 @@ final class Content implements Arrayable
     }
 
     /**
-     * @param  array{ parts: array{ array{ text: ?string, inlineData: array{ mimeType: string, data: string } } }, role: string }  $attributes
+     * @param  array{ parts?: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }  $attributes
      */
     public static function from(array $attributes): self
     {
-        $parts = array_map(
-            static fn (array $candidate): Part => Part::from($candidate),
-            $attributes['parts'],
-        );
-
         return new self(
-            parts: $parts,
+            parts: array_map(
+                static fn (array $candidate): Part => Part::from($candidate),
+                $attributes['parts'] ?? [],
+            ),
             role: Role::from($attributes['role'])
         );
     }

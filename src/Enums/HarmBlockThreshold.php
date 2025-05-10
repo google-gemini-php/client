@@ -5,35 +5,39 @@ declare(strict_types=1);
 namespace Gemini\Enums;
 
 /**
- * Controls the probability threshold at which harm is blocked.
+ * Block at and beyond a specified harm probability.
  *
- * https://ai.google.dev/api/rest/v1/SafetySetting#harmblockthreshold
+ * https://ai.google.dev/api/generate-content#HarmBlockThreshold
  */
-enum HarmBlockThreshold: int
+enum HarmBlockThreshold: string
 {
     /**
      * Threshold is unspecified.
      */
-    case HARM_BLOCK_THRESHOLD_UNSPECIFIED = 0;
+    case HARM_BLOCK_THRESHOLD_UNSPECIFIED = 'HARM_BLOCK_THRESHOLD_UNSPECIFIED';
 
     /**
      * Content with NEGLIGIBLE will be allowed.
      */
-    case BLOCK_LOW_AND_ABOVE = 1;
+    case BLOCK_LOW_AND_ABOVE = 'BLOCK_LOW_AND_ABOVE';
 
     /**
      * Content with NEGLIGIBLE and LOW will be allowed.
      */
-    case BLOCK_MEDIUM_AND_ABOVE = 2;
+    case BLOCK_MEDIUM_AND_ABOVE = 'BLOCK_MEDIUM_AND_ABOVE';
 
     /**
      * Content with NEGLIGIBLE, LOW, and MEDIUM will be allowed.
      */
-    case BLOCK_ONLY_HIGH = 3;
+    case BLOCK_ONLY_HIGH = 'BLOCK_ONLY_HIGH';
 
     /**
      * All content will be allowed.
      */
-    case BLOCK_NONE = 4;
+    case BLOCK_NONE = 'BLOCK_NONE';
 
+    /**
+     * Turn off the safety filter.
+     */
+    case OFF = 'OFF';
 }

@@ -8,6 +8,8 @@ use Gemini\Data\Blob;
 use Gemini\Data\Content;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
+use Gemini\Data\Tool;
+use Gemini\Data\ToolConfig;
 use Gemini\Resources\ChatSession;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
@@ -31,6 +33,8 @@ interface GenerativeModelContract
      */
     public function streamGenerateContent(string|Blob|array|Content ...$parts): StreamResponse;
 
+    public function withSystemInstruction(Content $systemInstruction): self;
+
     /**
      * @param  array<Content>  $history
      */
@@ -39,4 +43,10 @@ interface GenerativeModelContract
     public function withSafetySetting(SafetySetting $safetySetting): self;
 
     public function withGenerationConfig(GenerationConfig $generationConfig): self;
+
+    public function withTool(Tool $tool): self;
+
+    public function withToolConfig(ToolConfig $toolConfig): self;
+
+    public function withCachedContent(?string $cachedContent): self;
 }

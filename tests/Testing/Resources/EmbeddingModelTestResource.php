@@ -10,9 +10,9 @@ it('records a embed content request', function () {
         EmbedContentResponse::fake(),
     ]);
 
-    $fake->embeddingModel()->embedContent('Hello');
+    $fake->embeddingModel('models/text-embedding-004')->embedContent('Hello');
 
-    $fake->embeddingModel()->assertSent(function (string $method, array $parameters) {
+    $fake->embeddingModel('models/text-embedding-004')->assertSent(function (string $method, array $parameters) {
         return $method === 'embedContent' &&
             $parameters[0] === 'Hello';
     });

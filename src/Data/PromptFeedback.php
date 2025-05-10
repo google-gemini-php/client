@@ -10,12 +10,12 @@ use Gemini\Enums\BlockReason;
 /**
  * A set of the feedback metadata the prompt specified in GenerateContentRequest.content.
  *
- * https://ai.google.dev/api/rest/v1/GenerateContentResponse#promptfeedback
+ * https://ai.google.dev/api/generate-content#PromptFeedback
  */
 final class PromptFeedback implements Arrayable
 {
     /**
-     * @param  ?BlockReason  $blockReason  If set, the prompt was blocked and no candidates are returned. Rephrase your prompt.
+     * @param  BlockReason|null  $blockReason  If set, the prompt was blocked and no candidates are returned. Rephrase your prompt.
      * @param  array<SafetyRating>  $safetyRatings  Ratings for safety of the prompt. There is at most one rating per category.
      */
     public function __construct(
@@ -24,13 +24,13 @@ final class PromptFeedback implements Arrayable
     ) {}
 
     /**
-     * @param  array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }  $attributes
+     * @param  array{ safetyRatings?: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }  $attributes
      */
     public static function from(array $attributes): self
     {
         $safetyRatings = array_map(
             static fn (array $rating): SafetyRating => SafetyRating::from($rating),
-            $attributes['safetyRatings'],
+            $attributes['safetyRatings'] ?? [],
         );
 
         return new self(

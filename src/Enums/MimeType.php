@@ -7,7 +7,7 @@ namespace Gemini\Enums;
 /**
  * The IANA standard MIME type of the source data.
  *
- * https://ai.google.dev/api/rest/v1/Content#blob
+ * https://ai.google.dev/api/rest/v1beta/Content#blob
  */
 enum MimeType: string
 {

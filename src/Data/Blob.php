@@ -8,9 +8,9 @@ use Gemini\Contracts\Arrayable;
 use Gemini\Enums\MimeType;
 
 /**
- * Raw media bytes.
+ * Raw media bytes. Text should not be sent as raw bytes, use the 'text' field.
  *
- * https://ai.google.dev/api/rest/v1/Content#blob
+ * https://ai.google.dev/api/caching#Blob
  */
 final class Blob implements Arrayable
 {
