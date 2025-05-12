@@ -18,11 +18,11 @@ final class Content implements Arrayable
 {
     /**
      * @param  array<Part>  $parts  Ordered Parts that constitute a single message. Parts may have different MIME types.
-     * @param  Role  $role  The producer of the content. Must be either 'user' or 'model'. Useful to set for multi-turn conversations, otherwise can be left blank or unset.
+     * @param  Role|null  $role  The producer of the content. Must be either 'user' or 'model'. Useful to set for multi-turn conversations, otherwise can be left blank or unset.
      */
     public function __construct(
         public readonly array $parts,
-        public readonly Role $role,
+        public readonly ?Role $role = null,
     ) {}
 
     /**
@@ -50,7 +50,7 @@ final class Content implements Arrayable
     }
 
     /**
-     * @param  array{ parts?: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }  $attributes
+     * @param  array{ parts?: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role?: string|string }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -59,7 +59,7 @@ final class Content implements Arrayable
                 static fn (array $candidate): Part => Part::from($candidate),
                 $attributes['parts'] ?? [],
             ),
-            role: Role::from($attributes['role'])
+            role: isset($attributes['role']) ? Role::from($attributes['role']) : null
         );
     }
 
@@ -70,7 +70,7 @@ final class Content implements Arrayable
                 static fn (Part $part): array => $part->toArray(),
                 $this->parts,
             ),
-            'role' => $this->role->value,
+            'role' => $this->role?->value,
         ];
     }
 }
