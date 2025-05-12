@@ -47,7 +47,7 @@ final class Tool implements Arrayable
         }
 
         if ($this->googleSearch !== null) {
-            $data['googleSearch'] = $this->googleSearch->toArray();
+            $data['google_search'] = $this->googleSearch->toArray();
         }
 
         return $data;

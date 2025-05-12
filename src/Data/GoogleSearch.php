@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Gemini\Data;
 
-use Gemini\Contracts\Arrayable;
+use stdClass;
 
 /**
  * This type has no fields.
@@ -12,7 +12,7 @@ use Gemini\Contracts\Arrayable;
  *
  * https://ai.google.dev/api/caching#GoogleSearch
  */
-final class GoogleSearch implements Arrayable
+final class GoogleSearch
 {
     public function __construct(
     ) {}
@@ -22,8 +22,8 @@ final class GoogleSearch implements Arrayable
         return new self;
     }
 
-    public function toArray(): array
+    public function toArray(): stdClass
     {
-        return [];
+        return new stdClass;
     }
 }
