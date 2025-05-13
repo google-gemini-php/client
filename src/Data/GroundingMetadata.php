@@ -29,7 +29,7 @@ final class GroundingMetadata implements Arrayable
     ) {}
 
     /**
-     * @param  array{ groundingChunks: ?array<array{ web?: array{ uri: string, title: string } }>, groundingSupports: ?array<array{ groundingChunkIndices: array<int>, confidenceScores: array<float>, segment: array{ partIndex: int, startIndex: int, endIndex: int, text: string } }>, webSearchQueries: ?array<string>, searchEntryPoint?: array{ renderedContent?: string|null, sdkBlob?: string|null }, retrievalMetadata: ?array{ googleSearchDynamicRetrievalScore?: float|null } }  $attributes
+     * @param  array{ groundingChunks: ?array<array{ retrievedContext: null|array{ text: ?string, title: ?string, uri: ?string }, web: null|array{ domain: ?string, title: ?string, uri: ?string } }>, groundingSupports: ?array<array{ groundingChunkIndices: array<int>|null, confidenceScores: array<float>|null, segment: ?array{ partIndex: ?int, startIndex: ?int, endIndex: ?int, text: ?string } }>, webSearchQueries: ?array<string>, searchEntryPoint?: array{ renderedContent?: string|null, sdkBlob?: string|null }, retrievalMetadata: ?array{ googleSearchDynamicRetrievalScore?: float|null } }  $attributes
      */
     public static function from(array $attributes): self
     {
