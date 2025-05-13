@@ -14,28 +14,28 @@ use Gemini\Contracts\Arrayable;
 final class Segment implements Arrayable
 {
     /**
-     * @param  int  $partIndex  Output only. The index of a Part object within its parent Content object.
-     * @param  int  $startIndex  Output only. Start index in the given Part, measured in bytes. Offset from the start of the Part, inclusive, starting at zero.
-     * @param  int  $endIndex  Output only. Output only. End index in the given Part, measured in bytes. Offset from the start of the Part, exclusive, starting at zero.
-     * @param  string  $text  Output only. The text corresponding to the segment from the response.
+     * @param  int|null  $partIndex  Output only. The index of a Part object within its parent Content object.
+     * @param  int|null  $startIndex  Output only. Start index in the given Part, measured in bytes. Offset from the start of the Part, inclusive, starting at zero.
+     * @param  int|null  $endIndex  Output only. Output only. End index in the given Part, measured in bytes. Offset from the start of the Part, exclusive, starting at zero.
+     * @param  string|null  $text  Output only. The text corresponding to the segment from the response.
      */
     public function __construct(
-        public readonly int $partIndex,
-        public readonly int $startIndex,
-        public readonly int $endIndex,
-        public readonly string $text,
+        public readonly ?int $partIndex = null,
+        public readonly ?int $startIndex = null,
+        public readonly ?int $endIndex = null,
+        public readonly ?string $text = null,
     ) {}
 
     /**
-     * @param  array{ partIndex: int, startIndex: int, endIndex: int, text: string }  $attributes
+     * @param  array{ partIndex: ?int, startIndex: ?int, endIndex: ?int, text: ?string }  $attributes
      */
     public static function from(array $attributes): self
     {
         return new self(
-            partIndex: $attributes['partIndex'],
-            startIndex: $attributes['startIndex'],
-            endIndex: $attributes['endIndex'],
-            text: $attributes['text'],
+            partIndex: $attributes['partIndex'] ?? null,
+            startIndex: $attributes['startIndex'] ?? null,
+            endIndex: $attributes['endIndex'] ?? null,
+            text: $attributes['text'] ?? null,
         );
     }
 

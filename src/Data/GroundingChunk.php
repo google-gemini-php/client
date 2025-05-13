@@ -21,7 +21,7 @@ final class GroundingChunk implements Arrayable
     ) {}
 
     /**
-     * @param  array{ web?: array{ uri: string, title: string } }  $attributes
+     * @param  array{ web: null|array{ title: ?string, uri: ?string } }  $attributes
      */
     public static function from(array $attributes): self
     {

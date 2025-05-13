@@ -14,22 +14,22 @@ use Gemini\Contracts\Arrayable;
 final class Web implements Arrayable
 {
     /**
-     * @param  string  $uri  URI reference of the chunk.
-     * @param  string  $title  Title of the chunk.
+     * @param  ?string  $uri  URI reference of the chunk.
+     * @param  ?string  $title  Title of the chunk.
      */
     public function __construct(
-        public readonly string $uri,
-        public readonly string $title,
+        public readonly ?string $uri,
+        public readonly ?string $title,
     ) {}
 
     /**
-     * @param  array{ uri: string, title: string }  $attributes
+     * @param  array{ title: ?string, uri: ?string }  $attributes
      */
     public static function from(array $attributes): self
     {
         return new self(
-            uri: $attributes['uri'],
-            title: $attributes['title'],
+            uri: $attributes['uri'] ?? null,
+            title: $attributes['title'] ?? null,
         );
     }
 
