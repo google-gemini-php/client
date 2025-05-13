@@ -98,9 +98,10 @@ Interact with Gemini's API:
 ```php
 use Gemini\Enums\ModelVariation;
 use Gemini\GeminiHelper;
+use Gemini;
 
 $yourApiKey = getenv('YOUR_API_KEY');
-$client = \Gemini::client($yourApiKey);
+$client = Gemini::client($yourApiKey);
 
 $result = $client->generativeModel(model: 'gemini-2.0-flash')->generateContent('Hello');
 $result->text(); // Hello! How can I assist you today?
@@ -116,18 +117,11 @@ $result = $client->generativeModel(
 $result->text(); // Hello! How can I assist you today?
 ```
 
-**Note**: You can also add `use Gemini;` as import to use `Gemini::client($yourApiKey)` without a backslash.
-```php
-use Gemini\Enums\ModelVariation;
-use Gemini;
-
-$yourApiKey = getenv('YOUR_API_KEY');
-$client = Gemini::client($yourApiKey);
-```
-
 If necessary, it is possible to configure and create a separate client.
 
 ```php
+use Gemini;
+
 $yourApiKey = getenv('YOUR_API_KEY');
 
 $client = Gemini::factory()
@@ -151,6 +145,8 @@ For a complete list of supported input formats and methods in Gemini API v1, see
 Generate a response from the model given an input message.
 
 ```php
+use Gemini;
+
 $yourApiKey = getenv('YOUR_API_KEY');
 $client = Gemini::client($yourApiKey);
 
