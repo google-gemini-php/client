@@ -100,7 +100,7 @@ use Gemini\Enums\ModelVariation;
 use Gemini\GeminiHelper;
 
 $yourApiKey = getenv('YOUR_API_KEY');
-$client = Gemini::client($yourApiKey);
+$client = \Gemini::client($yourApiKey);
 
 $result = $client->generativeModel(model: 'gemini-2.0-flash')->generateContent('Hello');
 $result->text(); // Hello! How can I assist you today?
@@ -114,6 +114,15 @@ $result = $client->generativeModel(
     ), // models/gemini-2.5-flash-preview-04-17
 );
 $result->text(); // Hello! How can I assist you today?
+```
+
+**Note**: You can also add `use Gemini;` as import to use `Gemini::client($yourApiKey)` without a backslash.
+```php
+use Gemini\Enums\ModelVariation;
+use Gemini;
+
+$yourApiKey = getenv('YOUR_API_KEY');
+$client = Gemini::client($yourApiKey);
 ```
 
 If necessary, it is possible to configure and create a separate client.
