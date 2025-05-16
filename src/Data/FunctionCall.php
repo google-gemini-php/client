@@ -38,10 +38,18 @@ final class FunctionCall implements Arrayable
 
     public function toArray(): array
     {
-        return [
+        $data = [
             'name' => $this->name,
-            'args' => $this->args,
-            'id' => $this->id,
         ];
+
+        if ($this->args !== []) {
+            $data['args'] = $this->args;
+        }
+
+        if ($this->id !== null) {
+            $data['id'] = $this->id;
+        }
+
+        return $data;
     }
 }
