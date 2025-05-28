@@ -7,8 +7,10 @@ namespace Gemini\Resources;
 use Gemini\Contracts\Resources\FilesContract;
 use Gemini\Contracts\TransporterContract;
 use Gemini\Enums\MimeType;
+use Gemini\Requests\Files\ListRequest;
 use Gemini\Requests\Files\MetadataGetRequest;
 use Gemini\Requests\Files\UploadRequest;
+use Gemini\Responses\Files\ListResponse;
 use Gemini\Responses\Files\MetadataResponse;
 use Gemini\Responses\Files\UploadResponse;
 use Gemini\Transporters\DTOs\ResponseDTO;
@@ -38,5 +40,13 @@ final class Files implements FilesContract
         $response = $this->transporter->request(new MetadataGetRequest($nameOrUri));
 
         return MetadataResponse::from($response->data());
+    }
+
+    public function list(): ListResponse
+    {
+        /** @var ResponseDTO<array{ files: array{ array{ name: string, displayName: string, mimeType: string, sizeBytes: string, createTime: string, updateTime: string, expirationTime: string, sha256Hash: string, uri: string, state: string, videoMetadata: ?array{ videoDuration: string } } }, nextPageToken: string }> $response */
+        $response = $this->transporter->request(new ListRequest());
+
+        return ListResponse::from($response->data());
     }
 }
