@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Gemini\Enums\MimeType;
 use Gemini\Resources\Files;
+use Gemini\Responses\Files\ListResponse;
 use Gemini\Responses\Files\MetadataResponse;
 use Gemini\Testing\ClientFake;
 
@@ -32,5 +33,17 @@ it('records a metadata get request', function () {
     $fake->assertSent(resource: Files::class, callback: function ($method, $parameters) {
         return $method === 'metadataGet' &&
             $parameters[0] === 'filename.pdf';
+    });
+});
+
+it('records a file list request', function () {
+    $fake = new ClientFake([
+        ListResponse::fake(),
+    ]);
+
+    $fake->files()->list();
+
+    $fake->assertSent(resource: Files::class, callback: function ($method) {
+        return $method === 'list';
     });
 });

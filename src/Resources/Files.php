@@ -42,10 +42,10 @@ final class Files implements FilesContract
         return MetadataResponse::from($response->data());
     }
 
-    public function list(): ListResponse
+    public function list(?int $pageSize = null, ?string $nextPageToken = null): ListResponse
     {
         /** @var ResponseDTO<array{ files: array{ array{ name: string, displayName: string, mimeType: string, sizeBytes: string, createTime: string, updateTime: string, expirationTime: string, sha256Hash: string, uri: string, state: string, videoMetadata: ?array{ videoDuration: string } } }, nextPageToken: string }> $response */
-        $response = $this->transporter->request(new ListRequest());
+        $response = $this->transporter->request(new ListRequest(pageSize: $pageSize, nextPageToken: $nextPageToken));
 
         return ListResponse::from($response->data());
     }
