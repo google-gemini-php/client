@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gemini\Contracts\Resources;
 
 use Gemini\Enums\MimeType;
+use Gemini\Responses\Files\ListResponse;
 use Gemini\Responses\Files\MetadataResponse;
 
 interface FilesContract
@@ -21,4 +22,6 @@ interface FilesContract
      * @param  string  $nameOrUri  Either the just file name or the complete metadata URI from an upload.
      */
     public function metadataGet(string $nameOrUri): MetadataResponse;
+
+    public function list(?int $pageSize = null, ?string $nextPageToken = null): ListResponse;
 }
