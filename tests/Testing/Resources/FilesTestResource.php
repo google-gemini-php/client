@@ -47,3 +47,16 @@ it('records a file list request', function () {
         return $method === 'list';
     });
 });
+
+it('records a file delete request', function () {
+    $fake = new ClientFake([
+        MetadataResponse::fake(), // no actual response
+    ]);
+
+    $fake->files()->delete('filename.pdf');
+
+    $fake->assertSent(resource: Files::class, callback: function ($method, $parameters) {
+        return $method === 'delete' &&
+            $parameters[0] === 'filename.pdf';
+    });
+});

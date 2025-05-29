@@ -7,6 +7,7 @@ namespace Gemini\Resources;
 use Gemini\Contracts\Resources\FilesContract;
 use Gemini\Contracts\TransporterContract;
 use Gemini\Enums\MimeType;
+use Gemini\Requests\Files\DeleteRequest;
 use Gemini\Requests\Files\ListRequest;
 use Gemini\Requests\Files\MetadataGetRequest;
 use Gemini\Requests\Files\UploadRequest;
@@ -48,5 +49,11 @@ final class Files implements FilesContract
         $response = $this->transporter->request(new ListRequest(pageSize: $pageSize, nextPageToken: $nextPageToken));
 
         return ListResponse::from($response->data());
+    }
+
+    public function delete(string $nameOrUri)
+    {
+        /** returns ResponseDTO<array{ }> */
+        $this->transporter->request(new DeleteRequest($nameOrUri));
     }
 }
