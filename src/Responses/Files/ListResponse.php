@@ -29,7 +29,7 @@ class ListResponse implements ResponseContract
     public static function from(array $attributes): self
     {
         return new self(
-            files: array_map(fn(array $file): MetadataResponse => MetadataResponse::from($file), $attributes['files'] ?? ''),
+            files: array_map(fn(array $file): MetadataResponse => MetadataResponse::from($file), $attributes['files'] ?? []),
             nextPageToken: $attributes['nextPageToken'] ?? null,
         );
     }
