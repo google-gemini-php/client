@@ -43,6 +43,6 @@ class ListRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        return "files";
+        return 'files';
     }
 }

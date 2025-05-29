@@ -8,7 +8,7 @@ final class ListResponseFixture
 {
     public const ATTRIBUTES = [
         'files' => [
-            MetadataResponseFixture::ATTRIBUTES
+            MetadataResponseFixture::ATTRIBUTES,
         ],
         'nextPageToken' => 'xcDIwbnBkYTVqczEciEKD4IBDAiBr9jBBhDIh6WGAgoOQgx',
     ];

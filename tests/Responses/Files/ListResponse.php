@@ -1,7 +1,7 @@
 <?php
 
-use Gemini\Responses\Files\MetadataResponse;
 use Gemini\Responses\Files\ListResponse;
+use Gemini\Responses\Files\MetadataResponse;
 
 test('from', function () {
     $response = ListResponse::from(ListResponse::fake()->toArray());

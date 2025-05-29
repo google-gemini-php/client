@@ -34,7 +34,6 @@ test('metadata get', function () {
         ->toBeInstanceOf(MetadataResponse::class);
 });
 
-
 test('files list', function () {
     $client = mockClient(method: Method::GET, endpoint: 'files', response: ListResponse::fake());
 
