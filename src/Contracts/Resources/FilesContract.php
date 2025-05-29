@@ -25,5 +25,5 @@ interface FilesContract
 
     public function list(?int $pageSize = null, ?string $nextPageToken = null): ListResponse;
 
-    public function delete(string $nameOrUri);
+    public function delete(string $nameOrUri): void;
 }

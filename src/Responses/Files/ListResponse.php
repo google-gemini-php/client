@@ -24,7 +24,7 @@ class ListResponse implements ResponseContract
     ) {}
 
     /**
-     * @param  array{ files: array{ array{ name: string, displayName: string, mimeType: string, sizeBytes: string, createTime: string, updateTime: string, expirationTime: string, sha256Hash: string, uri: string, state: string, videoMetadata: ?array{ videoDuration: string } } }, nextPageToken: string }  $attributes
+     * @param  array{ files: ?array{ array{ name: string, displayName: string, mimeType: string, sizeBytes: string, createTime: string, updateTime: string, expirationTime: string, sha256Hash: string, uri: string, state: string, videoMetadata: ?array{ videoDuration: string } } }, nextPageToken: ?string }  $attributes
      */
     public static function from(array $attributes): self
     {

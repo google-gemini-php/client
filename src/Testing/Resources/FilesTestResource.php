@@ -35,8 +35,8 @@ final class FilesTestResource implements FilesContract
         return $this->record(method: __FUNCTION__, args: func_get_args());
     }
 
-    public function delete(string $nameOrUri)
+    public function delete(string $nameOrUri): void
     {
-        return $this->record(method: __FUNCTION__, args: func_get_args());
+        $this->record(method: __FUNCTION__, args: func_get_args());
     }
 }

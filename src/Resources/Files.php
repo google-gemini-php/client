@@ -51,7 +51,7 @@ final class Files implements FilesContract
         return ListResponse::from($response->data());
     }
 
-    public function delete(string $nameOrUri)
+    public function delete(string $nameOrUri): void
     {
         /** returns ResponseDTO<array{ }> */
         $this->transporter->request(new DeleteRequest($nameOrUri));
