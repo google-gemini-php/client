@@ -2,6 +2,7 @@
 
 use Gemini\Enums\Method;
 use Gemini\Enums\MimeType;
+use Gemini\Responses\Files\ListResponse;
 use Gemini\Responses\Files\MetadataResponse;
 use Gemini\Responses\Files\UploadResponse;
 
@@ -31,4 +32,13 @@ test('metadata get', function () {
 
     expect($result)
         ->toBeInstanceOf(MetadataResponse::class);
+});
+
+test('files list', function () {
+    $client = mockClient(method: Method::GET, endpoint: 'files', response: ListResponse::fake());
+
+    $result = $client->files()->list();
+
+    expect($result)
+        ->toBeInstanceOf(ListResponse::class);
 });
