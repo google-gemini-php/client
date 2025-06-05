@@ -620,7 +620,7 @@ $client = new ClientFake([
     ]),
 ]);
 
-$result = $fake->->generativeModel(model: 'gemini-2.0-flash')->generateContent('test');
+$result = $fake->generativeModel(model: 'gemini-2.0-flash')->generateContent('test');
 
 expect($result->text())->toBe('success');
 ```
@@ -669,12 +669,12 @@ $fake->assertSent(resource: GenerativeModel::class, model: 'gemini-2.0-flash', c
 // assert 2 generative model requests were sent
 $client->assertSent(resource: GenerativeModel::class, model: 'gemini-2.0-flash', callback: 2);
 // or
-$client->->generativeModel(model: 'gemini-2.0-flash')->assertSent(2);
+$client->generativeModel(model: 'gemini-2.0-flash')->assertSent(2);
 
 // assert no generative model requests were sent
 $client->assertNotSent(resource: GenerativeModel::class, model: 'gemini-2.0-flash');
 // or
-$client->->generativeModel(model: 'gemini-2.0-flash')->assertNotSent();
+$client->generativeModel(model: 'gemini-2.0-flash')->assertNotSent();
 
 // assert no requests were sent
 $client->assertNothingSent();
