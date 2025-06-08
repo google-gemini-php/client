@@ -25,6 +25,7 @@ enum MimeType: string
     case AUDIO_AAC = 'audio/aac';
     case AUDIO_OGG = 'audio/ogg';
     case AUDIO_FLAC = 'audio/flac';
+    case AUDIO_PCM = 'audio/L16;codec=pcm;rate=24000';
 
     // Video
     case VIDEO_MP4 = 'video/mp4';
