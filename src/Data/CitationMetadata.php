@@ -26,10 +26,10 @@ final class CitationMetadata implements Arrayable
     public static function from(array $attributes): self
     {
         return new self(
-            citationSources: array_map(
+            citationSources: isset($attributes['citationSources']) ? array_map(
                 static fn (array $source): CitationSource => CitationSource::from($source),
                 $attributes['citationSources'],
-            )
+            ) : null
         );
     }
 
