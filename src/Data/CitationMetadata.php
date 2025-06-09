@@ -21,15 +21,15 @@ final class CitationMetadata implements Arrayable
     ) {}
 
     /**
-     * @param  array{ citationSources: ?array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string } } }  $attributes
+     * @param  array{ citationSources?: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string } } }  $attributes
      */
     public static function from(array $attributes): self
     {
         return new self(
-            citationSources: isset($attributes['citationSources']) ? array_map(
+            citationSources: array_map(
                 static fn (array $source): CitationSource => CitationSource::from($source),
-                $attributes['citationSources'],
-            ) : null
+                $attributes['citationSources'] ?? [],
+            )
         );
     }
 
