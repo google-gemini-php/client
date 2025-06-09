@@ -20,7 +20,7 @@ final class SpeechConfig implements Arrayable
      */
     public function __construct(
         public readonly ?VoiceConfig $voiceConfig = null,
-		public readonly ?MultiSpeakerVoiceConfig $multiSpeakerVoiceConfig = null,
+        public readonly ?MultiSpeakerVoiceConfig $multiSpeakerVoiceConfig = null,
         public readonly ?string $languageCode = null,
     ) {}
 
@@ -31,7 +31,7 @@ final class SpeechConfig implements Arrayable
     {
         return new self(
             voiceConfig: isset($attributes['voiceConfig']) ? VoiceConfig::from($attributes['voiceConfig']) : null,
-			multiSpeakerVoiceConfig: isset($attributes['multiSpeakerVoiceConfig']) ? MultiSpeakerVoiceConfig::from($attributes['multiSpeakerVoiceConfig']) : null,
+            multiSpeakerVoiceConfig: isset($attributes['multiSpeakerVoiceConfig']) ? MultiSpeakerVoiceConfig::from($attributes['multiSpeakerVoiceConfig']) : null,
             languageCode: $attributes['languageCode'] ?? null,
         );
     }
@@ -40,7 +40,7 @@ final class SpeechConfig implements Arrayable
     {
         return [
             'voiceConfig' => $this->voiceConfig?->toArray(),
-			'multiSpeakerVoiceConfig' => $this->multiSpeakerVoiceConfig?->toArray(),
+            'multiSpeakerVoiceConfig' => $this->multiSpeakerVoiceConfig?->toArray(),
             'languageCode' => $this->languageCode,
         ];
     }

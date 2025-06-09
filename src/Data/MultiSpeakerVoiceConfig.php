@@ -17,7 +17,7 @@ final class MultiSpeakerVoiceConfig implements Arrayable
      * @param  array<SpeakerVoiceConfig>  $speakerVoiceConfigs  Required. All the enabled speaker voices.
      */
     public function __construct(
-		public readonly array $speakerVoiceConfigs,
+        public readonly array $speakerVoiceConfigs,
     ) {}
 
     /**
@@ -26,20 +26,20 @@ final class MultiSpeakerVoiceConfig implements Arrayable
     public static function from(array $attributes): self
     {
         return new self(
-			speakerVoiceConfigs: array_map(
-				static fn (array $speakerVoiceConfig): SpeakerVoiceConfig => SpeakerVoiceConfig::from($speakerVoiceConfig),
-				$attributes['speakerVoiceConfigs'],
-			)
+            speakerVoiceConfigs: array_map(
+                static fn (array $speakerVoiceConfig): SpeakerVoiceConfig => SpeakerVoiceConfig::from($speakerVoiceConfig),
+                $attributes['speakerVoiceConfigs'],
+            )
         );
     }
 
     public function toArray(): array
     {
         return [
-			'speakerVoiceConfigs' => array_map(
-				static fn (SpeakerVoiceConfig $speakerVoiceConfig): array => $speakerVoiceConfig->toArray(),
-				$this->speakerVoiceConfigs,
-			),
-		];
+            'speakerVoiceConfigs' => array_map(
+                static fn (SpeakerVoiceConfig $speakerVoiceConfig): array => $speakerVoiceConfig->toArray(),
+                $this->speakerVoiceConfigs,
+            ),
+        ];
     }
 }

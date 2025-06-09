@@ -18,7 +18,7 @@ final class SpeakerVoiceConfig implements Arrayable
      * @param  VoiceConfig  $voiceConfig  Required. The configuration for the voice to use.
      */
     public function __construct(
-		public readonly string $speaker,
+        public readonly string $speaker,
         public readonly VoiceConfig $voiceConfig,
     ) {}
 
@@ -28,7 +28,7 @@ final class SpeakerVoiceConfig implements Arrayable
     public static function from(array $attributes): self
     {
         return new self(
-			speaker: $attributes['speaker'],
+            speaker: $attributes['speaker'],
             voiceConfig: VoiceConfig::from($attributes['voiceConfig']),
         );
     }
@@ -36,8 +36,8 @@ final class SpeakerVoiceConfig implements Arrayable
     public function toArray(): array
     {
         return [
-			'speaker' => $this->speaker,
-			'voiceConfig' => $this->voiceConfig->toArray(),
-		];
+            'speaker' => $this->speaker,
+            'voiceConfig' => $this->voiceConfig->toArray(),
+        ];
     }
 }
