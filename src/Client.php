@@ -6,6 +6,7 @@ namespace Gemini;
 
 use BackedEnum;
 use Gemini\Contracts\ClientContract;
+use Gemini\Contracts\Resources\FilesContract;
 use Gemini\Contracts\Resources\GenerativeModelContract;
 use Gemini\Contracts\TransporterContract;
 use Gemini\Enums\ModelType;
@@ -69,7 +70,7 @@ final class Client implements ClientContract
      *
      * @link https://ai.google.dev/api/files
      */
-    public function files(): Files
+    public function files(): FilesContract
     {
         return new Files($this->transporter);
     }
