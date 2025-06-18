@@ -11,6 +11,7 @@ use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
 use Gemini\Data\Tool;
 use Gemini\Data\ToolConfig;
+use Gemini\Data\UploadedFile;
 use Gemini\Resources\ChatSession;
 use Gemini\Resources\GenerativeModel;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
@@ -27,17 +28,17 @@ final class GenerativeModelTestResource implements GenerativeModelContract
         return GenerativeModel::class;
     }
 
-    public function countTokens(string|array|Blob|Content ...$parts): CountTokensResponse
+    public function countTokens(string|array|Blob|Content|UploadedFile ...$parts): CountTokensResponse
     {
         return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
     }
 
-    public function generateContent(string|array|Blob|Content ...$parts): GenerateContentResponse
+    public function generateContent(string|array|Blob|Content|UploadedFile ...$parts): GenerateContentResponse
     {
         return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
     }
 
-    public function streamGenerateContent(string|array|Blob|Content ...$parts): StreamResponse
+    public function streamGenerateContent(string|array|Blob|Content|UploadedFile ...$parts): StreamResponse
     {
         return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
     }

@@ -11,6 +11,7 @@ use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
 use Gemini\Data\Tool;
 use Gemini\Data\ToolConfig;
+use Gemini\Data\UploadedFile;
 use Gemini\Enums\Method;
 use Gemini\Foundation\Request;
 use Gemini\Requests\Concerns\HasJsonBody;
@@ -26,7 +27,7 @@ class StreamGenerateContentRequest extends Request
     protected Method $method = Method::POST;
 
     /**
-     * @param  array<string|Blob|array<string|Blob>|Content>  $parts
+     * @param  array<string|Blob|array<string|Blob>|Content|UploadedFile>  $parts
      * @param  array<SafetySetting>  $safetySettings
      * @param  array<Tool>  $tools
      */
