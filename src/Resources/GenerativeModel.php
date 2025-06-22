@@ -93,11 +93,11 @@ final class GenerativeModel implements GenerativeModelContract
      *
      * @see https://ai.google.dev/api/rest/v1beta/models/countTokens
      *
-     * @param  string|Blob|array<string|Blob>|Content  ...$parts
+     * @param  string|Blob|array<string|Blob>|Content|UploadedFile  ...$parts
      *
      * @throws \Exception
      */
-    public function countTokens(string|Blob|array|Content ...$parts): CountTokensResponse
+    public function countTokens(string|Blob|array|Content|UploadedFile ...$parts): CountTokensResponse
     {
         /** @var ResponseDTO<array{ totalTokens: int }> $response */
         $response = $this->transporter->request(request: new CountTokensRequest(model: $this->model, parts: $parts));
@@ -134,7 +134,7 @@ final class GenerativeModel implements GenerativeModelContract
      *
      * @see https://ai.google.dev/api/rest/v1beta/models/streamGenerateContent
      */
-    public function streamGenerateContent(string|Blob|array|Content ...$parts): StreamResponse
+    public function streamGenerateContent(string|Blob|array|Content|UploadedFile ...$parts): StreamResponse
     {
         $response = $this->transporter->requestStream(
             request: new StreamGenerateContentRequest(
