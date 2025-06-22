@@ -29,6 +29,7 @@
       - [Stream Generate Content](#stream-generate-content)
       - [Structured Output](#structured-output)
       - [Function calling](#function-calling)
+      - [Speech generation](#speech-generation)
       - [Count tokens](#count-tokens)
       - [Configuration](#configuration)
     - [Embedding Resource](#embedding-resource)
@@ -387,6 +388,64 @@ if ($response->parts()[0]->functionCall !== null) {
 }
 
 echo $response->text(); // 4 + 3 = 7
+```
+
+#### Speech generation
+Gemini allows generating [speech from a text](https://ai.google.dev/gemini-api/docs/speech-generation). To use that, make sure to use a model that supports this functionality. The model will output base64 encoded audio string.
+
+##### Single speaker
+
+```php
+<?php
+
+use Gemini\Data\GenerationConfig;
+use Gemini\Data\VoiceConfig;
+use Gemini\Enums\ResponseModality;
+
+$response = $gemini->generativeModel('gemini-2.5-flash-preview-tts')->withGenerationConfig(
+    generationConfig: new GenerationConfig(
+        responseModalities: [ResponseModality::AUDIO],
+        speechConfig: new Gemini\Data\SpeechConfig(
+            voiceConfig: new VoiceConfig(
+                new Gemini\Data\PrebuiltVoiceConfig(voiceName: 'Kore')
+            ),
+        )
+    )
+)->generateContent("Say: Hello world");
+```
+
+##### Multi speaker
+
+```php
+use Gemini\Data\GenerationConfig;
+use Gemini\Data\MultiSpeakerVoiceConfig;
+use Gemini\Data\PrebuiltVoiceConfig;
+use Gemini\Data\SpeakerVoiceConfig;
+use Gemini\Data\VoiceConfig;
+use Gemini\Enums\ResponseModality;
+
+$response = $gemini->generativeModel('gemini-2.5-flash-preview-tts')->withGenerationConfig(
+    generationConfig: new GenerationConfig(
+        responseModalities: [ResponseModality::AUDIO],
+        speechConfig: new Gemini\Data\SpeechConfig(
+            multiSpeakerVoiceConfig: new MultiSpeakerVoiceConfig([
+                new SpeakerVoiceConfig(
+                    speaker: 'Joe',
+                    voiceConfig: new VoiceConfig(
+                        new PrebuiltVoiceConfig('Kore'),
+                    )
+                ),
+                new SpeakerVoiceConfig(
+                    speaker: 'Jane',
+                    voiceConfig: new VoiceConfig(
+                        new PrebuiltVoiceConfig('Puck'),
+                    )
+                )
+            ]),
+            languageCode: 'en-GB'
+        )
+    )
+)->generateContent("TTS the following conversation between Joe and Jane:\nJoe: How's it going today Jane?\nJane: Not too bad, how about you?");
 ```
 
 #### Count tokens
