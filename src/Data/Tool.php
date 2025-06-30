@@ -26,7 +26,7 @@ final class Tool implements Arrayable
         public ?GoogleSearchRetrieval $googleSearchRetrieval = null,
         public ?CodeExecution $codeExecution = null,
         public ?GoogleSearch $googleSearch = null,
-		public ?UrlContext $urlContext = null,
+        public ?UrlContext $urlContext = null,
     ) {}
 
     public function toArray(): array
@@ -52,9 +52,9 @@ final class Tool implements Arrayable
             $data['google_search'] = $this->googleSearch->toArray();
         }
 
-		if ($this->urlContext !== null) {
-			$data['url_context'] = $this->urlContext->toArray();
-		}
+        if ($this->urlContext !== null) {
+            $data['url_context'] = $this->urlContext->toArray();
+        }
 
         return $data;
     }
