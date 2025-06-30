@@ -19,12 +19,14 @@ final class Tool implements Arrayable
      * @param  GoogleSearchRetrieval|null  $googleSearchRetrieval  Optional. Retrieval tool that is powered by Google search.
      * @param  CodeExecution|null  $codeExecution  Optional. Enables the model to execute code as part of generation.
      * @param  GoogleSearch|null  $googleSearch  Optional. GoogleSearch tool type. Tool to support Google Search in Model. Powered by Google.
+     * @param  UrlContext|null  $urlContext  Optional. Tool to support URL context retrieval.
      */
     public function __construct(
         public ?array $functionDeclarations = null,
         public ?GoogleSearchRetrieval $googleSearchRetrieval = null,
         public ?CodeExecution $codeExecution = null,
         public ?GoogleSearch $googleSearch = null,
+		public ?UrlContext $urlContext = null,
     ) {}
 
     public function toArray(): array
@@ -49,6 +51,10 @@ final class Tool implements Arrayable
         if ($this->googleSearch !== null) {
             $data['google_search'] = $this->googleSearch->toArray();
         }
+
+		if ($this->urlContext !== null) {
+			$data['url_context'] = $this->urlContext->toArray();
+		}
 
         return $data;
     }
