@@ -130,8 +130,8 @@ $client = Gemini::factory()
     ->withBaseUrl('https://generativelanguage.example.com/v1beta') // default: https://generativelanguage.googleapis.com/v1beta/
     ->withHttpHeader('X-My-Header', 'foo')
     ->withQueryParam('my-param', 'bar')
-    ->withHttpClient(new \GuzzleHttp\Client([]))  // default: HTTP client found using PSR-18 HTTP Client Discovery
-    ->withStreamHandler(fn(RequestInterface $request): ResponseInterface => $client->send($request, [
+    ->withHttpClient($guzzleClient = new \GuzzleHttp\Client(['timeout' => 30]))  // default: HTTP client found using PSR-18 HTTP Client Discovery
+    ->withStreamHandler(fn(RequestInterface $request): ResponseInterface => $guzzleClient->send($request, [
         'stream' => true // Allows to provide a custom stream handler for the http client.
     ]))
     ->make();
