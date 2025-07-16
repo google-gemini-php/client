@@ -11,6 +11,7 @@ use Gemini\Enums\ModelType;
 use Gemini\Responses\StreamResponse;
 use Gemini\Testing\FunctionCalls\TestFunctionCall;
 use Gemini\Testing\Requests\TestRequest;
+use Gemini\Testing\Resources\CachedContentsTestResource;
 use Gemini\Testing\Resources\ChatSessionTestResource;
 use Gemini\Testing\Resources\EmbeddingModelTestResource;
 use Gemini\Testing\Resources\FilesTestResource;
@@ -247,5 +248,10 @@ class ClientFake implements ClientContract
     public function files(): FilesTestResource
     {
         return new FilesTestResource(fake: $this);
+    }
+
+    public function cachedContents(): CachedContentsTestResource
+    {
+        return new CachedContentsTestResource(fake: $this);
     }
 }
