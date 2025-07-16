@@ -30,9 +30,9 @@ class UpdateRequest extends Request
      */
     protected function defaultBody(): array
     {
-        return [
+        return array_filter([
             'ttl' => $this->ttl,
             'expireTime' => $this->expireTime,
-        ];
+        ], static fn ($v) => $v !== null);
     }
 }

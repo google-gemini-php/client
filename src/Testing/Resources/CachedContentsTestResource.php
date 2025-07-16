@@ -25,12 +25,12 @@ final class CachedContentsTestResource implements CachedContentsContract
 
     public function create(
         BackedEnum|string $model,
-        string|Blob|array|Content|UploadedFile ...$parts,
         ?Content $systemInstruction = null,
         array $tools = [],
         ?ToolConfig $toolConfig = null,
         ?string $ttl = null,
         ?string $displayName = null,
+        string|Blob|array|Content|UploadedFile ...$parts,
     ): MetadataResponse {
         return $this->record(method: __FUNCTION__, args: func_get_args());
     }
