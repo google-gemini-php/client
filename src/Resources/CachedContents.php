@@ -41,6 +41,7 @@ final class CachedContents implements CachedContentsContract
         ?string $displayName = null,
         string|Blob|array|Content|UploadedFile ...$parts,
     ): MetadataResponse {
+        /** @var array<int, string|Blob|array<string|Blob|UploadedFile>|Content|UploadedFile> $parts */
         /** @var ResponseDTO<array{name:string,model:string,displayName:?string,usageMetadata:array<string,mixed>,createTime:string,updateTime:string,expireTime:string}> $response */
         $response = $this->transporter->request(new CreateRequest(
             model: $this->parseModel($model),

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Gemini\Requests\CachedContents;
 
 use Gemini\Concerns\HasContents;
+use Gemini\Data\Blob;
 use Gemini\Data\Content;
 use Gemini\Data\Tool;
 use Gemini\Data\ToolConfig;
+use Gemini\Data\UploadedFile;
 use Gemini\Enums\Method;
 use Gemini\Foundation\Request;
 use Gemini\Requests\Concerns\HasJsonBody;
@@ -30,6 +32,7 @@ class CreateRequest extends Request
         protected readonly ?ToolConfig $toolConfig = null,
         protected readonly ?string $ttl = null,
         protected readonly ?string $displayName = null,
+        /** @var array<int, string|Blob|array<string|Blob|UploadedFile>|Content|UploadedFile> */
         protected array $parts = [],
     ) {}
 
@@ -43,7 +46,7 @@ class CreateRequest extends Request
      */
     protected function defaultBody(): array
     {
-        return [
+        return array_filter([
             'model' => $this->model,
             'contents' => array_map(
                 static fn (Content $c): array => $c->toArray(),
@@ -54,6 +57,6 @@ class CreateRequest extends Request
             'toolConfig' => $this->toolConfig?->toArray(),
             'ttl' => $this->ttl,
             'displayName' => $this->displayName,
-        ];
+        ], static fn ($v) => $v !== null);
     }
 }
