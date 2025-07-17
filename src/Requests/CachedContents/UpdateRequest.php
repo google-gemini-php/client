@@ -24,11 +24,11 @@ class UpdateRequest extends Request
             throw new InvalidArgumentException('Name cannot be empty');
         }
 
-        if (!preg_match('/^[a-zA-Z0-9\/_-]+$/', $name)) {
+        if (! preg_match('/^[a-zA-Z0-9\/_-]+$/', $name)) {
             throw new InvalidArgumentException('Name contains invalid characters');
         }
 
-        if ($ttl !== null && !preg_match('/^\d+(?:\.\d{1,9})?s?$/', $ttl)) {
+        if ($ttl !== null && ! preg_match('/^\d+(?:\.\d{1,9})?s?$/', $ttl)) {
             throw new InvalidArgumentException('TTL must be a duration in seconds (e.g., "60s", "120.5s")');
         }
     }
