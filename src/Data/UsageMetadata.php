@@ -44,7 +44,7 @@ final class UsageMetadata implements Arrayable
     public static function from(array $attributes): self
     {
         return new self(
-            promptTokenCount: $attributes['promptTokenCount'],
+            promptTokenCount: $attributes['promptTokenCount'] ?? 0,
             totalTokenCount: $attributes['totalTokenCount'],
             candidatesTokenCount: $attributes['candidatesTokenCount'] ?? null,
             cachedContentTokenCount: $attributes['cachedContentTokenCount'] ?? null,
