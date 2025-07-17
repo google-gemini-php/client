@@ -44,6 +44,7 @@ final class UsageMetadata implements Arrayable
     public static function from(array $attributes): self
     {
         return new self(
+            // @phpstan-ignore nullCoalesce.offset
             promptTokenCount: $attributes['promptTokenCount'] ?? 0,
             totalTokenCount: $attributes['totalTokenCount'],
             candidatesTokenCount: $attributes['candidatesTokenCount'] ?? null,
