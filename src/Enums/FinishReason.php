@@ -70,4 +70,14 @@ enum FinishReason: string
      * Token generation stopped because generated images contain safety violations.
      */
     case IMAGE_SAFETY = 'IMAGE_SAFETY';
+
+    /**
+     * Model generated a tool call but no tools were enabled in the request.
+     */
+    case UNEXPECTED_TOOL_CALL = 'UNEXPECTED_TOOL_CALL';
+
+    /**
+     * Model called too many tools consecutively, thus the system exited execution.
+     */
+    case TOO_MANY_TOOL_CALLS = 'TOO_MANY_TOOL_CALLS';
 }
