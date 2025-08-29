@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gemini\Contracts;
 
 use BackedEnum;
+use Gemini\Contracts\Resources\CachedContentsContract;
 use Gemini\Contracts\Resources\ChatSessionContract;
 use Gemini\Contracts\Resources\EmbeddingModalContract;
 use Gemini\Contracts\Resources\FilesContract;
@@ -32,4 +33,6 @@ interface ClientContract
     public function chat(BackedEnum|string $model): ChatSessionContract;
 
     public function files(): FilesContract;
+
+    public function cachedContents(): CachedContentsContract;
 }
