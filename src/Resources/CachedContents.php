@@ -29,7 +29,7 @@ final class CachedContents implements CachedContentsContract
     public function __construct(private readonly TransporterContract $transporter) {}
 
     /**
-     * @param  string|Blob|array<string|Blob|UploadedFile>|Content|UploadedFile  ...$parts
+     * @param  string|Blob|array<string|Blob|Content|UploadedFile>|Content|UploadedFile  ...$parts
      * @param  array<Tool>  $tools
      */
     public function create(
@@ -42,7 +42,7 @@ final class CachedContents implements CachedContentsContract
         string|Blob|array|Content|UploadedFile ...$parts,
     ): MetadataResponse {
         /** @var array<int, string|Blob|array<string|Blob|UploadedFile>|Content|UploadedFile> $parts */
-        /** @var ResponseDTO<array{name:string,model:string,displayName:?string,usageMetadata:array<string,mixed>,createTime:string,updateTime:string,expireTime:string}> $response */
+        /** @var ResponseDTO<array{name:string,model:string,displayName:string|null,usageMetadata:array<string,mixed>,createTime:string,updateTime:string,expireTime:string}> $response */
         $response = $this->transporter->request(new CreateRequest(
             model: $this->parseModel($model),
             systemInstruction: $systemInstruction,
@@ -50,7 +50,7 @@ final class CachedContents implements CachedContentsContract
             toolConfig: $toolConfig,
             ttl: $ttl,
             displayName: $displayName,
-            parts: $parts,
+            parts: array_values($parts),
         ));
 
         return MetadataResponse::from($response->data());
@@ -58,7 +58,7 @@ final class CachedContents implements CachedContentsContract
 
     public function retrieve(string $name): MetadataResponse
     {
-        /** @var ResponseDTO<array{name:string,model:string,displayName:?string,usageMetadata:array<string,mixed>,createTime:string,updateTime:string,expireTime:string}> $response */
+        /** @var ResponseDTO<array{name:string,model:string,displayName:string|null,usageMetadata:array<string,mixed>,createTime:string,updateTime:string,expireTime:string}> $response */
         $response = $this->transporter->request(new RetrieveRequest($name));
 
         return MetadataResponse::from($response->data());
@@ -66,7 +66,7 @@ final class CachedContents implements CachedContentsContract
 
     public function list(?int $pageSize = null, ?string $pageToken = null): ListResponse
     {
-        /** @var ResponseDTO<array{cachedContents:?array<array<string,mixed>>,nextPageToken:?string}> $response */
+        /** @var ResponseDTO<array{cachedContents:array<array<string,mixed>>|null,nextPageToken:string|null}> $response */
         $response = $this->transporter->request(new ListRequest($pageSize, $pageToken));
 
         return ListResponse::from($response->data());
@@ -74,7 +74,7 @@ final class CachedContents implements CachedContentsContract
 
     public function update(string $name, ?string $ttl = null, ?string $expireTime = null): MetadataResponse
     {
-        /** @var ResponseDTO<array{name:string,model:string,displayName:?string,usageMetadata:array<string,mixed>,createTime:string,updateTime:string,expireTime:string}> $response */
+        /** @var ResponseDTO<array{name:string,model:string,displayName:string|null,usageMetadata:array<string,mixed>,createTime:string,updateTime:string,expireTime:string}> $response */
         $response = $this->transporter->request(new UpdateRequest($name, $ttl, $expireTime));
 
         return MetadataResponse::from($response->data());
