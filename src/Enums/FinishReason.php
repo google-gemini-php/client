@@ -72,6 +72,26 @@ enum FinishReason: string
     case IMAGE_SAFETY = 'IMAGE_SAFETY';
 
     /**
+     * Image generation stopped because generated images has other prohibited content.
+     */
+    case IMAGE_PROHIBITED_CONTENT = 'IMAGE_PROHIBITED_CONTENT';
+
+    /**
+     * Image generation stopped because of other miscellaneous issue.
+     */
+    case IMAGE_OTHER = 'IMAGE_OTHER';
+
+    /**
+     * The model was expected to generate an image, but none was generated.
+     */
+    case NO_IMAGE = 'NO_IMAGE';
+
+    /**
+     * Image generation stopped due to recitation.
+     */
+    case IMAGE_RECITATION = 'IMAGE_RECITATION';
+
+    /**
      * Model generated a tool call but no tools were enabled in the request.
      */
     case UNEXPECTED_TOOL_CALL = 'UNEXPECTED_TOOL_CALL';
