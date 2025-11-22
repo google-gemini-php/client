@@ -34,3 +34,19 @@ it('records a chat message request with an uploaded file', function () {
             $parameters[0][1] === $file;
     });
 });
+
+it('records a stream chat message request', function () {
+    $fake = new ClientFake([
+        GenerateContentResponse::fake(),
+    ]);
+
+    $generator = $fake->chat('models/gemini-1.5-flash')->streamSendMessage('Hello');
+
+    // Advance the generator to record the call
+    $generator->current();
+
+    $fake->assertSent(resource: ChatSession::class, model: 'models/gemini-1.5-flash', callback: function (string $method, array $parameters) {
+        return $method === 'streamSendMessage' &&
+            $parameters[0] === 'Hello';
+    });
+});

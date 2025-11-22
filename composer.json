@@ -11,7 +11,9 @@
     "natural",
     "language",
     "processing",
-    "NLP"
+    "NLP",
+    "banana",
+    "google"
   ],
   "authors": [
     {
@@ -28,10 +30,10 @@
   "require-dev": {
     "guzzlehttp/guzzle": "^7.8.1",
     "guzzlehttp/psr7": "^2.6.2",
-    "pestphp/pest": "^2.30",
+    "pestphp/pest": "^2.32.3",
     "laravel/pint": "^1.18.1",
     "mockery/mockery": "^1.6.7",
-    "phpstan/phpstan": "^1.10"
+    "phpstan/phpstan": "^2.1.32"
   },
   "suggest": {
     "ext-fileinfo": "Reads upload file size and mime type if not provided"

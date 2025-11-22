@@ -24,6 +24,7 @@ final class HttpTransporter implements TransporterContract
      *
      * @param  array<string, string>  $headers
      * @param  array<string, string|int>  $queryParams
+     * @param  Closure(\Psr\Http\Message\RequestInterface): ResponseInterface  $streamHandler
      */
     public function __construct(
         private readonly ClientInterface $client,
@@ -59,7 +60,6 @@ final class HttpTransporter implements TransporterContract
     }
 
     /**
-     * @throws \Psr\Http\Client\ClientExceptionInterface
      * @throws \Exception
      */
     public function requestStream(Request $request): ResponseInterface
@@ -74,8 +74,7 @@ final class HttpTransporter implements TransporterContract
     }
 
     /**
-     * @throws ErrorException
-     * @throws UnserializableResponse
+     * @param  Closure(): ResponseInterface  $callable
      */
     private function sendRequest(Closure $callable): ResponseInterface
     {

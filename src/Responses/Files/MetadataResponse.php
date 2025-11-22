@@ -20,7 +20,7 @@ class MetadataResponse implements ResponseContract
         public readonly string $name,
         public readonly string $displayName,
         public readonly string $mimeType,
-        public readonly string $sizeBytes,
+        public readonly ?string $sizeBytes,
         public readonly string $createTime,
         public readonly string $updateTime,
         public readonly string $expirationTime,
@@ -31,7 +31,7 @@ class MetadataResponse implements ResponseContract
     ) {}
 
     /**
-     * @param  array{ name: string, displayName: string, mimeType: string, sizeBytes: string, createTime: string, updateTime: string, expirationTime: string, sha256Hash: string, uri: string, state: string, videoMetadata: ?array{ videoDuration: string } }  $attributes
+     * @param  array{ name: string, displayName: string, mimeType: string, sizeBytes: ?string, createTime: string, updateTime: string, expirationTime: string, sha256Hash: string, uri: string, state: string, videoMetadata: ?array{ videoDuration: string } }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -39,7 +39,7 @@ class MetadataResponse implements ResponseContract
             name: $attributes['name'],
             displayName: $attributes['displayName'],
             mimeType: $attributes['mimeType'],
-            sizeBytes: $attributes['sizeBytes'],
+            sizeBytes: $attributes['sizeBytes'] ?? null,
             createTime: $attributes['createTime'],
             updateTime: $attributes['updateTime'],
             expirationTime: $attributes['expirationTime'],

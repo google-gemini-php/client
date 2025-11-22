@@ -100,4 +100,9 @@ enum FinishReason: string
      * Model called too many tools consecutively, thus the system exited execution.
      */
     case TOO_MANY_TOOL_CALLS = 'TOO_MANY_TOOL_CALLS';
+
+    /**
+     * The model response was blocked by Model Armor.
+     */
+    case MODEL_ARMOR = 'MODEL_ARMOR';
 }

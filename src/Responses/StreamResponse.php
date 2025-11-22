@@ -21,6 +21,8 @@ final class StreamResponse implements IteratorAggregate
 
     /**
      * Creates a new Stream ResponseDTO instance.
+     *
+     * @param  class-string<T>  $responseClass
      */
     public function __construct(
         private readonly string $responseClass,
@@ -29,6 +31,9 @@ final class StreamResponse implements IteratorAggregate
         //
     }
 
+    /**
+     * @return Generator<int, T>
+     */
     public function getIterator(): Generator
     {
         while (! $this->response->getBody()->eof()) {

@@ -56,17 +56,17 @@ class StreamGenerateContentRequest extends Request
     {
         return [
             'contents' => array_map(
-                static fn (Content $content): array => $content->toArray(),
-                $this->partsToContents(...$this->parts)
+                callback: static fn (Content $content): array => $content->toArray(),
+                array: $this->partsToContents(...$this->parts)
             ),
             'tools' => array_map(
-                static fn (Tool $tool): array => $tool->toArray(),
-                $this->tools ?? []
+                callback: static fn (Tool $tool): array => $tool->toArray(),
+                array: $this->tools
             ),
             'toolConfig' => $this->toolConfig?->toArray(),
             'safetySettings' => array_map(
-                static fn (SafetySetting $setting): array => $setting->toArray(),
-                $this->safetySettings ?? []
+                callback: static fn (SafetySetting $setting): array => $setting->toArray(),
+                array: $this->safetySettings
             ),
             'systemInstruction' => $this->systemInstruction?->toArray(),
             'generationConfig' => $this->generationConfig?->toArray(),
