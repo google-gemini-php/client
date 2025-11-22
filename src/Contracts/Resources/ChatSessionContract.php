@@ -15,7 +15,7 @@ interface ChatSessionContract
     /**
      * @param  string|Blob|array<string|Blob>|Content  ...$parts
      */
-    public function sendMessage(string|Blob|array|Content ...$parts): GenerateContentResponse;
+    public function sendMessage(string|Blob|array|Content|UploadedFile ...$parts): GenerateContentResponse;
 
     /**
      * @param  string|Blob|array<string|Blob|UploadedFile>|Content|UploadedFile  ...$parts
