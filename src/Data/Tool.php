@@ -45,7 +45,7 @@ final class Tool implements Arrayable
         }
 
         if ($this->codeExecution !== null) {
-            $data['codeExecution'] = $this->codeExecution->toArray();
+            $data['codeExecution'] = $this->codeExecution->toObject();
         }
 
         if ($this->googleSearch !== null) {
