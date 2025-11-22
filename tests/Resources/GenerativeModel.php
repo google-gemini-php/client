@@ -259,3 +259,20 @@ test('system instruction is included in the request', function () {
 
     $generativeModel->generateContent('Hello');
 });
+
+test('generate content with image config', function () {
+    $modelType = 'models/gemini-2.5-flash-image';
+    $client = mockClient(method: Method::POST, endpoint: "{$modelType}:generateContent", response: GenerateContentResponse::fake());
+
+    $imageConfig = new \Gemini\Data\ImageConfig(aspectRatio: '16:9');
+    $generationConfig = new GenerationConfig(imageConfig: $imageConfig);
+
+    $generativeModel = $client
+        ->generativeModel(model: $modelType)
+        ->withGenerationConfig($generationConfig);
+
+    $generativeModel->generateContent('Draw a cat');
+
+    expect($generativeModel)
+        ->generationConfig->imageConfig->toBe($imageConfig);
+});
