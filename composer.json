@@ -30,8 +30,8 @@
   "require-dev": {
     "guzzlehttp/guzzle": "^7.8.1",
     "guzzlehttp/psr7": "^2.6.2",
-    "pestphp/pest": "^3.8.4",
-    "laravel/pint": "^1.25.1",
+    "pestphp/pest": "^2.32.3",
+    "laravel/pint": "^1.18.1",
     "mockery/mockery": "^1.6.7",
     "phpstan/phpstan": "^2.1.32"
   },
