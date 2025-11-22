@@ -12,6 +12,11 @@ namespace Gemini\Enums;
 enum BlockReason: string
 {
     /**
+     * The blocked reason is unspecified.
+     */
+    case BLOCKED_REASON_UNSPECIFIED = 'BLOCKED_REASON_UNSPECIFIED';
+
+    /**
      * Default value. This value is unused.
      */
     case BLOCK_REASON_UNSPECIFIED = 'BLOCK_REASON_UNSPECIFIED';
@@ -40,4 +45,14 @@ enum BlockReason: string
      * Candidates blocked due to unsafe image generation content.
      */
     case IMAGE_SAFETY = 'IMAGE_SAFETY';
+
+    /**
+     * The prompt was blocked by Model Armor.
+     */
+    case MODEL_ARMOR = 'MODEL_ARMOR';
+
+    /**
+     * The prompt was blocked as a jailbreak attempt.
+     */
+    case JAILBREAK = 'JAILBREAK';
 }
