@@ -31,7 +31,7 @@ final class ErrorException extends Exception
     /**
      * Returns the error status.
      */
-    public function getErrorStatus(): ?string
+    public function getErrorStatus(): string
     {
         return $this->contents['status'];
     }
@@ -39,7 +39,7 @@ final class ErrorException extends Exception
     /**
      * Returns the error code.
      */
-    public function getErrorCode(): string|int|null
+    public function getErrorCode(): int
     {
         return $this->contents['code'];
     }
