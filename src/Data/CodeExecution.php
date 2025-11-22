@@ -13,7 +13,7 @@ use Gemini\Contracts\Arrayable;
  *
  * https://ai.google.dev/api/caching#CodeExecution
  */
-final class CodeExecution implements Arrayable
+final class CodeExecution
 {
     public function __construct(
     ) {}
@@ -23,8 +23,8 @@ final class CodeExecution implements Arrayable
         return new self;
     }
 
-    public function toArray(): array
+    public function toObject(): \stdClass
     {
-        return [];
+        return new \stdClass();
     }
 }
