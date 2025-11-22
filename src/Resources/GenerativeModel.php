@@ -133,6 +133,8 @@ final class GenerativeModel implements GenerativeModelContract
      * Generates a streamed response from the model given an input GenerateContentRequest.
      *
      * @see https://ai.google.dev/api/rest/v1beta/models/streamGenerateContent
+     *
+     * @return StreamResponse<GenerateContentResponse>
      */
     public function streamGenerateContent(string|Blob|array|Content|UploadedFile ...$parts): StreamResponse
     {
