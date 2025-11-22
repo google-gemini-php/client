@@ -228,6 +228,24 @@ $result = $client
 $result->text(); //  The picture shows a table with a white tablecloth. On the table are two cups of coffee, a bowl of blueberries, a silver spoon, and some flowers. There are also some blueberry scones on the table.
 ```
 
+#### Image Generation
+Generate images from text prompts using the Imagen model.
+
+```php
+use Gemini\Data\ImageConfig;
+use Gemini\Data\GenerationConfig;
+
+$imageConfig = new ImageConfig(aspectRatio: '16:9');
+$generationConfig = new GenerationConfig(imageConfig: $imageConfig);
+
+$response = $client->generativeModel(model: 'gemini-2.5-flash-image')
+    ->withGenerationConfig($generationConfig)
+    ->generateContent('Draw a futuristic city');
+
+// Save the image
+file_put_contents('image.png', base64_decode($response->parts()[0]->inlineData->data));
+```
+
 #### Multi-turn Conversations (Chat)
 Using Gemini, you can build freeform conversations across multiple turns.
 
@@ -248,6 +266,20 @@ echo $response->text(); // Amidst rolling hills and winding cobblestone streets,
 $response = $chat->sendMessage('Rewrite the same story in 1600s England');
 echo $response->text(); // In the heart of England's lush countryside, amidst emerald fields and thatched-roof cottages, the village of Willowbrook unfolded a tapestry of love, mystery, and the enchantment of ordinary days in the 17th century.
 ```
+
+#### Chat with Streaming
+You can also stream the response in a chat session. The history is automatically updated with the full response after the stream completes.
+
+```php
+$chat = $client->generativeModel(model: 'gemini-2.0-flash')->startChat();
+
+$stream = $chat->streamSendMessage('Hello');
+
+foreach ($stream as $response) {
+    echo $response->text();
+}
+```
+
 
 #### Stream Generate Content
 By default, the model returns a response after completing the entire generation process. You can achieve faster interactions by not waiting for the entire result, and instead use streaming to handle partial results.
@@ -343,7 +375,8 @@ function handleFunctionCall(FunctionCall $functionCall): Content
                     functionResponse: new FunctionResponse(
                         name: 'addition',
                         response: ['answer' => $functionCall->args['number1'] + $functionCall->args['number2']],
-                    )
+                    ),
+                    thoughtSignature: 'some-signature' // Optional: Required for some models (e.g. Gemini 3 Pro)
                 )
             ],
             role: Role::USER
@@ -382,6 +415,7 @@ $chat = $client
 $response = $chat->sendMessage('What is 4 + 3?');
 
 if ($response->parts()[0]->functionCall !== null) {
+    $thoughtSignature = $response->parts()[0]->thoughtSignature; // Access the thought signature
     $functionResponse = handleFunctionCall($response->parts()[0]->functionCall);
 
     $response = $chat->sendMessage($functionResponse);
@@ -389,6 +423,7 @@ if ($response->parts()[0]->functionCall !== null) {
 
 echo $response->text(); // 4 + 3 = 7
 ```
+
 
 #### Speech generation
 Gemini allows generating [speech from a text](https://ai.google.dev/gemini-api/docs/speech-generation). To use that, make sure to use a model that supports this functionality. The model will output base64 encoded audio string.
