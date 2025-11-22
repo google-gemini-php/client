@@ -1,6 +1,7 @@
 <?php
 
 use Gemini\Client;
+use Gemini\Gemini;
 use GuzzleHttp\Client as GuzzleClient;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

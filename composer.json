@@ -41,10 +41,7 @@
   "autoload": {
     "psr-4": {
       "Gemini\\": "src/"
-    },
-    "files": [
-      "src/Gemini.php"
-    ]
+    }
   },
   "autoload-dev": {
     "psr-4": {

@@ -1,5 +1,6 @@
 <?php
 
+use Gemini\Gemini;
 use Gemini\Resources\Files;
 use Gemini\Resources\GenerativeModel;
 use Gemini\Resources\Models;
