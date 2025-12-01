@@ -32,6 +32,8 @@
       - [Function calling](#function-calling)
       - [Code Execution](#code-execution)
       - [Grounding with Google Search](#grounding-with-google-search)
+      - [Grounding with Google Maps](#grounding-with-google-maps)
+      - [Grounding with File Search](#grounding-with-file-search)
       - [System Instructions](#system-instructions)
       - [Speech generation](#speech-generation)
       - [Thinking Mode](#thinking-mode)
@@ -493,6 +495,59 @@ if ($groundingMetadata !== null) {
 }
 ```
 
+#### Grounding with Google Maps
+Grounding with Google Maps allows the model to utilize real-world geographical data. This enables more precise location-based responses, such as finding nearby points of interest.
+
+```php
+use Gemini\Data\GoogleMaps;
+use Gemini\Data\RetrievalConfig;
+use Gemini\Data\Tool;
+use Gemini\Data\ToolConfig;
+
+$tool = new Tool(
+    googleMaps: new GoogleMaps(enableWidget: true)
+);
+
+$toolConfig = new ToolConfig(
+    retrievalConfig: new RetrievalConfig(
+        latitude: 40.758896,
+        longitude: -73.985130
+    )
+);
+
+$response = $client
+    ->generativeModel(model: 'gemini-2.0-flash')
+    ->withTool($tool)
+    ->withToolConfig($toolConfig)
+    ->generateContent('Find coffee shops near me');
+
+echo $response->text();
+// (Model output referencing coffee shops)
+```
+
+#### Grounding with File Search
+Grounding with File Search enables the model to retrieve and utilize information from your indexed files. This is useful for answering questions based on private or extensive document collections.
+
+```php
+use Gemini\Data\FileSearch;
+use Gemini\Data\Tool;
+
+$tool = new Tool(
+    fileSearch: new FileSearch(
+        fileSearchStoreNames: ['files/my-document-store'],
+        metadataFilter: 'author = "Robert Graves"'
+    )
+);
+
+$response = $client
+    ->generativeModel(model: 'gemini-2.0-flash')
+    ->withTool($tool)
+    ->generateContent('Summarize the document about Greek myths by Robert Graves');
+
+echo $response->text();
+// (Model output summarizing the document)
+```
+
 #### System Instructions
 System instructions let you steer the behavior of the model based on your specific needs and use cases. You can set the role and personality of the model, define the format of responses, and provide goals and guardrails for model behavior.
 
@@ -642,6 +697,7 @@ Every prompt you send to the model includes parameter values that control how th
 
 Also, you can use safety settings to adjust the likelihood of getting responses that may be considered harmful. By default, safety settings block content with medium and/or high probability of being unsafe content across all dimensions. Learn more about [safety settings](https://ai.google.dev/docs/concepts#safety_setting).
 
+When using tools like `FileSearch`, you may also provide additional configuration via `ToolConfig`, such as `RetrievalConfig` for geographical context.
 
 ```php
 use Gemini\Data\GenerationConfig;
