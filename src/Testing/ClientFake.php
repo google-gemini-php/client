@@ -14,6 +14,7 @@ use Gemini\Testing\Requests\TestRequest;
 use Gemini\Testing\Resources\CachedContentsTestResource;
 use Gemini\Testing\Resources\ChatSessionTestResource;
 use Gemini\Testing\Resources\EmbeddingModelTestResource;
+use Gemini\Testing\Resources\FileSearchStoresTestResource;
 use Gemini\Testing\Resources\FilesTestResource;
 use Gemini\Testing\Resources\GenerativeModelTestResource;
 use Gemini\Testing\Resources\ModelTestResource;
@@ -250,5 +251,10 @@ class ClientFake implements ClientContract
     public function cachedContents(): CachedContentsTestResource
     {
         return new CachedContentsTestResource(fake: $this);
+    }
+
+    public function fileSearchStores(): FileSearchStoresTestResource
+    {
+        return new FileSearchStoresTestResource(fake: $this);
     }
 }

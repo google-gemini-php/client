@@ -15,12 +15,21 @@ final class ToolConfig implements Arrayable
 {
     public function __construct(
         public ?FunctionCallingConfig $functionCallingConfig = null,
+        public ?RetrievalConfig $retrievalConfig = null,
     ) {}
 
     public function toArray(): array
     {
-        return [
-            'functionCallingConfig' => $this->functionCallingConfig?->toArray(),
-        ];
+        $data = [];
+
+        if ($this->functionCallingConfig !== null) {
+            $data['functionCallingConfig'] = $this->functionCallingConfig->toArray();
+        }
+
+        if ($this->retrievalConfig !== null) {
+            $data['retrievalConfig'] = $this->retrievalConfig->toArray();
+        }
+
+        return $data;
     }
 }
