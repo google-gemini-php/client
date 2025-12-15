@@ -995,46 +995,27 @@ echo "File search store updated: {$fileSearchStore->name}\n";
 
 ### File Search Documents
 
-#### Create File Search Document
-Create a file search document within a store.
+#### Upload File Search Document
+Upload a local file directly to a file search store.
 
 ```php
-use Gemini\Enums\FileState;
 use Gemini\Enums\MimeType;
 
-$files = $client->files();
-echo "Uploading\n";
-$meta = $files->upload(
+$response = $client->fileSearchStores()->upload(
+    storeName: 'fileSearchStores/my-search-store',
     filename: 'document2.pdf',
     mimeType: MimeType::APPLICATION_PDF,
-    displayName: 'Another document for search'
-);
-echo "Processing";
-do {
-    echo ".";
-    sleep(2);
-    $meta = $files->metadataGet($meta->uri);
-} while (! $meta->state->complete());
-echo "\n";
-
-if ($meta->state == FileState::Failed) {
-    die("Upload failed:\n".json_encode($meta->toArray(), JSON_PRETTY_PRINT));
-}
-
-$fileSearchDocument = $client->fileSearchDocuments()->create(
-    parent: 'fileSearchStores/my-search-store',
-    file: 'files/'.basename($meta->uri),
-    displayName: 'Another Search Document',
+    displayName: 'Another Search Document'
 );
 
-echo "File search document created: {$fileSearchDocument->name}\n";
+echo "File search document upload operation: {$response->name}\n";
 ```
 
 #### Get File Search Document
 Get a specific file search document by name.
 
 ```php
-$fileSearchDocument = $client->fileSearchDocuments()->retrieve('fileSearchStores/my-search-store/fileSearchDocuments/my-document');
+$fileSearchDocument = $client->fileSearchStores()->getDocument('fileSearchStores/my-search-store/fileSearchDocuments/my-document');
 
 echo "Name: {$fileSearchDocument->name}\n";
 echo "Display Name: {$fileSearchDocument->displayName}\n";
@@ -1044,9 +1025,9 @@ echo "Display Name: {$fileSearchDocument->displayName}\n";
 List all file search documents within a store.
 
 ```php
-$response = $client->fileSearchDocuments()->list(parent: 'fileSearchStores/my-search-store', pageSize: 10);
+$response = $client->fileSearchStores()->listDocuments(storeName: 'fileSearchStores/my-search-store', pageSize: 10);
 
-foreach ($response->fileSearchDocuments as $fileSearchDocument) {
+foreach ($response->documents as $fileSearchDocument) {
     echo "Name: {$fileSearchDocument->name}\n";
     echo "Display Name: {$fileSearchDocument->displayName}\n";
     echo "Create Time: {$fileSearchDocument->createTime}\n";
@@ -1059,7 +1040,7 @@ foreach ($response->fileSearchDocuments as $fileSearchDocument) {
 Delete a file search document by name.
 
 ```php
-$client->fileSearchDocuments()->delete('fileSearchStores/my-search-store/fileSearchDocuments/my-document');
+$client->fileSearchStores()->deleteDocument('fileSearchStores/my-search-store/fileSearchDocuments/my-document');
 ```
 
 ### Embedding Resource
