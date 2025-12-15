@@ -980,7 +980,7 @@ foreach ($response->fileSearchDocuments as $fileSearchDocument) {
 Delete a file search document by name.
 
 ```php
-$client->fileSearchDocuments()->delete('fileSearchStores/my-search-store/fileSearchDocuments/my-document');
+$client->fileSearchStores()->deleteDocument('fileSearchStores/my-search-store/fileSearchDocuments/my-document');
 ```
 
 ### Embedding Resource
