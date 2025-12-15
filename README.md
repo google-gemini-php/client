@@ -879,15 +879,6 @@ if ($meta->state == FileState::Failed) {
 
 $fileSearchStore = $client->fileSearchStores()->create(
     displayName: 'My Search Store',
-    defaultSchema: new Schema(
-        declarations: [
-            'name' => new Schema(type: DataType::STRING),
-            'size' => new Schema(type: DataType::INTEGER),
-        ],
-    ),
-    defaultDocumentConfig: [
-        'files/'.basename($meta->uri),
-    ],
 );
 
 echo "File search store created: {$fileSearchStore->name}\n";
