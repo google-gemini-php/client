@@ -697,7 +697,7 @@ Every prompt you send to the model includes parameter values that control how th
 
 Also, you can use safety settings to adjust the likelihood of getting responses that may be considered harmful. By default, safety settings block content with medium and/or high probability of being unsafe content across all dimensions. Learn more about [safety settings](https://ai.google.dev/docs/concepts#safety_setting).
 
-When using tools like `FileSearch`, you may also provide additional configuration via `ToolConfig`, such as `RetrievalConfig` for geographical context.
+When using tools like `GoogleMaps`, you may also provide additional configuration via `ToolConfig`, such as `RetrievalConfig` for geographical context.
 
 ```php
 use Gemini\Data\GenerationConfig;
