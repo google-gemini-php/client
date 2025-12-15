@@ -15,7 +15,7 @@ class UploadResponse implements ResponseContract
     use Fakeable;
 
     /**
-     * @param  array<string, mixed>  $metadata
+     * @param  array<string, mixed>|null  $metadata
      * @param  array<string, mixed>|null  $response
      * @param  array<string, mixed>|null  $error
      */
