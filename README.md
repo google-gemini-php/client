@@ -897,7 +897,7 @@ echo "File search store created: {$fileSearchStore->name}\n";
 Get a specific file search store by name.
 
 ```php
-$fileSearchStore = $client->fileSearchStores()->retrieve('fileSearchStores/my-search-store');
+$fileSearchStore = $client->fileSearchStores()->get('fileSearchStores/my-search-store');
 
 echo "Name: {$fileSearchStore->name}\n";
 echo "Display Name: {$fileSearchStore->displayName}\n";
