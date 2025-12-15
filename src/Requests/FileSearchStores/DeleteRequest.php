@@ -24,6 +24,9 @@ class DeleteRequest extends Request
         return $this->name;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function defaultQuery(): array
     {
         return $this->force ? ['force' => 'true'] : [];
