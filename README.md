@@ -923,18 +923,6 @@ Delete a file search store by name.
 $client->fileSearchStores()->delete('fileSearchStores/my-search-store');
 ```
 
-#### Update File Search Store
-Update a file search store.
-
-```php
-$fileSearchStore = $client->fileSearchStores()->update(
-    name: 'fileSearchStores/my-search-store',
-    displayName: 'My Updated Search Store',
-);
-
-echo "File search store updated: {$fileSearchStore->name}\n";
-```
-
 ### File Search Documents
 
 #### Create File Search Document
