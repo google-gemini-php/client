@@ -912,8 +912,6 @@ $response = $client->fileSearchStores()->list(pageSize: 10);
 foreach ($response->fileSearchStores as $fileSearchStore) {
     echo "Name: {$fileSearchStore->name}\n";
     echo "Display Name: {$fileSearchStore->displayName}\n";
-    echo "Create Time: {$fileSearchStore->createTime}\n";
-    echo "Update Time: {$fileSearchStore->updateTime}\n";
     echo "--- \n";
 }
 ```
