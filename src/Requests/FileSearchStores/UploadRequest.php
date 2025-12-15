@@ -44,6 +44,9 @@ class UploadRequest extends Request
 
         $requestJson = json_encode($metadata);
         $contents = file_get_contents($this->filename);
+        if ($contents === false) {
+            throw new \RuntimeException("Failed to read file: {$this->filename}");
+        }
 
         $request = $factory
             ->createRequest($this->method->value, str_replace('/v1', '/upload/v1', $baseUrl).$this->resolveEndpoint())
