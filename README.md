@@ -976,7 +976,7 @@ echo "File search document created: {$fileSearchDocument->name}\n";
 Get a specific file search document by name.
 
 ```php
-$fileSearchDocument = $client->fileSearchDocuments()->retrieve('fileSearchStores/my-search-store/fileSearchDocuments/my-document');
+$fileSearchDocument = $client->fileSearchStores()->getDocument('fileSearchStores/my-search-store/fileSearchDocuments/my-document');
 
 echo "Name: {$fileSearchDocument->name}\n";
 echo "Display Name: {$fileSearchDocument->displayName}\n";
