@@ -9,6 +9,7 @@ use Gemini\Contracts\Resources\CachedContentsContract;
 use Gemini\Contracts\Resources\ChatSessionContract;
 use Gemini\Contracts\Resources\EmbeddingModalContract;
 use Gemini\Contracts\Resources\FilesContract;
+use Gemini\Contracts\Resources\FileSearchStoresContract;
 use Gemini\Contracts\Resources\GenerativeModelContract;
 use Gemini\Contracts\Resources\ModelContract;
 
@@ -35,4 +36,6 @@ interface ClientContract
     public function files(): FilesContract;
 
     public function cachedContents(): CachedContentsContract;
+
+    public function fileSearchStores(): FileSearchStoresContract;
 }

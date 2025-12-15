@@ -51,6 +51,17 @@
       - [Update Cached Content](#update-cached-content)
       - [Delete Cached Content](#delete-cached-content)
       - [Use Cached Content](#use-cached-content)
+    - [File Search Stores](#file-search-stores)
+      - [Create File Search Store](#create-file-search-store)
+      - [Get File Search Store](#get-file-search-store)
+      - [List File Search Stores](#list-file-search-stores)
+      - [Delete File Search Store](#delete-file-search-store)
+      - [Update File Search Store](#update-file-search-store)
+    - [File Search Documents](#file-search-documents)
+      - [Create File Search Document](#create-file-search-document)
+      - [Get File Search Document](#get-file-search-document)
+      - [List File Search Documents](#list-file-search-documents)
+      - [Delete File Search Document](#delete-file-search-document)
     - [Embedding Resource](#embedding-resource)
     - [Models](#models)
         - [List Models](#list-models)
@@ -888,6 +899,125 @@ echo $response->text();
 // Check token usage
 echo "Cached tokens used: {$response->usageMetadata->cachedContentTokenCount}\n";
 echo "New tokens used: {$response->usageMetadata->promptTokenCount}\n";
+```
+
+### File Search Stores
+
+File search allows you to search files that were uploaded through the File API.
+
+#### Create File Search Store
+Create a file search store.
+
+```php
+use Gemini\Enums\FileState;
+use Gemini\Enums\MimeType;
+use Gemini\Enums\Schema;
+use Gemini\Enums\DataType;
+
+$files = $client->files();
+echo "Uploading\n";
+$meta = $files->upload(
+    filename: 'document.pdf',
+    mimeType: MimeType::APPLICATION_PDF,
+    displayName: 'Document for search'
+);
+echo "Processing";
+do {
+    echo ".";
+    sleep(2);
+    $meta = $files->metadataGet($meta->uri);
+} while (! $meta->state->complete());
+echo "\n";
+
+if ($meta->state == FileState::Failed) {
+    die("Upload failed:\n".json_encode($meta->toArray(), JSON_PRETTY_PRINT));
+}
+
+$fileSearchStore = $client->fileSearchStores()->create(
+    displayName: 'My Search Store',
+);
+
+echo "File search store created: {$fileSearchStore->name}\n";
+```
+
+#### Get File Search Store
+Get a specific file search store by name.
+
+```php
+$fileSearchStore = $client->fileSearchStores()->get('fileSearchStores/my-search-store');
+
+echo "Name: {$fileSearchStore->name}\n";
+echo "Display Name: {$fileSearchStore->displayName}\n";
+```
+
+#### List File Search Stores
+List all file search stores.
+
+```php
+$response = $client->fileSearchStores()->list(pageSize: 10);
+
+foreach ($response->fileSearchStores as $fileSearchStore) {
+    echo "Name: {$fileSearchStore->name}\n";
+    echo "Display Name: {$fileSearchStore->displayName}\n";
+    echo "--- \n";
+}
+```
+
+#### Delete File Search Store
+Delete a file search store by name.
+
+```php
+$client->fileSearchStores()->delete('fileSearchStores/my-search-store');
+```
+
+### File Search Documents
+
+#### Upload File Search Document
+Upload a local file directly to a file search store.
+
+```php
+use Gemini\Enums\MimeType;
+
+$response = $client->fileSearchStores()->upload(
+    storeName: 'fileSearchStores/my-search-store',
+    filename: 'document2.pdf',
+    mimeType: MimeType::APPLICATION_PDF,
+    displayName: 'Another Search Document'
+);
+
+echo "File search document upload operation: {$response->name}\n";
+```
+
+#### Get File Search Document
+Get a specific file search document by name.
+
+```php
+$fileSearchDocument = $client->fileSearchStores()->getDocument('fileSearchStores/my-search-store/fileSearchDocuments/my-document');
+
+echo "Name: {$fileSearchDocument->name}\n";
+echo "Display Name: {$fileSearchDocument->displayName}\n";
+```
+
+#### List File Search Documents
+List all file search documents within a store.
+
+```php
+$response = $client->fileSearchStores()->listDocuments(storeName: 'fileSearchStores/my-search-store', pageSize: 10);
+
+foreach ($response->documents as $fileSearchDocument) {
+    echo "Name: {$fileSearchDocument->name}\n";
+    echo "Display Name: {$fileSearchDocument->displayName}\n";
+    echo "Create Time: {$fileSearchDocument->createTime}\n";
+    echo "Update Time: {$fileSearchDocument->updateTime}\n";
+    echo "--- \n";
+}
+```
+
+#### Delete File Search Document
+Delete a file search document by name.
+
+```php
+$client->fileSearchStores()->deleteDocument('fileSearchStores/my-search-store/fileSearchDocuments/my-document');
 ```
 
 ### Embedding Resource
