@@ -39,10 +39,15 @@ final class ThinkingConfig implements Arrayable
 
     public function toArray(): array
     {
-        return [
+        $items = [
             'includeThoughts' => $this->includeThoughts,
             'thinkingBudget' => $this->thinkingBudget,
-            'thinkingLevel' => $this->thinkingLevel?->value,
         ];
+
+        if ($this->thinkingLevel) {
+            $items['thinkingLevel'] = $this->thinkingLevel->value;
+        }
+
+        return $items;
     }
 }
