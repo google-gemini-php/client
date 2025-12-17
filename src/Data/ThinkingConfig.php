@@ -17,7 +17,7 @@ final class ThinkingConfig implements Arrayable
     /**
      * @param  bool  $includeThoughts  Indicates whether to include thoughts in the response. If true, thoughts are returned only when available.
      * @param  int  $thinkingBudget  The number of thoughts tokens that the model should generate.
-     * @param  ThinkingLevel|null  $thinkingBudget  Controls reasoning behavior.
+     * @param  ThinkingLevel|null  $thinkingLevel  Controls reasoning behavior.
      */
     public function __construct(
         public readonly bool $includeThoughts,
@@ -26,7 +26,7 @@ final class ThinkingConfig implements Arrayable
     ) {}
 
     /**
-     * @param  array{ includeThoughts: bool, thinkingBudget: int}  $attributes
+     * @param  array{ includeThoughts: bool, thinkingBudget: int, $thinkingLevel: ?ThinkingLevel}  $attributes
      */
     public static function from(array $attributes): self
     {
