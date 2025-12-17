@@ -26,7 +26,7 @@ final class ThinkingConfig implements Arrayable
     ) {}
 
     /**
-     * @param  array{ includeThoughts: bool, thinkingBudget: int, $thinkingLevel: ?ThinkingLevel}  $attributes
+     * @param  array{ includeThoughts: bool, thinkingBudget: int, thinkingLevel: ?ThinkingLevel}  $attributes
      */
     public static function from(array $attributes): self
     {
