@@ -43,6 +43,6 @@ final class ThinkingConfig implements Arrayable
             'includeThoughts' => $this->includeThoughts,
             'thinkingBudget' => $this->thinkingBudget,
             'thinkingLevel' => $this->thinkingLevel?->value,
-        ], fn($value) => $value !== null);
+        ], fn ($value) => $value !== null);
     }
 }
