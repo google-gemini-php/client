@@ -30,11 +30,11 @@ final class ThinkingConfig implements Arrayable
      */
     public static function from(array $attributes): self
     {
-        return new self(
-            includeThoughts: $attributes['includeThoughts'],
-            thinkingBudget: $attributes['thinkingBudget'] ?? null,
-            thinkingLevel: $attributes['thinkingLevel'] ?? null
-        );
+        return array_filter([
+            'includeThoughts' => $this->includeThoughts,
+            'thinkingBudget' => $this->thinkingBudget,
+            'thinkingLevel' => $this->thinkingLevel?->value,
+        ], fn($value) => $value !== null);
     }
 
     public function toArray(): array
