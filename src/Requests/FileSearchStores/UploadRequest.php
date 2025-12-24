@@ -44,9 +44,15 @@ class UploadRequest extends Request
 
         $requestJson = json_encode($metadata);
         $contents = file_get_contents($this->filename);
+        if ($contents === false) {
+            throw new \RuntimeException("Failed to read file: {$this->filename}");
+        }
 
         $request = $factory
-            ->createRequest($this->method->value, str_replace('/v1', '/upload/v1', $baseUrl).$this->resolveEndpoint())
+            ->createRequest(
+                $this->method->value,
+                preg_replace('#/v1(beta)?#', '/upload/v1$1', $baseUrl) . $this->resolveEndpoint()
+            )
             ->withHeader('X-Goog-Upload-Protocol', 'multipart');
         foreach ($headers as $name => $value) {
             $request = $request->withHeader($name, $value);

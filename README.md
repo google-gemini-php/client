@@ -697,7 +697,7 @@ Every prompt you send to the model includes parameter values that control how th
 
 Also, you can use safety settings to adjust the likelihood of getting responses that may be considered harmful. By default, safety settings block content with medium and/or high probability of being unsafe content across all dimensions. Learn more about [safety settings](https://ai.google.dev/docs/concepts#safety_setting).
 
-When using tools like `FileSearch`, you may also provide additional configuration via `ToolConfig`, such as `RetrievalConfig` for geographical context.
+When using tools like `GoogleMaps`, you may also provide additional configuration via `ToolConfig`, such as `RetrievalConfig` for geographical context.
 
 ```php
 use Gemini\Data\GenerationConfig;
@@ -935,15 +935,6 @@ if ($meta->state == FileState::Failed) {
 
 $fileSearchStore = $client->fileSearchStores()->create(
     displayName: 'My Search Store',
-    defaultSchema: new Schema(
-        declarations: [
-            'name' => new Schema(type: DataType::STRING),
-            'size' => new Schema(type: DataType::INTEGER),
-        ],
-    ),
-    defaultDocumentConfig: [
-        'files/'.basename($meta->uri),
-    ],
 );
 
 echo "File search store created: {$fileSearchStore->name}\n";
@@ -953,7 +944,7 @@ echo "File search store created: {$fileSearchStore->name}\n";
 Get a specific file search store by name.
 
 ```php
-$fileSearchStore = $client->fileSearchStores()->retrieve('fileSearchStores/my-search-store');
+$fileSearchStore = $client->fileSearchStores()->get('fileSearchStores/my-search-store');
 
 echo "Name: {$fileSearchStore->name}\n";
 echo "Display Name: {$fileSearchStore->displayName}\n";
@@ -968,8 +959,6 @@ $response = $client->fileSearchStores()->list(pageSize: 10);
 foreach ($response->fileSearchStores as $fileSearchStore) {
     echo "Name: {$fileSearchStore->name}\n";
     echo "Display Name: {$fileSearchStore->displayName}\n";
-    echo "Create Time: {$fileSearchStore->createTime}\n";
-    echo "Update Time: {$fileSearchStore->updateTime}\n";
     echo "--- \n";
 }
 ```
@@ -979,18 +968,6 @@ Delete a file search store by name.
 
 ```php
 $client->fileSearchStores()->delete('fileSearchStores/my-search-store');
-```
-
-#### Update File Search Store
-Update a file search store.
-
-```php
-$fileSearchStore = $client->fileSearchStores()->update(
-    name: 'fileSearchStores/my-search-store',
-    displayName: 'My Updated Search Store',
-);
-
-echo "File search store updated: {$fileSearchStore->name}\n";
 ```
 
 ### File Search Documents
