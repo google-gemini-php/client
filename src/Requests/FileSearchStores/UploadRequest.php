@@ -51,7 +51,7 @@ class UploadRequest extends Request
         $request = $factory
             ->createRequest(
                 $this->method->value,
-                preg_replace('#/v1(beta)?#', '/upload/v1$1', $baseUrl) . $this->resolveEndpoint()
+                preg_replace('#/v1(beta)?#', '/upload/v1$1', $baseUrl).$this->resolveEndpoint()
             )
             ->withHeader('X-Goog-Upload-Protocol', 'multipart');
         foreach ($headers as $name => $value) {
