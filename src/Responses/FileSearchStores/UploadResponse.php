@@ -34,7 +34,7 @@ class UploadResponse implements ResponseContract
     {
         return new self(
             name: $attributes['name'],
-            done: $attributes['done'] ?? false,
+            done: $attributes['done'],
             metadata: $attributes['metadata'] ?? null,
             response: $attributes['response'] ?? null,
             error: $attributes['error'] ?? null,
