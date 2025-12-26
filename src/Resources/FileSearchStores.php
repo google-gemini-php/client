@@ -57,10 +57,10 @@ final class FileSearchStores implements FileSearchStoresContract
         $this->transporter->request(new DeleteRequest($name, $force));
     }
 
-    public function upload(string $storeName, string $filename, ?MimeType $mimeType = null, ?string $displayName = null): UploadResponse
+    public function upload(string $storeName, string $filename, ?MimeType $mimeType = null, ?string $displayName = null, array $customMetadata = []): UploadResponse
     {
         /** @var ResponseDTO<array{ name: string, metadata?: array<string, mixed>, done?: bool, response?: array<string, mixed>, error?: array<string, mixed> }> $response */
-        $response = $this->transporter->request(new UploadRequest($storeName, $filename, $displayName, $mimeType));
+        $response = $this->transporter->request(new UploadRequest($storeName, $filename, $displayName, $mimeType, $customMetadata));
 
         return UploadResponse::from($response->data());
     }

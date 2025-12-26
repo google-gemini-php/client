@@ -43,7 +43,7 @@ final class FileSearchStoresTestResource implements FileSearchStoresContract
         $this->record(method: __FUNCTION__, args: func_get_args());
     }
 
-    public function upload(string $storeName, string $filename, ?MimeType $mimeType = null, ?string $displayName = null): UploadResponse
+    public function upload(string $storeName, string $filename, ?MimeType $mimeType = null, ?string $displayName = null, array $customMetadata = []): UploadResponse
     {
         return $this->record(method: __FUNCTION__, args: func_get_args());
     }

@@ -46,7 +46,7 @@ interface FileSearchStoresContract
      *
      * @see https://ai.google.dev/api/file-search/file-search-stores#method:-media.uploadtofilesearchstore
      */
-    public function upload(string $storeName, string $filename, ?MimeType $mimeType = null, ?string $displayName = null): UploadResponse;
+    public function upload(string $storeName, string $filename, ?MimeType $mimeType = null, ?string $displayName = null, array $customMetadata = []): UploadResponse;
 
     /**
      * List documents in a file search store.

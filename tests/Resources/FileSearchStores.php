@@ -104,6 +104,31 @@ describe('upload', function () {
             ->toBeInstanceOf(UploadResponse::class)
             ->name->toBe('operations/123-456');
     });
+
+    test('upload with custom metadata', function () {
+        $client = mockClient(
+            method: Method::POST,
+            endpoint: 'fileSearchStores/123:uploadToFileSearchStore',
+            response: UploadResponse::fake(),
+            rootPath: '/upload/v1beta/'
+        );
+
+        $result = $client->fileSearchStores()->upload(
+            'fileSearchStores/123',
+            $this->tmpFilepath,
+            MimeType::TEXT_PLAIN,
+            'Display',
+            [
+                'key_string' => 'value',
+                'key_int' => 123,
+                'key_list' => ['a', 'b'],
+            ]
+        );
+
+        expect($result)
+            ->toBeInstanceOf(UploadResponse::class)
+            ->name->toBe('operations/123-456');
+    });
 });
 
 test('list documents', function () {

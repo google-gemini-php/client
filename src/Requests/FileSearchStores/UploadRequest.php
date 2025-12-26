@@ -22,6 +22,7 @@ class UploadRequest extends Request
         protected readonly string $filename,
         protected readonly ?string $displayName = null,
         protected ?MimeType $mimeType = null,
+        protected array $customMetadata = [],
     ) {}
 
     public function resolveEndpoint(): string
@@ -40,6 +41,23 @@ class UploadRequest extends Request
         }
         if ($this->mimeType) {
             $metadata['mimeType'] = $this->mimeType->value;
+        }
+
+        if (! empty($this->customMetadata)) {
+            $metadata['customMetadata'] = [];
+            foreach ($this->customMetadata as $key => $value) {
+                $entry = ['key' => (string) $key];
+
+                if (is_int($value) || is_float($value)) {
+                    $entry['numericValue'] = $value;
+                } elseif (is_array($value)) {
+                    $entry['stringListValue'] = ['values' => array_map('strval', $value)];
+                } else {
+                    $entry['stringValue'] = (string) $value;
+                }
+
+                $metadata['customMetadata'][] = $entry;
+            }
         }
 
         $requestJson = empty($metadata) ? '' : json_encode($metadata);
