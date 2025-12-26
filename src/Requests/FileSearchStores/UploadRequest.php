@@ -58,7 +58,7 @@ class UploadRequest extends Request
             $request = $request->withHeader($name, $value);
         }
 
-        $contentType = $this->mimeType instanceof MimeType ? $this->mimeType->value : 'application/octet-stream';
+        $contentType = $this->mimeType instanceof MimeType ? $this->mimeType->value : (mime_content_type($this->filename) ?: 'application/octet-stream');
 
         $request = $request->withHeader('Content-Type', "multipart/related; boundary={$boundary}")
             ->withBody($factory->createStream(<<<BOD

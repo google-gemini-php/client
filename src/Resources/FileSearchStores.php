@@ -59,8 +59,6 @@ final class FileSearchStores implements FileSearchStoresContract
 
     public function upload(string $storeName, string $filename, ?MimeType $mimeType = null, ?string $displayName = null): UploadResponse
     {
-        $mimeType ??= MimeType::from(mime_content_type($filename) ?: throw new \RuntimeException("Failed to determine MIME type for: {$filename}"));
-
         /** @var ResponseDTO<array{ name: string, metadata?: array<string, mixed>, done?: bool, response?: array<string, mixed>, error?: array<string, mixed> }> $response */
         $response = $this->transporter->request(new UploadRequest($storeName, $filename, $displayName, $mimeType));
 
