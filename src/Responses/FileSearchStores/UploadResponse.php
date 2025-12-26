@@ -28,13 +28,13 @@ class UploadResponse implements ResponseContract
     ) {}
 
     /**
-     * @param  array{ name: string, done: bool, metadata?: array<string, mixed>, response?: array<string, mixed>, error?: array<string, mixed> }  $attributes
+     * @param  array{ name: string, done?: bool, metadata?: array<string, mixed>, response?: array<string, mixed>, error?: array<string, mixed> }  $attributes
      */
     public static function from(array $attributes): self
     {
         return new self(
             name: $attributes['name'],
-            done: $attributes['done'],
+            done: $attributes['done'] ?? (isset($attributes['response']) || isset($attributes['error'])),
             metadata: $attributes['metadata'] ?? null,
             response: $attributes['response'] ?? null,
             error: $attributes['error'] ?? null,
