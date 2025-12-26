@@ -42,7 +42,7 @@ class UploadRequest extends Request
             $metadata['mimeType'] = $this->mimeType->value;
         }
 
-        $requestJson = json_encode($metadata);
+        $requestJson = empty($metadata) ? '' : json_encode($metadata);
         $contents = file_get_contents($this->filename);
         if ($contents === false) {
             throw new \RuntimeException("Failed to read file: {$this->filename}");
