@@ -9,6 +9,8 @@ namespace Gemini\Enums;
  *
  * Gemini 3 Pro: low, high
  * Gemini 3 Flash: minimal, low, medium, high
+ *
+ * https://ai.google.dev/gemini-api/docs/thinking#thinking-levels
  */
 enum ThinkingLevel: string
 {
