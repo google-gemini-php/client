@@ -17,6 +17,9 @@ class UploadRequest extends Request
 {
     protected Method $method = Method::POST;
 
+    /**
+     * @param  array<string, string|int|float|array<string>>  $customMetadata
+     */
     public function __construct(
         protected readonly string $storeName,
         protected readonly string $filename,

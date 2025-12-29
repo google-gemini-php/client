@@ -44,6 +44,8 @@ interface FileSearchStoresContract
     /**
      * Upload a file to a file search store.
      *
+     * @param  array<string, string|int|float|array<string>>  $customMetadata
+     *
      * @see https://ai.google.dev/api/file-search/file-search-stores#method:-media.uploadtofilesearchstore
      */
     public function upload(string $storeName, string $filename, ?MimeType $mimeType = null, ?string $displayName = null, array $customMetadata = []): UploadResponse;
