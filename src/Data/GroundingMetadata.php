@@ -29,7 +29,7 @@ final class GroundingMetadata implements Arrayable
     ) {}
 
     /**
-     * @param  array{ groundingChunks: ?array<array{ web: null|array{ title: ?string, uri: ?string } }>, groundingSupports: ?array<array{ groundingChunkIndices: array<int>|null, confidenceScores: array<float>|null, segment: ?array{ partIndex: ?int, startIndex: ?int, endIndex: ?int, text: ?string } }>, webSearchQueries: ?array<string>, searchEntryPoint?: array{ renderedContent?: string|null, sdkBlob?: string|null }, retrievalMetadata: ?array{ googleSearchDynamicRetrievalScore?: float|null } }  $attributes
+     * @param  array{ groundingChunks: ?array<array{ web: null|array{ title: ?string, uri: ?string }, retrievedContext: null|array{ uri: ?string, title: ?string, text: ?string, fileSearchStore: ?string }, maps: null|array{ uri: ?string, title: ?string, text: ?string, placeId: ?string, placeAnswerSources: ?array{ reviewSnippets: array<array{title: ?string, googleMapsUri: ?string, reviewId: ?string}> } } }>, groundingSupports: ?array<array{ groundingChunkIndices: array<int>|null, confidenceScores: array<float>|null, segment: ?array{ partIndex: ?int, startIndex: ?int, endIndex: ?int, text: ?string } }>, webSearchQueries: ?array<string>, searchEntryPoint?: array{ renderedContent?: string|null, sdkBlob?: string|null }, retrievalMetadata: ?array{ googleSearchDynamicRetrievalScore?: float|null } }  $attributes
      */
     public static function from(array $attributes): self
     {

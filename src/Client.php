@@ -8,6 +8,7 @@ use BackedEnum;
 use Gemini\Contracts\ClientContract;
 use Gemini\Contracts\Resources\CachedContentsContract;
 use Gemini\Contracts\Resources\FilesContract;
+use Gemini\Contracts\Resources\FileSearchStoresContract;
 use Gemini\Contracts\Resources\GenerativeModelContract;
 use Gemini\Contracts\TransporterContract;
 use Gemini\Enums\ModelType;
@@ -15,6 +16,7 @@ use Gemini\Resources\CachedContents;
 use Gemini\Resources\ChatSession;
 use Gemini\Resources\EmbeddingModel;
 use Gemini\Resources\Files;
+use Gemini\Resources\FileSearchStores;
 use Gemini\Resources\GenerativeModel;
 use Gemini\Resources\Models;
 
@@ -80,5 +82,10 @@ final class Client implements ClientContract
     public function cachedContents(): CachedContentsContract
     {
         return new CachedContents($this->transporter);
+    }
+
+    public function fileSearchStores(): FileSearchStoresContract
+    {
+        return new FileSearchStores($this->transporter);
     }
 }
