@@ -10,6 +10,7 @@ use Gemini\Data\Blob;
 use Gemini\Data\Content;
 use Gemini\Data\ToolConfig;
 use Gemini\Data\UploadedFile;
+use Gemini\Resources\CachedContents;
 use Gemini\Responses\CachedContents\ListResponse;
 use Gemini\Responses\CachedContents\MetadataResponse;
 use Gemini\Testing\Resources\Concerns\Testable;
@@ -20,7 +21,7 @@ final class CachedContentsTestResource implements CachedContentsContract
 
     protected function resource(): string
     {
-        return \Gemini\Resources\CachedContents::class;
+        return CachedContents::class;
     }
 
     public function create(

@@ -19,7 +19,7 @@ interface ChatSessionContract
 
     /**
      * @param  string|Blob|array<string|Blob|UploadedFile>|Content|UploadedFile  ...$parts
-     * @return \Generator<int, GenerateContentResponse>
+     * @return Generator<int, GenerateContentResponse>
      */
     public function streamSendMessage(string|Blob|array|Content|UploadedFile ...$parts): Generator;
 
