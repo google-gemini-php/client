@@ -105,4 +105,24 @@ enum FinishReason: string
      * The model response was blocked by Model Armor.
      */
     case MODEL_ARMOR = 'MODEL_ARMOR';
+
+    /**
+     * Request has at least one thought signature missing.
+     */
+    case MISSING_THOUGHT_SIGNATURE = 'MISSING_THOUGHT_SIGNATURE';
+
+    /**
+     * Finished due to malformed response.
+     */
+    case MALFORMED_RESPONSE = 'MALFORMED_RESPONSE';
+
+    /**
+     * Request was filtered by an escalation rule.
+     */
+    case ESCALATION = 'ESCALATION';
+
+    /**
+     * Token generation stopped because the user account is limited or disabled due to Prohibited Use Policy (PUP) violations.
+     */
+    case PUP_LIMITED_DISABLED = 'PUP_LIMITED_DISABLED';
 }
