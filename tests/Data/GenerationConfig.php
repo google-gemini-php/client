@@ -20,8 +20,9 @@ test('to array with response json schema', function () {
 
     expect($generationConfig->toArray())
         ->responseMimeType->toBe('application/json')
-        ->responseJsonSchema->toBe($responseJsonSchema)
-        ->not->toHaveKey('responseSchema');
+        ->responseJsonSchema->toBe($responseJsonSchema);
+
+    expect($generationConfig->toArray())->not->toHaveKey('responseSchema');
 });
 
 test('to array without response json schema', function () {

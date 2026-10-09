@@ -18,8 +18,8 @@ final class FunctionDeclaration implements Arrayable
      * @param  string  $description  Required. A brief description of the function.
      * @param  Schema|null  $parameters  Optional. Describes the parameters to this function. Reflects the Open API 3.03 Parameter Object string Key: the name of the parameter. Parameter names are case sensitive. Schema Value: the Schema defining the type used for the parameter.
      * @param  Schema|null  $response  Optional. Describes the output from this function in JSON Schema format. Reflects the Open API 3.03 Response Object. The Schema defines the type used for the response value of the function.
-     * @param  array<string, mixed>|null  $parametersJsonSchema  Optional. Describes the parameters to the function in JSON Schema format. The schema must describe an object where the properties are the parameters to the function. This field is mutually exclusive with `parameters`.
-     * @param  array<string, mixed>|null  $responseJsonSchema  Optional. Describes the output from this function in JSON Schema format. The value specified by the schema is the response value of the function. This field is mutually exclusive with `response`.
+     * @param  array<string, mixed>|null  $parametersJsonSchema  Optional. Describes the parameters to the function in JSON Schema format. The schema must describe an object where the properties are the parameters to the function. This field is mutually exclusive with `parameters`. Use `new \stdClass` for an empty JSON object, e.g. `'properties' => new \stdClass`.
+     * @param  array<string, mixed>|null  $responseJsonSchema  Optional. Describes the output from this function in JSON Schema format. The value specified by the schema is the response value of the function. This field is mutually exclusive with `response`. Use `new \stdClass` for an empty JSON object, e.g. `'properties' => new \stdClass`.
      */
     public function __construct(
         public string $name,
