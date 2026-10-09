@@ -25,7 +25,7 @@ test('to array', function () {
 test('to array with parts', function () {
     $functionResponse = new FunctionResponse(
         name: 'get_image',
-        response: ['image' => ['$ref' => 'chart.png']],
+        response: ['image' => 'chart.png'],
         parts: [
             new FunctionResponsePart(inlineData: new Blob(mimeType: MimeType::IMAGE_PNG, data: 'aGVsbG8=')),
         ],
@@ -36,7 +36,7 @@ test('to array with parts', function () {
     expect($functionResponse->toArray())
         ->toBe([
             'name' => 'get_image',
-            'response' => ['image' => ['$ref' => 'chart.png']],
+            'response' => ['image' => 'chart.png'],
             'id' => null,
             'parts' => [
                 ['inlineData' => ['mimeType' => 'image/png', 'data' => 'aGVsbG8=']],
