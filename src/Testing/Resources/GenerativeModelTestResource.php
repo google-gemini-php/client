@@ -12,7 +12,6 @@ use Gemini\Data\SafetySetting;
 use Gemini\Data\Tool;
 use Gemini\Data\ToolConfig;
 use Gemini\Data\UploadedFile;
-use Gemini\Resources\ChatSession;
 use Gemini\Resources\GenerativeModel;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
@@ -43,9 +42,11 @@ final class GenerativeModelTestResource implements GenerativeModelContract
         return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
     }
 
-    public function startChat(array $history = []): ChatSession
+    public function startChat(array $history = []): ChatSessionTestResource
     {
-        return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+        $this->recordFunctionCall(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+
+        return new ChatSessionTestResource(fake: $this->fake, model: $this->model);
     }
 
     public function withSystemInstruction(Content $systemInstruction): self

@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
+use Gemini\Data\Content;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
 use Gemini\Enums\HarmBlockThreshold;
 use Gemini\Enums\HarmCategory;
+use Gemini\Resources\ChatSession;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
 use Gemini\Testing\ClientFake;
+use Gemini\Testing\Resources\ChatSessionTestResource;
 
 it('records a count tokens request', function () {
     $fake = new ClientFake([
@@ -91,5 +94,28 @@ it('records both content request and function call', function () {
     $fake->generativeModel('models/gemini-1.5-pro')->assertFunctionCalled(function (string $method, array $parameters) use ($generationConfig) {
         return $method === 'withGenerationConfig' &&
             $parameters[0] === $generationConfig;
+    });
+});
+
+it('records a "startChat" function call and the chat messages', function () {
+    $fake = new ClientFake([
+        GenerateContentResponse::fake([
+            'candidates' => [['content' => ['parts' => [['text' => 'Hi there!']]]]],
+        ]),
+    ]);
+
+    $chat = $fake->generativeModel('models/gemini-2.5-flash')->startChat(history: [Content::parse('Hello')]);
+    $response = $chat->sendMessage('How are you?');
+
+    expect($chat)->toBeInstanceOf(ChatSessionTestResource::class)
+        ->and($response->text())->toBe('Hi there!');
+
+    $fake->generativeModel('models/gemini-2.5-flash')->assertFunctionCalled(function (string $method, array $parameters) {
+        return $method === 'startChat' &&
+            $parameters[0][0]->parts[0]->text === 'Hello';
+    });
+    $fake->assertSent(resource: ChatSession::class, model: 'models/gemini-2.5-flash', callback: function (string $method, array $parameters) {
+        return $method === 'sendMessage' &&
+            $parameters[0] === 'How are you?';
     });
 });

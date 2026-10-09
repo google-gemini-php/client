@@ -7,6 +7,7 @@ use Gemini\Enums\MimeType;
 use Gemini\Resources\ChatSession;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
 use Gemini\Testing\ClientFake;
+use Gemini\Testing\Resources\ChatSessionTestResource;
 
 it('records a chat message request', function () {
     $fake = new ClientFake([
@@ -47,6 +48,22 @@ it('records a stream chat message request', function () {
 
     $fake->assertSent(resource: ChatSession::class, model: 'models/gemini-1.5-flash', callback: function (string $method, array $parameters) {
         return $method === 'streamSendMessage' &&
+            $parameters[0] === 'Hello';
+    });
+});
+
+it('starts a new chat from a chat session', function () {
+    $fake = new ClientFake([
+        GenerateContentResponse::fake(),
+    ]);
+
+    $chat = $fake->chat('models/gemini-2.5-flash')->startChat();
+    $chat->sendMessage('Hello');
+
+    expect($chat)->toBeInstanceOf(ChatSessionTestResource::class);
+
+    $fake->assertSent(resource: ChatSession::class, model: 'models/gemini-2.5-flash', callback: function (string $method, array $parameters) {
+        return $method === 'sendMessage' &&
             $parameters[0] === 'Hello';
     });
 });
