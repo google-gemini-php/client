@@ -7,6 +7,7 @@ use Gemini\Responses\FileSearchStores\Documents\ListResponse as DocumentListResp
 use Gemini\Responses\FileSearchStores\FileSearchStoreResponse;
 use Gemini\Responses\FileSearchStores\ListResponse;
 use Gemini\Responses\FileSearchStores\UploadResponse;
+use Gemini\Transporters\DTOs\ResponseDTO;
 
 test('create', function () {
     $client = mockClient(
@@ -58,7 +59,7 @@ test('delete', function () {
     $client = mockClient(
         method: Method::DELETE,
         endpoint: 'fileSearchStores/123-456',
-        response: new \Gemini\Transporters\DTOs\ResponseDTO([])
+        response: new ResponseDTO([])
     );
 
     $client->fileSearchStores()->delete('fileSearchStores/123-456');
@@ -71,7 +72,7 @@ test('delete with force', function () {
     $client = mockClient(
         method: Method::DELETE,
         endpoint: 'fileSearchStores/123-456',
-        response: new \Gemini\Transporters\DTOs\ResponseDTO([]),
+        response: new ResponseDTO([]),
         params: ['force' => 'true'],
         validateParams: true
     );
@@ -164,7 +165,7 @@ test('delete document', function () {
     $client = mockClient(
         method: Method::DELETE,
         endpoint: 'fileSearchStores/123/documents/abc',
-        response: new \Gemini\Transporters\DTOs\ResponseDTO([])
+        response: new ResponseDTO([])
     );
 
     $client->fileSearchStores()->deleteDocument('fileSearchStores/123/documents/abc');
@@ -176,7 +177,7 @@ test('delete document with force', function () {
     $client = mockClient(
         method: Method::DELETE,
         endpoint: 'fileSearchStores/123/documents/abc',
-        response: new \Gemini\Transporters\DTOs\ResponseDTO([]),
+        response: new ResponseDTO([]),
         params: ['force' => 'true'],
         validateParams: true
     );

@@ -1,9 +1,11 @@
 <?php
 
 use Gemini\Client;
+use Gemini\Contracts\TransporterContract;
 use Gemini\Data\Candidate;
 use Gemini\Data\Content;
 use Gemini\Data\GenerationConfig;
+use Gemini\Data\ImageConfig;
 use Gemini\Data\PromptFeedback;
 use Gemini\Data\SafetySetting;
 use Gemini\Data\UploadedFile;
@@ -12,6 +14,7 @@ use Gemini\Enums\HarmBlockThreshold;
 use Gemini\Enums\HarmCategory;
 use Gemini\Enums\Method;
 use Gemini\Enums\MimeType;
+use Gemini\Requests\GenerativeModel\GenerateContentRequest;
 use Gemini\Resources\ChatSession;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
@@ -201,7 +204,7 @@ test('generative model with system instruction', function () {
     $systemInstruction = 'You are a helpful assistant.';
     $userMessage = 'Hello';
 
-    $mockTransporter = Mockery::mock(\Gemini\Contracts\TransporterContract::class);
+    $mockTransporter = Mockery::mock(TransporterContract::class);
     $mockTransporter->shouldReceive('request')
         ->once()
         ->andReturnUsing(function ($request) use (&$capturedRequest) {
@@ -219,7 +222,7 @@ test('generative model with system instruction', function () {
     expect($result)->toBeInstanceOf(GenerateContentResponse::class);
 
     expect($capturedRequest)
-        ->toBeInstanceOf(\Gemini\Requests\GenerativeModel\GenerateContentRequest::class)
+        ->toBeInstanceOf(GenerateContentRequest::class)
         ->and($capturedRequest->resolveEndpoint())->toBe("{$modelType}:generateContent");
 
     $body = $capturedRequest->body();
@@ -240,10 +243,10 @@ test('system instruction is included in the request', function () {
     $modelType = 'models/gemini-1.5-pro';
     $systemInstruction = 'You are a helpful assistant.';
 
-    $mockTransporter = Mockery::mock(\Gemini\Contracts\TransporterContract::class);
+    $mockTransporter = Mockery::mock(TransporterContract::class);
     $mockTransporter->shouldReceive('request')
         ->once()
-        ->withArgs(function (\Gemini\Requests\GenerativeModel\GenerateContentRequest $request) use ($systemInstruction) {
+        ->withArgs(function (GenerateContentRequest $request) use ($systemInstruction) {
             $body = $request->body();
 
             return $body['contents'][0]['parts'][0]['text'] === 'Hello' &&
@@ -251,7 +254,7 @@ test('system instruction is included in the request', function () {
         })
         ->andReturn(new ResponseDTO(GenerateContentResponse::fake()->toArray()));
 
-    $client = new \Gemini\Client($mockTransporter);
+    $client = new Client($mockTransporter);
 
     $parsedSystemInstruction = Content::parse($systemInstruction);
     $generativeModel = $client->generativeModel(model: $modelType)
@@ -264,7 +267,7 @@ test('generate content with image config', function () {
     $modelType = 'models/gemini-2.5-flash-image';
     $client = mockClient(method: Method::POST, endpoint: "{$modelType}:generateContent", response: GenerateContentResponse::fake());
 
-    $imageConfig = new \Gemini\Data\ImageConfig(aspectRatio: '16:9');
+    $imageConfig = new ImageConfig(aspectRatio: '16:9');
     $generationConfig = new GenerationConfig(imageConfig: $imageConfig);
 
     $generativeModel = $client

@@ -73,7 +73,7 @@
 ## Prerequisites
 To complete this quickstart, make sure that your development environment meets the following requirements:
 
-- Requires [PHP 8.1+](https://php.net/releases/)
+- Requires [PHP 8.2+](https://php.net/releases/)
 
 
 ## Setup
