@@ -19,7 +19,7 @@ interface FilesContract
     /**
      * Gets file upload metadata.
      *
-     * @param  string  $nameOrUri  Either the just file name or the complete metadata URI from an upload.
+     * @param  string  $nameOrUri  The file ID (abc-123), its name (files/abc-123) or the complete URI from an upload.
      */
     public function metadataGet(string $nameOrUri): MetadataResponse;
 
