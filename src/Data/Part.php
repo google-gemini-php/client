@@ -25,6 +25,7 @@ final class Part implements Arrayable
      * @param  CodeExecutionResult|null  $codeExecutionResult  Result of executing the ExecutableCode.
      * @param  bool|null  $thought  Optional. Indicates if the part is thought from the model.
      * @param  string|null  $thoughtSignature  Optional. An opaque signature for the thought so it can be reused in subsequent requests. A base64-encoded string.
+     * @param  PartMediaResolution|null  $mediaResolution  Optional. Media resolution for the input media of this part.
      */
     public function __construct(
         public readonly ?string $text = null,
@@ -36,10 +37,11 @@ final class Part implements Arrayable
         public readonly ?CodeExecutionResult $codeExecutionResult = null,
         public readonly ?bool $thought = null,
         public readonly ?string $thoughtSignature = null,
+        public readonly ?PartMediaResolution $mediaResolution = null,
     ) {}
 
     /**
-     * @param  array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> }, executableCode?: array{ language: string, code: string }, codeExecutionResult?: array{ outcome: string, output: string }, thought?: bool, thoughtSignature?: string }  $attributes
+     * @param  array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> }, executableCode?: array{ language: string, code: string }, codeExecutionResult?: array{ outcome: string, output: string }, thought?: bool, thoughtSignature?: string, mediaResolution?: array{ level?: string } }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -53,6 +55,7 @@ final class Part implements Arrayable
             codeExecutionResult: isset($attributes['codeExecutionResult']) ? CodeExecutionResult::from($attributes['codeExecutionResult']) : null,
             thought: $attributes['thought'] ?? null,
             thoughtSignature: $attributes['thoughtSignature'] ?? null,
+            mediaResolution: isset($attributes['mediaResolution']) ? PartMediaResolution::from($attributes['mediaResolution']) : null,
         );
     }
 
@@ -94,6 +97,10 @@ final class Part implements Arrayable
 
         if ($this->thoughtSignature !== null) {
             $data['thoughtSignature'] = $this->thoughtSignature;
+        }
+
+        if ($this->mediaResolution?->level !== null) {
+            $data['mediaResolution'] = $this->mediaResolution->toArray();
         }
 
         return $data;
