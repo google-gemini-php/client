@@ -36,3 +36,10 @@ test('from', function () {
         ->and(Part::from(['text' => 'Hello']))
         ->mediaResolution->toBeNull();
 });
+
+test('to array without a level', function () {
+    expect((new Part(text: 'Hello', mediaResolution: new PartMediaResolution))->toArray())
+        ->toBe(['text' => 'Hello'])
+        ->and(Part::from(['text' => 'Hello', 'mediaResolution' => ['level' => 'SOME_NEW_LEVEL']])->toArray())
+        ->toBe(['text' => 'Hello']);
+});

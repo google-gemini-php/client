@@ -99,7 +99,7 @@ final class Part implements Arrayable
             $data['thoughtSignature'] = $this->thoughtSignature;
         }
 
-        if ($this->mediaResolution !== null) {
+        if ($this->mediaResolution?->level !== null) {
             $data['mediaResolution'] = $this->mediaResolution->toArray();
         }
 
