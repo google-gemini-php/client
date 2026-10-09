@@ -11,7 +11,6 @@ use Gemini\Data\SafetySetting;
 use Gemini\Data\Tool;
 use Gemini\Data\ToolConfig;
 use Gemini\Data\UploadedFile;
-use Gemini\Resources\ChatSession;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
 use Gemini\Responses\StreamResponse;
@@ -39,7 +38,7 @@ interface GenerativeModelContract
     /**
      * @param  array<Content>  $history
      */
-    public function startChat(array $history = []): ChatSession;
+    public function startChat(array $history = []): ChatSessionContract;
 
     public function withSafetySetting(SafetySetting $safetySetting): self;
 
