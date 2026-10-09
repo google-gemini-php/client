@@ -6,6 +6,7 @@ namespace Gemini\Responses\GenerativeModel;
 
 use Gemini\Contracts\ResponseContract;
 use Gemini\Data\Candidate;
+use Gemini\Data\ModelStatus;
 use Gemini\Data\Part;
 use Gemini\Data\PromptFeedback;
 use Gemini\Data\UsageMetadata;
@@ -28,12 +29,16 @@ final class GenerateContentResponse implements ResponseContract
      * @param  UsageMetadata  $usageMetadata  Output only. Metadata on the generation requests' token usage.
      * @param  PromptFeedback|null  $promptFeedback  Returns the prompt's feedback related to the content filters.
      * @param  string|null  $modelVersion  The model version used to generate the response.
+     * @param  string|null  $responseId  Output only. Used to identify each response.
+     * @param  ModelStatus|null  $modelStatus  Output only. The current model status of this model.
      */
     public function __construct(
         public readonly array $candidates,
         public readonly UsageMetadata $usageMetadata,
         public readonly ?PromptFeedback $promptFeedback = null,
         public readonly ?string $modelVersion = null,
+        public readonly ?string $responseId = null,
+        public readonly ?ModelStatus $modelStatus = null,
     ) {}
 
     /**
@@ -98,7 +103,7 @@ final class GenerateContentResponse implements ResponseContract
     }
 
     /**
-     * @param  array{ candidates: ?array<array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }, finishReason: ?string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: ?int, tokenCount: ?int, avgLogprobs: ?float, groundingAttributions: ?array<array{ sourceId: array{ groundingPassage?: array{ passageId: string, partIndex: int }, semanticRetrieverChunk?: array{ source: string, chunk: string } }, content: array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string } }>, groundingMetadata?: array{ groundingChunks: ?array<array{ web: null|array{ title: ?string, uri: ?string }, retrievedContext: null|array{ uri: ?string, title: ?string, text: ?string, fileSearchStore: ?string }, maps: null|array{ uri: ?string, title: ?string, text: ?string, placeId: ?string, placeAnswerSources: ?array{ reviewSnippets: array<array{title: ?string, googleMapsUri: ?string, reviewId: ?string}> } } }>, groundingSupports: ?array<array{ groundingChunkIndices: array<int>|null, confidenceScores: array<float>|null, segment: ?array{ partIndex: ?int, startIndex: ?int, endIndex: ?int, text: ?string } }>, webSearchQueries: ?array<string>, searchEntryPoint?: array{ renderedContent?: string|null, sdkBlob?: string|null }, retrievalMetadata: ?array{ googleSearchDynamicRetrievalScore?: float|null } }, logprobsResult?: array{ topCandidates: array<array{ candidates: array<array{ token: string, tokenId: int, logProbability: float }> }>, chosenCandidates: array<array{ token: string, tokenId: int, logProbability: float }> }, urlRetrievalMetadata?: array{ urlRetrievalContexts: array<array{ retrievedUrl: string }> } }>, promptFeedback: ?array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }, usageMetadata: array{ promptTokenCount: int, totalTokenCount: int, candidatesTokenCount: ?int, cachedContentTokenCount: ?int, toolUsePromptTokenCount: ?int, thoughtsTokenCount: ?int, promptTokensDetails: list<array{ modality: string, tokenCount: int}>|null, cacheTokensDetails: list<array{ modality: string, tokenCount: int}>|null, candidatesTokensDetails: list<array{ modality: string, tokenCount: int}>|null, toolUsePromptTokensDetails: list<array{ modality: string, tokenCount: int}>|null }, modelVersion: ?string }  $attributes
+     * @param  array{ candidates: ?array<array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }, finishReason: ?string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: ?int, tokenCount: ?int, avgLogprobs: ?float, groundingAttributions: ?array<array{ sourceId: array{ groundingPassage?: array{ passageId: string, partIndex: int }, semanticRetrieverChunk?: array{ source: string, chunk: string } }, content: array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string } }>, groundingMetadata?: array{ groundingChunks: ?array<array{ web: null|array{ title: ?string, uri: ?string }, retrievedContext: null|array{ uri: ?string, title: ?string, text: ?string, fileSearchStore: ?string }, maps: null|array{ uri: ?string, title: ?string, text: ?string, placeId: ?string, placeAnswerSources: ?array{ reviewSnippets: array<array{title: ?string, googleMapsUri: ?string, reviewId: ?string}> } } }>, groundingSupports: ?array<array{ groundingChunkIndices: array<int>|null, confidenceScores: array<float>|null, segment: ?array{ partIndex: ?int, startIndex: ?int, endIndex: ?int, text: ?string } }>, webSearchQueries: ?array<string>, searchEntryPoint?: array{ renderedContent?: string|null, sdkBlob?: string|null }, retrievalMetadata: ?array{ googleSearchDynamicRetrievalScore?: float|null } }, logprobsResult?: array{ topCandidates: array<array{ candidates: array<array{ token: string, tokenId: int, logProbability: float }> }>, chosenCandidates: array<array{ token: string, tokenId: int, logProbability: float }> }, urlRetrievalMetadata?: array{ urlRetrievalContexts: array<array{ retrievedUrl: string }> }, finishMessage?: string, urlContextMetadata?: array{ urlMetadata?: array<array{ retrievedUrl?: string, urlRetrievalStatus?: string }> } }>, promptFeedback: ?array{ safetyRatings: array{ array{ category: string, probability: string, blocked: ?bool } }, blockReason: ?string }, usageMetadata: array{ promptTokenCount: int, totalTokenCount: int, candidatesTokenCount: ?int, cachedContentTokenCount: ?int, toolUsePromptTokenCount: ?int, thoughtsTokenCount: ?int, promptTokensDetails: list<array{ modality: string, tokenCount: int}>|null, cacheTokensDetails: list<array{ modality: string, tokenCount: int}>|null, candidatesTokensDetails: list<array{ modality: string, tokenCount: int}>|null, toolUsePromptTokensDetails: list<array{ modality: string, tokenCount: int}>|null }, modelVersion: ?string, responseId?: string, modelStatus?: array{ modelStage?: string, retirementTime?: string, message?: string } }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -117,6 +122,8 @@ final class GenerateContentResponse implements ResponseContract
             usageMetadata: UsageMetadata::from($attributes['usageMetadata']),
             promptFeedback: $promptFeedback,
             modelVersion: $attributes['modelVersion'] ?? null,
+            responseId: $attributes['responseId'] ?? null,
+            modelStatus: isset($attributes['modelStatus']) ? ModelStatus::from($attributes['modelStatus']) : null,
         );
     }
 
@@ -130,6 +137,8 @@ final class GenerateContentResponse implements ResponseContract
             'promptFeedback' => $this->promptFeedback?->toArray(),
             'usageMetadata' => $this->usageMetadata->toArray(),
             'modelVersion' => $this->modelVersion,
+            'responseId' => $this->responseId,
+            'modelStatus' => $this->modelStatus?->toArray(),
         ];
     }
 }
