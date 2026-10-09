@@ -27,6 +27,8 @@ final class Candidate implements Arrayable
      * @param  GroundingMetadata|null  $groundingMetadata  Output only. Grounding metadata for the candidate. This field is populated for GenerateContent calls.
      * @param  LogprobsResult|null  $logprobsResult  Output only. Log-likelihood scores for the response tokens and top tokens.
      * @param  UrlRetrievalMetadata|null  $urlRetrievalMetadata  Output only. Metadata related to url context retrieval tool.
+     * @param  string|null  $finishMessage  Optional. Output only. Details the reason why the model stopped generating tokens. This is populated only when `finishReason` is set.
+     * @param  UrlContextMetadata|null  $urlContextMetadata  Output only. Metadata related to url context retrieval tool.
      */
     public function __construct(
         public readonly Content $content,
@@ -40,10 +42,12 @@ final class Candidate implements Arrayable
         public readonly ?GroundingMetadata $groundingMetadata = null,
         public readonly ?LogprobsResult $logprobsResult = null,
         public readonly ?UrlRetrievalMetadata $urlRetrievalMetadata = null,
+        public readonly ?string $finishMessage = null,
+        public readonly ?UrlContextMetadata $urlContextMetadata = null,
     ) {}
 
     /**
-     * @param  array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }, finishReason: ?string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: ?int, tokenCount: ?int, avgLogprobs: ?float, groundingAttributions: ?array<array{ sourceId: array{ groundingPassage?: array{ passageId: string, partIndex: int }, semanticRetrieverChunk?: array{ source: string, chunk: string } }, content: array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string } }>, groundingMetadata?: array{ groundingChunks: ?array<array{ web: null|array{ title: ?string, uri: ?string }, retrievedContext: null|array{ uri: ?string, title: ?string, text: ?string, fileSearchStore: ?string }, maps: null|array{ uri: ?string, title: ?string, text: ?string, placeId: ?string, placeAnswerSources: ?array{ reviewSnippets: array<array{title: ?string, googleMapsUri: ?string, reviewId: ?string}> } } }>, groundingSupports: ?array<array{ groundingChunkIndices: array<int>|null, confidenceScores: array<float>|null, segment: ?array{ partIndex: ?int, startIndex: ?int, endIndex: ?int, text: ?string } }>, webSearchQueries: ?array<string>, searchEntryPoint?: array{ renderedContent?: string|null, sdkBlob?: string|null }, retrievalMetadata: ?array{ googleSearchDynamicRetrievalScore?: float|null } }, logprobsResult?: array{ topCandidates: array<array{ candidates: array<array{ token: string, tokenId: int, logProbability: float }> }>, chosenCandidates: array<array{ token: string, tokenId: int, logProbability: float }> }, urlRetrievalMetadata?: array{ urlRetrievalContexts: array<array{ retrievedUrl: string }> } }  $attributes
+     * @param  array{ content: ?array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string }, finishReason: ?string, safetyRatings: ?array{ array{ category: string, probability: string, blocked: ?bool } }, citationMetadata: ?array{ citationSources: array{ array{ startIndex: int, endIndex: int, uri: ?string, license: ?string} } }, index: ?int, tokenCount: ?int, avgLogprobs: ?float, groundingAttributions: ?array<array{ sourceId: array{ groundingPassage?: array{ passageId: string, partIndex: int }, semanticRetrieverChunk?: array{ source: string, chunk: string } }, content: array{ parts: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role: string } }>, groundingMetadata?: array{ groundingChunks: ?array<array{ web: null|array{ title: ?string, uri: ?string }, retrievedContext: null|array{ uri: ?string, title: ?string, text: ?string, fileSearchStore: ?string }, maps: null|array{ uri: ?string, title: ?string, text: ?string, placeId: ?string, placeAnswerSources: ?array{ reviewSnippets: array<array{title: ?string, googleMapsUri: ?string, reviewId: ?string}> } } }>, groundingSupports: ?array<array{ groundingChunkIndices: array<int>|null, confidenceScores: array<float>|null, segment: ?array{ partIndex: ?int, startIndex: ?int, endIndex: ?int, text: ?string } }>, webSearchQueries: ?array<string>, searchEntryPoint?: array{ renderedContent?: string|null, sdkBlob?: string|null }, retrievalMetadata: ?array{ googleSearchDynamicRetrievalScore?: float|null } }, logprobsResult?: array{ topCandidates: array<array{ candidates: array<array{ token: string, tokenId: int, logProbability: float }> }>, chosenCandidates: array<array{ token: string, tokenId: int, logProbability: float }> }, urlRetrievalMetadata?: array{ urlRetrievalContexts: array<array{ retrievedUrl: string }> }, finishMessage?: string, urlContextMetadata?: array{ urlMetadata?: array<array{ retrievedUrl?: string, urlRetrievalStatus?: string }> } }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -69,6 +73,8 @@ final class Candidate implements Arrayable
             groundingMetadata: isset($attributes['groundingMetadata']) ? GroundingMetadata::from($attributes['groundingMetadata']) : null,
             logprobsResult: isset($attributes['logprobsResult']) ? LogprobsResult::from($attributes['logprobsResult']) : null,
             urlRetrievalMetadata: isset($attributes['urlRetrievalMetadata']) ? UrlRetrievalMetadata::from($attributes['urlRetrievalMetadata']) : null,
+            finishMessage: $attributes['finishMessage'] ?? null,
+            urlContextMetadata: isset($attributes['urlContextMetadata']) ? UrlContextMetadata::from($attributes['urlContextMetadata']) : null,
         );
     }
 
@@ -92,6 +98,8 @@ final class Candidate implements Arrayable
             'groundingMetadata' => $this->groundingMetadata?->toArray(),
             'logprobsResult' => $this->logprobsResult?->toArray(),
             'urlRetrievalMetadata' => $this->urlRetrievalMetadata?->toArray(),
+            'finishMessage' => $this->finishMessage,
+            'urlContextMetadata' => $this->urlContextMetadata?->toArray(),
         ];
     }
 }
