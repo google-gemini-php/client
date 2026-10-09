@@ -48,9 +48,69 @@ test('recitation finish reason', function () {
             expect($e->getMessage())
                 ->toBe('The `GenerateContentResponse::text()` quick accessor only works when the response contains a valid '.
                     '`Part`, but none was returned. Check the `candidate.safety_ratings` to see if the '.
-                    'response was blocked.');
+                    'response was blocked. Finish reason: RECITATION.');
         });
 
+});
+
+test('blocked prompt', function () {
+    $response = GenerateContentResponse::from([
+        'promptFeedback' => [
+            'blockReason' => 'SAFETY',
+            'safetyRatings' => [],
+        ],
+        'usageMetadata' => [
+            'promptTokenCount' => 0,
+            'totalTokenCount' => 0,
+        ],
+    ]);
+
+    expect(fn () => $response->parts())
+        ->toThrow(function (ValueError $e) {
+            expect($e->getMessage())
+                ->toBe('The `GenerateContentResponse::parts()` quick accessor only works for a single candidate, '.
+                    'but none were returned. Check the `GenerateContentResponse::$promptFeedback` to see if the prompt was blocked. Block reason: SAFETY.');
+        });
+});
+
+test('no candidates without prompt feedback', function () {
+    $response = GenerateContentResponse::from([
+        'usageMetadata' => [
+            'promptTokenCount' => 0,
+            'totalTokenCount' => 0,
+        ],
+    ]);
+
+    expect(fn () => $response->text())
+        ->toThrow(function (ValueError $e) {
+            expect($e->getMessage())
+                ->toBe('The `GenerateContentResponse::parts()` quick accessor only works for a single candidate, '.
+                    'but none were returned. Check the `GenerateContentResponse::$promptFeedback` to see if the prompt was blocked.');
+        });
+});
+
+test('max tokens finish reason without parts', function () {
+    $response = GenerateContentResponse::from([
+        'candidates' => [
+            [
+                'content' => ['role' => 'model'],
+                'finishReason' => FinishReason::MAX_TOKENS->value,
+                'index' => 0,
+            ],
+        ],
+        'usageMetadata' => [
+            'promptTokenCount' => 10,
+            'totalTokenCount' => 110,
+            'thoughtsTokenCount' => 100,
+        ],
+    ]);
+
+    expect(fn () => $response->text())
+        ->toThrow(function (ValueError $e) {
+            expect($e->getMessage())
+                ->toBe('The `GenerateContentResponse::text()` quick accessor only works when the response contains a valid '.
+                    '`Part`, but none was returned. Check the `candidate.safety_ratings` to see if the response was blocked. Finish reason: MAX_TOKENS.');
+        });
 });
 
 test('fake', function () {
