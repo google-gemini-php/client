@@ -155,6 +155,59 @@ describe('upload', function () {
     });
 });
 
+test('import file', function () {
+    $client = mockClient(
+        method: Method::POST,
+        endpoint: 'fileSearchStores/123:importFile',
+        response: UploadResponse::fake(),
+        params: [
+            'fileName' => 'files/abc-123',
+            'customMetadata' => [
+                ['key' => 'author', 'stringValue' => 'Jane'],
+                ['key' => 'year', 'numericValue' => 2026],
+            ],
+        ],
+        validateParams: true
+    );
+
+    $result = $client->fileSearchStores()->importFile('fileSearchStores/123', 'files/abc-123', ['author' => 'Jane', 'year' => 2026]);
+
+    expect($result)
+        ->toBeInstanceOf(UploadResponse::class)
+        ->name->toBe('operations/123-456');
+});
+
+test('import file without custom metadata', function () {
+    $client = mockClient(
+        method: Method::POST,
+        endpoint: 'fileSearchStores/123:importFile',
+        response: UploadResponse::fake(),
+        params: ['fileName' => 'files/abc-123'],
+        validateParams: true
+    );
+
+    expect($client->fileSearchStores()->importFile('fileSearchStores/123', 'files/abc-123'))
+        ->toBeInstanceOf(UploadResponse::class);
+});
+
+test('get operation', function () {
+    $client = mockClient(
+        method: Method::GET,
+        endpoint: 'fileSearchStores/123/upload/operations/456',
+        response: new ResponseDTO([
+            'name' => 'fileSearchStores/123/upload/operations/456',
+            'done' => true,
+            'response' => ['documentName' => 'fileSearchStores/123/documents/789'],
+        ]),
+    );
+
+    expect($client->fileSearchStores()->getOperation('fileSearchStores/123/upload/operations/456'))
+        ->toBeInstanceOf(UploadResponse::class)
+        ->name->toBe('fileSearchStores/123/upload/operations/456')
+        ->done->toBeTrue()
+        ->response->toBe(['documentName' => 'fileSearchStores/123/documents/789']);
+});
+
 test('list documents', function () {
     $client = mockClient(
         method: Method::GET,
