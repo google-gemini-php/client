@@ -45,8 +45,9 @@ final class GenerateContentResponse implements ResponseContract
     {
         if (empty($this->candidates)) {
             throw new ValueError(
-                message: 'The `GenerateContentResponse::parts()` quick accessor only works for a single candidate,'.
-                'but none were returned. Check the `GenerateContentResponse::$promptFeedback` to see if the prompt was blocked.'
+                message: 'The `GenerateContentResponse::parts()` quick accessor only works for a single candidate, '.
+                'but none were returned. Check the `GenerateContentResponse::$promptFeedback` to see if the prompt was blocked.'.
+                ($this->promptFeedback?->blockReason !== null ? " Block reason: {$this->promptFeedback->blockReason->value}." : '')
             );
         }
 
@@ -69,10 +70,13 @@ final class GenerateContentResponse implements ResponseContract
         $parts = $this->parts();
 
         if (empty($parts)) {
+            $finishReason = $this->candidates[0]->finishReason;
+
             throw new ValueError(
                 message: 'The `GenerateContentResponse::text()` quick accessor only works when the response contains a valid '.
                 '`Part`, but none was returned. Check the `candidate.safety_ratings` to see if the '.
-                'response was blocked.'
+                'response was blocked.'.
+                ($finishReason !== null ? " Finish reason: {$finishReason->value}." : '')
             );
         }
 
