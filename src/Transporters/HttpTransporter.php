@@ -15,6 +15,7 @@ use GuzzleHttp\Exception\ClientException;
 use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 final class HttpTransporter implements TransporterContract
@@ -24,7 +25,7 @@ final class HttpTransporter implements TransporterContract
      *
      * @param  array<string, string>  $headers
      * @param  array<string, string|int>  $queryParams
-     * @param  Closure(\Psr\Http\Message\RequestInterface): ResponseInterface  $streamHandler
+     * @param  Closure(RequestInterface): ResponseInterface  $streamHandler
      */
     public function __construct(
         private readonly ClientInterface $client,
