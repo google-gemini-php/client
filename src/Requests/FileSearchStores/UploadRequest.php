@@ -7,6 +7,7 @@ namespace Gemini\Requests\FileSearchStores;
 use Gemini\Enums\Method;
 use Gemini\Enums\MimeType;
 use Gemini\Foundation\Request;
+use Gemini\Requests\Concerns\HasCustomMetadata;
 use Http\Discovery\Psr17Factory;
 use Psr\Http\Message\RequestInterface;
 
@@ -15,6 +16,8 @@ use Psr\Http\Message\RequestInterface;
  */
 class UploadRequest extends Request
 {
+    use HasCustomMetadata;
+
     protected Method $method = Method::POST;
 
     /**
@@ -47,20 +50,7 @@ class UploadRequest extends Request
         }
 
         if (! empty($this->customMetadata)) {
-            $metadata['customMetadata'] = [];
-            foreach ($this->customMetadata as $key => $value) {
-                $entry = ['key' => (string) $key];
-
-                if (is_int($value) || is_float($value)) {
-                    $entry['numericValue'] = $value;
-                } elseif (is_array($value)) {
-                    $entry['stringListValue'] = ['values' => array_map('strval', $value)];
-                } else {
-                    $entry['stringValue'] = (string) $value;
-                }
-
-                $metadata['customMetadata'][] = $entry;
-            }
+            $metadata['customMetadata'] = $this->customMetadataToArray($this->customMetadata);
         }
 
         $requestJson = empty($metadata) ? '' : json_encode($metadata);

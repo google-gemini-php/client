@@ -48,6 +48,16 @@ final class FileSearchStoresTestResource implements FileSearchStoresContract
         return $this->record(method: __FUNCTION__, args: func_get_args());
     }
 
+    public function importFile(string $storeName, string $fileName, array $customMetadata = []): UploadResponse
+    {
+        return $this->record(method: __FUNCTION__, args: func_get_args());
+    }
+
+    public function getOperation(string $name): UploadResponse
+    {
+        return $this->record(method: __FUNCTION__, args: func_get_args());
+    }
+
     public function listDocuments(string $storeName, ?int $pageSize = null, ?string $nextPageToken = null): DocumentListResponse
     {
         return $this->record(method: __FUNCTION__, args: func_get_args());
