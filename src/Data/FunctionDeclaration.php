@@ -18,21 +18,35 @@ final class FunctionDeclaration implements Arrayable
      * @param  string  $description  Required. A brief description of the function.
      * @param  Schema|null  $parameters  Optional. Describes the parameters to this function. Reflects the Open API 3.03 Parameter Object string Key: the name of the parameter. Parameter names are case sensitive. Schema Value: the Schema defining the type used for the parameter.
      * @param  Schema|null  $response  Optional. Describes the output from this function in JSON Schema format. Reflects the Open API 3.03 Response Object. The Schema defines the type used for the response value of the function.
+     * @param  array<string, mixed>|null  $parametersJsonSchema  Optional. Describes the parameters to the function in JSON Schema format. The schema must describe an object where the properties are the parameters to the function. This field is mutually exclusive with `parameters`. Use `new \stdClass` for an empty JSON object, e.g. `'properties' => new \stdClass`.
+     * @param  array<string, mixed>|null  $responseJsonSchema  Optional. Describes the output from this function in JSON Schema format. The value specified by the schema is the response value of the function. This field is mutually exclusive with `response`. Use `new \stdClass` for an empty JSON object, e.g. `'properties' => new \stdClass`.
      */
     public function __construct(
         public string $name,
         public string $description,
         public ?Schema $parameters = null,
         public ?Schema $response = null,
+        public ?array $parametersJsonSchema = null,
+        public ?array $responseJsonSchema = null,
     ) {}
 
     public function toArray(): array
     {
-        return [
+        $data = [
             'name' => $this->name,
             'description' => $this->description,
             'parameters' => $this->parameters?->toArray(),
             'response' => $this->response?->toArray(),
         ];
+
+        if ($this->parametersJsonSchema !== null) {
+            $data['parametersJsonSchema'] = $this->parametersJsonSchema;
+        }
+
+        if ($this->responseJsonSchema !== null) {
+            $data['responseJsonSchema'] = $this->responseJsonSchema;
+        }
+
+        return $data;
     }
 }

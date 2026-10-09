@@ -36,6 +36,7 @@ final class GenerationConfig implements Arrayable
      * @param  ThinkingConfig|null  $thinkingConfig  Optional. Config for thinking features. An error will be returned if this field is set for models that don't support thinking.
      * @param  MediaResolution|null  $mediaResolution  Optional. If specified, the media resolution specified will be used.
      * @param  ImageConfig|null  $imageConfig  Optional. Config for image generation features.
+     * @param  array<string, mixed>|null  $responseJsonSchema  Optional. Output schema of the generated response in JSON Schema format. This is an alternative to `responseSchema` that accepts JSON Schema. If set, `responseSchema` must be omitted and `responseMimeType` must be `application/json`. Use `new \stdClass` for an empty JSON object, e.g. `'properties' => new \stdClass`.
      */
     public function __construct(
         public readonly int $candidateCount = 1,
@@ -57,6 +58,7 @@ final class GenerationConfig implements Arrayable
         public readonly ?ThinkingConfig $thinkingConfig = null,
         public readonly ?MediaResolution $mediaResolution = null,
         public readonly ?ImageConfig $imageConfig = null,
+        public readonly ?array $responseJsonSchema = null,
     ) {}
 
     public function toArray(): array
@@ -85,6 +87,7 @@ final class GenerationConfig implements Arrayable
                 'thinkingConfig' => $this->thinkingConfig?->toArray(),
                 'mediaResolution' => $this->mediaResolution?->value,
                 'imageConfig' => $this->imageConfig?->toArray(),
+                'responseJsonSchema' => $this->responseJsonSchema,
             ]
         );
     }
