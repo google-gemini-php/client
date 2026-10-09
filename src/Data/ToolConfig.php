@@ -16,6 +16,7 @@ final class ToolConfig implements Arrayable
     public function __construct(
         public ?FunctionCallingConfig $functionCallingConfig = null,
         public ?RetrievalConfig $retrievalConfig = null,
+        public ?bool $includeServerSideToolInvocations = null,
     ) {}
 
     public function toArray(): array
@@ -28,6 +29,10 @@ final class ToolConfig implements Arrayable
 
         if ($this->retrievalConfig !== null) {
             $data['retrievalConfig'] = $this->retrievalConfig->toArray();
+        }
+
+        if ($this->includeServerSideToolInvocations !== null) {
+            $data['includeServerSideToolInvocations'] = $this->includeServerSideToolInvocations;
         }
 
         return $data;

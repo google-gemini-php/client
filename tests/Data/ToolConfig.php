@@ -73,3 +73,10 @@ test('to array with no config', function () {
     expect($toolConfig->toArray())
         ->toBe([]);
 });
+
+test('to array with server side tool invocations', function () {
+    expect((new ToolConfig(includeServerSideToolInvocations: true))->toArray())
+        ->toBe([
+            'includeServerSideToolInvocations' => true,
+        ]);
+});
