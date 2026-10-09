@@ -2,6 +2,7 @@
 
 use Gemini\Enums\Method;
 use Gemini\Enums\MimeType;
+use Gemini\Requests\FileSearchStores\UploadRequest;
 use Gemini\Responses\FileSearchStores\Documents\DocumentResponse;
 use Gemini\Responses\FileSearchStores\Documents\ListResponse as DocumentListResponse;
 use Gemini\Responses\FileSearchStores\FileSearchStoreResponse;
@@ -129,6 +130,28 @@ describe('upload', function () {
         expect($result)
             ->toBeInstanceOf(UploadResponse::class)
             ->name->toBe('operations/123-456');
+    });
+
+    test('upload request body contains custom metadata', function () {
+        $request = new UploadRequest('fileSearchStores/123', $this->tmpFilepath, 'Display', MimeType::TEXT_PLAIN, [
+            'key_string' => 'value',
+            'key_int' => 123,
+            'key_float' => 1.5,
+            'key_list' => ['a', 2],
+        ]);
+
+        $body = (string) $request->toRequest(baseUrl: 'https://generativelanguage.googleapis.com/v1beta/')->getBody();
+
+        expect($body)->toContain(json_encode([
+            'displayName' => 'Display',
+            'mimeType' => 'text/plain',
+            'customMetadata' => [
+                ['key' => 'key_string', 'stringValue' => 'value'],
+                ['key' => 'key_int', 'numericValue' => 123],
+                ['key' => 'key_float', 'numericValue' => 1.5],
+                ['key' => 'key_list', 'stringListValue' => ['values' => ['a', '2']]],
+            ],
+        ]));
     });
 });
 
