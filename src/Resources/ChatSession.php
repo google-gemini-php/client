@@ -62,17 +62,30 @@ final class ChatSession implements ChatSessionContract
         foreach ($stream as $response) {
             /** @var GenerateContentResponse $response */
             if (empty($response->candidates) === false) {
-                foreach ($response->parts() as $index => $part) {
-                    if (isset($parts[$index]) === false) {
-                        $parts[$index] = $part;
+                foreach ($response->parts() as $part) {
+                    $lastIndex = array_key_last($parts);
+                    $last = $lastIndex === null ? null : $parts[$lastIndex];
+
+                    // Streamed text arrives in chunks and is joined into one part. Any other part (function or
+                    // tool calls, a switch between thoughts and answer) starts a new part, so it can be sent back as is.
+                    $isTextContinuation = $last !== null
+                        && $last->text !== null
+                        && $part->text !== null
+                        && $last->thought === $part->thought
+                        && array_diff(array_keys($last->toArray()), ['text', 'thought']) === []
+                        && array_diff(array_keys($part->toArray()), ['text', 'thought', 'thoughtSignature']) === [];
+
+                    if ($isTextContinuation === false) {
+                        $parts[] = $part;
 
                         continue;
                     }
 
-                    $parts[$index] = Part::from(
+                    $parts[$lastIndex] = Part::from(
                         attributes: array_merge( /* @phpstan-ignore argument.type */
-                            $parts[$index]->toArray(),
-                            ['text' => ($parts[$index]->text ?? '').($part->text ?? '')]
+                            $last->toArray(),
+                            $part->toArray(),
+                            ['text' => $last->text.$part->text]
                         )
                     );
                 }
