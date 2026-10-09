@@ -8,6 +8,7 @@ use Gemini\Requests\GenerativeModel\StreamGenerateContentRequest;
 use Gemini\Requests\Model\ListModelRequest;
 use Gemini\Responses\Models\ListModelResponse;
 use Gemini\Transporters\HttpTransporter;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7\Request as Psr7Request;
 use GuzzleHttp\Psr7\Response;
@@ -209,5 +210,105 @@ test('request stream server errors', function () {
                 ->and($e->getErrorMessage())->toBe('API key not valid. Please pass a valid API key.')
                 ->and($e->getErrorCode())->toBe(400)
                 ->and($e->getErrorStatus())->toBe('INVALID_ARGUMENT');
+        });
+});
+
+test('request server errors wrapped in a list', function () {
+    $request = new ListModelRequest;
+
+    $response = new Response(429, ['Content-Type' => 'application/json; charset=utf-8'], json_encode([
+        [
+            'error' => [
+                'code' => 429,
+                'message' => 'Your prepayment credits are depleted.',
+                'status' => 'RESOURCE_EXHAUSTED',
+            ],
+        ],
+    ]));
+
+    $this->client
+        ->shouldReceive('sendRequest')
+        ->once()
+        ->andReturn($response);
+
+    expect(fn () => $this->http->request($request))
+        ->toThrow(function (ErrorException $e) {
+            expect($e->getMessage())->toBe('Your prepayment credits are depleted.')
+                ->and($e->getErrorCode())->toBe(429)
+                ->and($e->getErrorStatus())->toBe('RESOURCE_EXHAUSTED');
+        });
+});
+
+test('request client exception errors wrapped in a list', function () {
+    $request = new ListModelRequest;
+
+    $response = new Response(429, ['Content-Type' => 'application/json; charset=utf-8'], json_encode([
+        [
+            'error' => [
+                'code' => 429,
+                'message' => 'Your prepayment credits are depleted.',
+                'status' => 'RESOURCE_EXHAUSTED',
+            ],
+        ],
+    ]));
+
+    $this->client
+        ->shouldReceive('sendRequest')
+        ->once()
+        ->andThrow(new ClientException('Too Many Requests', $request->toRequest(baseUrl: 'generativelanguage.googleapis.com'), $response));
+
+    expect(fn () => $this->http->request($request))
+        ->toThrow(function (ErrorException $e) {
+            expect($e->getMessage())->toBe('Your prepayment credits are depleted.')
+                ->and($e->getErrorCode())->toBe(429)
+                ->and($e->getErrorStatus())->toBe('RESOURCE_EXHAUSTED');
+        });
+});
+
+test('request client exception keeps the response body readable', function () {
+    $request = new ListModelRequest;
+
+    $response = new Response(429, ['Content-Type' => 'application/json; charset=utf-8'], json_encode([
+        'unexpected' => 'shape',
+    ]));
+
+    $this->client
+        ->shouldReceive('sendRequest')
+        ->once()
+        ->andThrow(new ClientException('Too Many Requests', $request->toRequest(baseUrl: 'generativelanguage.googleapis.com'), $response));
+
+    expect(fn () => $this->http->request($request))
+        ->toThrow(function (TransporterException $e) {
+            expect($e->getPrevious())->toBeInstanceOf(ClientException::class)
+                ->and($e->getPrevious()->getResponse()->getBody()->getContents())->toBe('{"unexpected":"shape"}');
+        });
+});
+
+test('request stream client exception errors wrapped in a list', function () {
+    $request = new StreamGenerateContentRequest(
+        model: 'models/gemini-1.5-pro',
+        parts: ['Test']
+    );
+
+    $response = new Response(429, ['Content-Type' => 'application/json; charset=utf-8'], json_encode([
+        [
+            'error' => [
+                'code' => 429,
+                'message' => 'Your prepayment credits are depleted.',
+                'status' => 'RESOURCE_EXHAUSTED',
+            ],
+        ],
+    ]));
+
+    $this->client
+        ->shouldReceive('sendAsyncRequest')
+        ->once()
+        ->andThrow(new ClientException('Too Many Requests', $request->toRequest(baseUrl: 'generativelanguage.googleapis.com'), $response));
+
+    expect(fn () => $this->http->requestStream($request))
+        ->toThrow(function (ErrorException $e) {
+            expect($e->getMessage())->toBe('Your prepayment credits are depleted.')
+                ->and($e->getErrorCode())->toBe(429)
+                ->and($e->getErrorStatus())->toBe('RESOURCE_EXHAUSTED');
         });
 });

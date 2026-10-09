@@ -83,7 +83,7 @@ final class HttpTransporter implements TransporterContract
             return $callable();
         } catch (ClientExceptionInterface $clientException) {
             if ($clientException instanceof ClientException) {
-                $this->throwIfJsonError($clientException->getResponse(), $clientException->getResponse()->getBody()->getContents());
+                $this->throwIfJsonError(response: $clientException->getResponse(), contents: $clientException->getResponse());
             }
 
             throw new TransporterException($clientException);
@@ -101,15 +101,22 @@ final class HttpTransporter implements TransporterContract
         }
 
         if ($contents instanceof ResponseInterface) {
-            $contents = $contents->getBody()->getContents();
+            $body = $contents->getBody();
+            $contents = $body->getContents();
+
+            if ($body->isSeekable()) {
+                $body->rewind();
+            }
         }
 
         try {
-            /** @var array{error?: array{code: int, message: string, status: string } } $response */
+            /** @var array{error?: array{code: int, message: string, status: string }, 0?: array{error?: array{code: int, message: string, status: string } } } $response */
             $response = json_decode(json: $contents, associative: true, flags: JSON_THROW_ON_ERROR);
 
-            if (isset($response['error'])) {
-                throw new ErrorException($response['error']);
+            $error = $response['error'] ?? $response[0]['error'] ?? null;
+
+            if ($error !== null) {
+                throw new ErrorException($error);
             }
         } catch (JsonException $jsonException) {
             throw new UnserializableResponse($jsonException);
