@@ -28,24 +28,35 @@ final class ToolCall implements Arrayable
     ) {}
 
     /**
+     * The tool type as returned by the API, kept so that types unknown to ToolType are sent back unchanged.
+     */
+    private ?string $rawToolType = null;
+
+    /**
      * @param  array{ toolType?: string, toolName?: string, args?: array<string, mixed>, id?: string }  $attributes
      */
     public static function from(array $attributes): self
     {
-        return new self(
+        $toolCall = new self(
             toolType: isset($attributes['toolType']) ? ToolType::tryFrom($attributes['toolType']) : null,
             toolName: $attributes['toolName'] ?? null,
             args: $attributes['args'] ?? [],
             id: $attributes['id'] ?? null,
         );
+
+        $toolCall->rawToolType = $attributes['toolType'] ?? null;
+
+        return $toolCall;
     }
 
     public function toArray(): array
     {
         $data = [];
 
-        if ($this->toolType !== null) {
-            $data['toolType'] = $this->toolType->value;
+        $toolType = $this->toolType->value ?? $this->rawToolType;
+
+        if ($toolType !== null) {
+            $data['toolType'] = $toolType;
         }
 
         if ($this->toolName !== null) {

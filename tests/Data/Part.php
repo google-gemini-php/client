@@ -55,5 +55,13 @@ test('tool call with unknown tool type', function () {
 
     expect($part->toolCall)
         ->toolType->toBeNull()
-        ->toolName->toBe('new_tool');
+        ->toolName->toBe('new_tool')
+        ->and($part->toArray())->toBe(['toolCall' => ['toolType' => 'SOME_NEW_TOOL', 'toolName' => 'new_tool']]);
+});
+
+test('tool response with unknown tool type', function () {
+    $part = Part::from(['toolResponse' => ['toolType' => 'SOME_NEW_TOOL', 'id' => 'call_1']]);
+
+    expect($part->toolResponse->toolType)->toBeNull()
+        ->and($part->toArray())->toBe(['toolResponse' => ['toolType' => 'SOME_NEW_TOOL', 'id' => 'call_1']]);
 });

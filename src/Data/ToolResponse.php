@@ -26,23 +26,34 @@ final class ToolResponse implements Arrayable
     ) {}
 
     /**
+     * The tool type as returned by the API, kept so that types unknown to ToolType are sent back unchanged.
+     */
+    private ?string $rawToolType = null;
+
+    /**
      * @param  array{ toolType?: string, response?: array<string, mixed>, id?: string }  $attributes
      */
     public static function from(array $attributes): self
     {
-        return new self(
+        $toolResponse = new self(
             toolType: isset($attributes['toolType']) ? ToolType::tryFrom($attributes['toolType']) : null,
             response: $attributes['response'] ?? [],
             id: $attributes['id'] ?? null,
         );
+
+        $toolResponse->rawToolType = $attributes['toolType'] ?? null;
+
+        return $toolResponse;
     }
 
     public function toArray(): array
     {
         $data = [];
 
-        if ($this->toolType !== null) {
-            $data['toolType'] = $this->toolType->value;
+        $toolType = $this->toolType->value ?? $this->rawToolType;
+
+        if ($toolType !== null) {
+            $data['toolType'] = $toolType;
         }
 
         if ($this->response !== []) {
