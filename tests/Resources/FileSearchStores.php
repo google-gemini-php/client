@@ -190,6 +190,24 @@ test('import file without custom metadata', function () {
         ->toBeInstanceOf(UploadResponse::class);
 });
 
+test('import file with a keyed string list', function () {
+    $client = mockClient(
+        method: Method::POST,
+        endpoint: 'fileSearchStores/123:importFile',
+        response: UploadResponse::fake(),
+        params: [
+            'fileName' => 'files/abc-123',
+            'customMetadata' => [
+                ['key' => 'tags', 'stringListValue' => ['values' => ['a', 'b']]],
+            ],
+        ],
+        validateParams: true
+    );
+
+    expect($client->fileSearchStores()->importFile('fileSearchStores/123', 'files/abc-123', ['tags' => ['x' => 'a', 'y' => 'b']]))
+        ->toBeInstanceOf(UploadResponse::class);
+});
+
 test('get operation', function () {
     $client = mockClient(
         method: Method::GET,
