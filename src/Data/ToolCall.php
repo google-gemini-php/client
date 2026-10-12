@@ -15,6 +15,11 @@ use Gemini\Enums\ToolType;
 final class ToolCall implements Arrayable
 {
     /**
+     * The tool type as returned by the API, kept so that types unknown to ToolType are sent back unchanged.
+     */
+    private ?string $rawToolType = null;
+
+    /**
      * @param  ToolType|null  $toolType  Required. The type of tool that was called.
      * @param  string|null  $toolName  Optional. The name of the tool that was called.
      * @param  array<string, mixed>  $args  Optional. The tool call arguments.
@@ -26,11 +31,6 @@ final class ToolCall implements Arrayable
         public readonly array $args = [],
         public readonly ?string $id = null,
     ) {}
-
-    /**
-     * The tool type as returned by the API, kept so that types unknown to ToolType are sent back unchanged.
-     */
-    private ?string $rawToolType = null;
 
     /**
      * @param  array{ toolType?: string, toolName?: string, args?: array<string, mixed>, id?: string }  $attributes
