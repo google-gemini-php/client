@@ -42,14 +42,14 @@ final class UsageMetadata implements Arrayable
     ) {}
 
     /**
-     * @param  array{ promptTokenCount?: int, totalTokenCount: int, candidatesTokenCount: ?int, cachedContentTokenCount: ?int, toolUsePromptTokenCount: ?int, thoughtsTokenCount: ?int, promptTokensDetails: list<array{ modality: string, tokenCount: int}>|null, cacheTokensDetails: list<array{ modality: string, tokenCount: int}>|null, candidatesTokensDetails: list<array{ modality: string, tokenCount: int}>|null, toolUsePromptTokensDetails: list<array{ modality: string, tokenCount: int}>|null, serviceTier?: string }  $attributes
+     * @param  array{ promptTokenCount?: int, totalTokenCount?: int, candidatesTokenCount: ?int, cachedContentTokenCount: ?int, toolUsePromptTokenCount: ?int, thoughtsTokenCount: ?int, promptTokensDetails: list<array{ modality: string, tokenCount: int}>|null, cacheTokensDetails: list<array{ modality: string, tokenCount: int}>|null, candidatesTokensDetails: list<array{ modality: string, tokenCount: int}>|null, toolUsePromptTokensDetails: list<array{ modality: string, tokenCount: int}>|null, serviceTier?: string }  $attributes
      */
     public static function from(array $attributes): self
     {
         return new self(
-            // Cache creation operations may not involve LLM interactions, resulting in incomplete usage metadata
+            // Usage metadata can be incomplete, e.g. for cache creation operations or requests with a per-part media resolution
             promptTokenCount: $attributes['promptTokenCount'] ?? 0,
-            totalTokenCount: $attributes['totalTokenCount'],
+            totalTokenCount: $attributes['totalTokenCount'] ?? 0,
             candidatesTokenCount: $attributes['candidatesTokenCount'] ?? null,
             cachedContentTokenCount: $attributes['cachedContentTokenCount'] ?? null,
             toolUsePromptTokenCount: $attributes['toolUsePromptTokenCount'] ?? null,
