@@ -62,6 +62,8 @@ it('starts a new chat from a chat session', function () {
 
     expect($chat)->toBeInstanceOf(ChatSessionTestResource::class);
 
+    $fake->assertFunctionCalled(resource: ChatSession::class, model: 'models/gemini-2.5-flash', callback: fn (string $method) => $method === 'startChat');
+
     $fake->assertSent(resource: ChatSession::class, model: 'models/gemini-2.5-flash', callback: function (string $method, array $parameters) {
         return $method === 'sendMessage' &&
             $parameters[0] === 'Hello';

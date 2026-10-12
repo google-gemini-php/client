@@ -7,6 +7,7 @@ namespace Gemini\Testing\Transporters;
 use Gemini\Contracts\TransporterContract;
 use Gemini\Data\Content;
 use Gemini\Foundation\Request;
+use Gemini\Requests\GenerativeModel\CountTokensRequest;
 use Gemini\Requests\GenerativeModel\GenerateContentRequest;
 use Gemini\Requests\GenerativeModel\StreamGenerateContentRequest;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
@@ -28,11 +29,13 @@ final class TestTransporter implements TransporterContract
 
     public function request(Request $request): ResponseDTO
     {
-        if ($request instanceof GenerateContentRequest === false) {
-            throw new LogicException('The test transporter does not support '.$request::class.'.');
-        }
+        $response = match (true) {
+            $request instanceof GenerateContentRequest => $this->model->generateContent(...$this->contents($request)),
+            $request instanceof CountTokensRequest => $this->model->countTokens(...$this->contents($request)),
+            default => throw new LogicException('The test transporter does not support '.$request::class.'.'),
+        };
 
-        return new ResponseDTO($this->model->generateContent(...$this->contents($request))->toArray());
+        return new ResponseDTO($response->toArray());
     }
 
     public function requestStream(Request $request): ResponseInterface
@@ -50,13 +53,13 @@ final class TestTransporter implements TransporterContract
 
         return Psr17FactoryDiscovery::findResponseFactory()
             ->createResponse()
-            ->withBody(Psr17FactoryDiscovery::findStreamFactory()->createStream((string) json_encode($chunks)));
+            ->withBody(Psr17FactoryDiscovery::findStreamFactory()->createStream(json_encode($chunks, JSON_THROW_ON_ERROR)));
     }
 
     /**
      * @return array<Content>
      */
-    private function contents(GenerateContentRequest|StreamGenerateContentRequest $request): array
+    private function contents(GenerateContentRequest|StreamGenerateContentRequest|CountTokensRequest $request): array
     {
         /** @var array{ contents: array<array{ parts?: array{ array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> } } }, role?: string }> } $body */
         $body = $request->body();

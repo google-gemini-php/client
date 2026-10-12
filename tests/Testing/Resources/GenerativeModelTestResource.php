@@ -7,6 +7,7 @@ use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
 use Gemini\Enums\HarmBlockThreshold;
 use Gemini\Enums\HarmCategory;
+use Gemini\Exceptions\ErrorException;
 use Gemini\Resources\ChatSession;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
@@ -161,4 +162,39 @@ it('streams chat messages', function () {
         return $method === 'streamGenerateContent' &&
             $parameters[0]->parts[0]->text === 'Tell me a story';
     });
+});
+
+it('counts tokens on the model of a chat', function () {
+    $fake = new ClientFake([
+        CountTokensResponse::fake(['totalTokens' => 42]),
+    ]);
+
+    $chat = $fake->generativeModel('models/gemini-2.5-flash')->startChat();
+
+    expect($chat->model->countTokens('Hello')->totalTokens)->toBe(42);
+
+    $fake->generativeModel('models/gemini-2.5-flash')->assertSent(function (string $method, array $parameters) {
+        return $method === 'countTokens' &&
+            $parameters[0]->parts[0]->text === 'Hello';
+    });
+});
+
+it('throws faked exceptions in a chat', function () {
+    $fake = new ClientFake([
+        new ErrorException(['message' => 'The model is overloaded.', 'status' => 'UNAVAILABLE', 'code' => 503]),
+    ]);
+
+    $chat = $fake->generativeModel('models/gemini-2.5-flash')->startChat();
+
+    expect(fn () => $chat->sendMessage('Hello'))->toThrow(ErrorException::class, 'The model is overloaded.');
+});
+
+it('returns the faked chat response', function () {
+    $fake = new ClientFake([
+        $queued = GenerateContentResponse::fake(),
+    ]);
+
+    $response = $fake->generativeModel('models/gemini-2.5-flash')->startChat()->sendMessage('Hello');
+
+    expect($response->toArray())->toBe($queued->toArray());
 });
