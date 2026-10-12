@@ -40,7 +40,7 @@ final class LogprobsCandidate implements Arrayable
     {
         return [
             'token' => $this->token,
-            '$this->tokenId' => $this->tokenId,
+            'tokenId' => $this->tokenId,
             'logProbability' => $this->logProbability,
         ];
     }
