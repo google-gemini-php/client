@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gemini\Data;
 
 use Gemini\Contracts\Arrayable;
+use Gemini\Enums\ServiceTier;
 
 /**
  * Metadata on the generation request's token usage.
@@ -24,6 +25,7 @@ final class UsageMetadata implements Arrayable
      * @param  list<ModalityTokenCount>|null  $cacheTokensDetails  List of modalities of the cached content in the request input.
      * @param  list<ModalityTokenCount>|null  $candidatesTokensDetails  List of modalities that were returned in the response.
      * @param  list<ModalityTokenCount>|null  $toolUsePromptTokensDetails  List of modalities that were processed for tool-use request inputs.
+     * @param  ServiceTier|null  $serviceTier  Output only. Service tier of the request.
      */
     public function __construct(
         public readonly int $promptTokenCount,
@@ -36,10 +38,11 @@ final class UsageMetadata implements Arrayable
         public readonly ?array $cacheTokensDetails = null,
         public readonly ?array $candidatesTokensDetails = null,
         public readonly ?array $toolUsePromptTokensDetails = null,
+        public readonly ?ServiceTier $serviceTier = null,
     ) {}
 
     /**
-     * @param  array{ promptTokenCount?: int, totalTokenCount: int, candidatesTokenCount: ?int, cachedContentTokenCount: ?int, toolUsePromptTokenCount: ?int, thoughtsTokenCount: ?int, promptTokensDetails: list<array{ modality: string, tokenCount: int}>|null, cacheTokensDetails: list<array{ modality: string, tokenCount: int}>|null, candidatesTokensDetails: list<array{ modality: string, tokenCount: int}>|null, toolUsePromptTokensDetails: list<array{ modality: string, tokenCount: int}>|null }  $attributes
+     * @param  array{ promptTokenCount?: int, totalTokenCount: int, candidatesTokenCount: ?int, cachedContentTokenCount: ?int, toolUsePromptTokenCount: ?int, thoughtsTokenCount: ?int, promptTokensDetails: list<array{ modality: string, tokenCount: int}>|null, cacheTokensDetails: list<array{ modality: string, tokenCount: int}>|null, candidatesTokensDetails: list<array{ modality: string, tokenCount: int}>|null, toolUsePromptTokensDetails: list<array{ modality: string, tokenCount: int}>|null, serviceTier?: string }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -67,6 +70,7 @@ final class UsageMetadata implements Arrayable
                 static fn (array $toolUsePromptTokensDetail): ModalityTokenCount => ModalityTokenCount::from($toolUsePromptTokensDetail),
                 $attributes['toolUsePromptTokensDetails'] ?? [],
             ),
+            serviceTier: isset($attributes['serviceTier']) ? ServiceTier::tryFrom($attributes['serviceTier']) : null,
         );
     }
 
@@ -95,6 +99,7 @@ final class UsageMetadata implements Arrayable
                 static fn (ModalityTokenCount $toolUsePromptTokensDetail): array => $toolUsePromptTokensDetail->toArray(),
                 $this->toolUsePromptTokensDetails ?? [],
             ),
+            'serviceTier' => $this->serviceTier?->value,
         ];
     }
 }
