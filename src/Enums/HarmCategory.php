@@ -71,4 +71,9 @@ enum HarmCategory: string
      * Content that may be used to harm civic integrity.
      */
     case HARM_CATEGORY_CIVIC_INTEGRITY = 'HARM_CATEGORY_CIVIC_INTEGRITY';
+
+    /**
+     * Prompts attempting to bypass or subvert the model's safety guidelines (jailbreak attempts).
+     */
+    case HARM_CATEGORY_JAILBREAK = 'HARM_CATEGORY_JAILBREAK';
 }
