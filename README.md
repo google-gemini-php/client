@@ -8,7 +8,7 @@
 
 ------
 
-**Gemini PHP** is a community-maintained PHP API client that allows you to interact with the Gemini AI API.
+**Gemini PHP** is a community-maintained PHP API client for the [Gemini API](https://ai.google.dev/gemini-api/docs). It covers text, image, video, audio and document input, streaming, chats, structured output, function calling, built-in tools (Google Search, Google Maps, URL context, File Search, code execution), image and speech generation, thinking models, files, context caching, file search stores, embeddings and models, and ships with a fake client for testing.
 
 - Fatih AYDIN [github.com/aydinfatih](https://github.com/aydinfatih)
 - Vytautas Smilingis [github.com/Plytas](https://github.com/Plytas)
@@ -20,24 +20,28 @@
   - [Setup your API key](#setup-your-api-key)
   - [Upgrade to 2.0](#upgrade-to-20)
 - [Usage](#usage)
-    - [Chat Resource](#chat-resource)
+    - [Generating Content](#generating-content)
       - [Text-only Input](#text-only-input)
       - [Text-and-image Input](#text-and-image-input)
       - [Text-and-video Input](#text-and-video-input)
+      - [Media Resolution](#media-resolution)
       - [Image Generation](#image-generation)
       - [Multi-turn Conversations (Chat)](#multi-turn-conversations-chat)
       - [Chat with Streaming](#chat-with-streaming)
       - [Stream Generate Content](#stream-generate-content)
       - [Structured Output](#structured-output)
-      - [Function calling](#function-calling)
+      - [Function Calling](#function-calling)
       - [Code Execution](#code-execution)
       - [Grounding with Google Search](#grounding-with-google-search)
       - [Grounding with Google Maps](#grounding-with-google-maps)
       - [Grounding with File Search](#grounding-with-file-search)
+      - [URL Context](#url-context)
+      - [Server-side Tool Invocations](#server-side-tool-invocations)
       - [System Instructions](#system-instructions)
-      - [Speech generation](#speech-generation)
+      - [Speech Generation](#speech-generation)
       - [Thinking Mode](#thinking-mode)
-      - [Count tokens](#count-tokens)
+      - [Count Tokens](#count-tokens)
+      - [Response Metadata](#response-metadata)
       - [Configuration](#configuration)
     - [File Management](#file-management)
       - [File Upload](#file-upload)
@@ -56,17 +60,21 @@
       - [Get File Search Store](#get-file-search-store)
       - [List File Search Stores](#list-file-search-stores)
       - [Delete File Search Store](#delete-file-search-store)
-      - [Update File Search Store](#update-file-search-store)
     - [File Search Documents](#file-search-documents)
-      - [Create File Search Document](#create-file-search-document)
+      - [Upload File Search Document](#upload-file-search-document)
+      - [Import File Search Document](#import-file-search-document)
+      - [Get Operation](#get-operation)
       - [Get File Search Document](#get-file-search-document)
       - [List File Search Documents](#list-file-search-documents)
       - [Delete File Search Document](#delete-file-search-document)
-    - [Embedding Resource](#embedding-resource)
+    - [Embeddings](#embeddings)
     - [Models](#models)
         - [List Models](#list-models)
         - [Get Model](#get-model)
 - [Troubleshooting](#troubleshooting)
+    - [Error Handling](#error-handling)
+    - [Empty Responses](#empty-responses)
+    - [Timeout](#timeout)
 - [Testing](#testing)
 
 
@@ -126,17 +134,17 @@ There may be other breaking changes not listed here. If you encounter any issues
 
 ## Usage
 
-Interact with Gemini's API:
+Create a client with your API key and send a prompt to a model:
 
 ```php
+use Gemini;
 use Gemini\Enums\ModelVariation;
 use Gemini\GeminiHelper;
-use Gemini;
 
 $yourApiKey = getenv('YOUR_API_KEY');
 $client = Gemini::client($yourApiKey);
 
-$result = $client->generativeModel(model: 'gemini-2.0-flash')->generateContent('Hello');
+$result = $client->generativeModel(model: 'gemini-2.5-flash')->generateContent('Hello');
 $result->text(); // Hello! How can I assist you today?
 
 // Helper method usage
@@ -144,22 +152,25 @@ $result = $client->generativeModel(
     model: GeminiHelper::generateGeminiModel(
         variation: ModelVariation::FLASH,
         generation: 2.5,
-        version: "preview-04-17"
-    ), // models/gemini-2.5-flash-preview-04-17
-);
+    ), // models/gemini-2.5-flash
+)->generateContent('Hello');
 $result->text(); // Hello! How can I assist you today?
 ```
 
-If necessary, it is possible to configure and create a separate client.
+Model names change often. Check the [models documentation](https://ai.google.dev/gemini-api/docs/models) or [list the models](#list-models) available to your API key. The examples in this README use `gemini-2.5-flash`.
+
+To customize the base URL, headers, query parameters or the HTTP client, create the client with the factory:
 
 ```php
 use Gemini;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 $yourApiKey = getenv('YOUR_API_KEY');
 
 $client = Gemini::factory()
     ->withApiKey($yourApiKey)
-    ->withBaseUrl('https://generativelanguage.example.com/v1beta') // default: https://generativelanguage.googleapis.com/v1beta/
+    ->withBaseUrl('https://generativelanguage.example.com/v1beta/') // default: https://generativelanguage.googleapis.com/v1beta/
     ->withHttpHeader('X-My-Header', 'foo')
     ->withQueryParam('my-param', 'bar')
     ->withHttpClient($guzzleClient = new \GuzzleHttp\Client(['timeout' => 30]))  // default: HTTP client found using PSR-18 HTTP Client Discovery
@@ -170,9 +181,9 @@ $client = Gemini::factory()
 ```
 
 
-### Chat Resource
+### Generating Content
 
-For a complete list of supported input formats and methods in Gemini API v1, see the [models documentation](https://ai.google.dev/gemini-api/docs/models).
+For a complete list of supported input formats and methods, see the [models documentation](https://ai.google.dev/gemini-api/docs/models).
 
 #### Text-only Input
 Generate a response from the model given an input message.
@@ -183,7 +194,7 @@ use Gemini;
 $yourApiKey = getenv('YOUR_API_KEY');
 $client = Gemini::client($yourApiKey);
 
-$result = $client->generativeModel(model: 'gemini-2.0-flash')->generateContent('Hello');
+$result = $client->generativeModel(model: 'gemini-2.5-flash')->generateContent('Hello');
 
 $result->text(); // Hello! How can I assist you today?
 ```
@@ -196,7 +207,7 @@ use Gemini\Data\Blob;
 use Gemini\Enums\MimeType;
 
 $result = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->generateContent([
         'What is this picture?',
         new Blob(
@@ -211,18 +222,18 @@ $result->text(); //  The picture shows a table with a white tablecloth. On the t
 ```
 
 #### Text-and-video Input
-Process video content and get AI-generated descriptions using the Gemini API with an uploaded video file.
+Process video content and get AI-generated descriptions using the Gemini API with an [uploaded video file](#file-upload).
 
 ```php
 use Gemini\Data\UploadedFile;
 use Gemini\Enums\MimeType;
 
 $result = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->generateContent([
         'What is this video?',
         new UploadedFile(
-            fileUri: '123-456', // accepts just the name or the full URI
+            fileUri: $meta->uri, // the URI of the uploaded file, e.g. https://generativelanguage.googleapis.com/v1beta/files/abc-123
             mimeType: MimeType::VIDEO_MP4
         )
     ]);
@@ -230,33 +241,65 @@ $result = $client
 $result->text(); //  The video shows...
 ```
 
-#### Image Generation
-Generate images from text prompts using the Imagen model.
+#### Media Resolution
+The tokenization quality of images, videos and documents can be set for the whole request with `GenerationConfig::$mediaResolution`, or for a single part with `Part::$mediaResolution`. A lower resolution uses fewer tokens, a higher one lets the model see more detail. `MEDIA_RESOLUTION_ULTRA_HIGH` is only available per part.
 
 ```php
-use Gemini\Data\ImageConfig;
-use Gemini\Data\GenerationConfig;
+use Gemini\Data\Blob;
+use Gemini\Data\Content;
+use Gemini\Data\Part;
+use Gemini\Data\PartMediaResolution;
+use Gemini\Enums\MimeType;
+use Gemini\Enums\PartMediaResolutionLevel;
+use Gemini\Enums\Role;
 
-$imageConfig = new ImageConfig(aspectRatio: '16:9');
+$result = $client
+    ->generativeModel(model: 'gemini-2.5-flash')
+    ->generateContent(new Content(
+        parts: [
+            new Part(
+                inlineData: new Blob(mimeType: MimeType::IMAGE_PNG, data: base64_encode(file_get_contents('chart.png'))),
+                mediaResolution: new PartMediaResolution(level: PartMediaResolutionLevel::MEDIA_RESOLUTION_HIGH),
+            ),
+            new Part(text: 'Read the values from this chart.'),
+        ],
+        role: Role::USER,
+    ));
+
+$result->text();
+```
+
+#### Image Generation
+Generate images with a Gemini image model. Use `ImageConfig` to set the aspect ratio and the image size (`512`, `1K`, `2K` or `4K`, depending on the model).
+
+```php
+use Gemini\Data\GenerationConfig;
+use Gemini\Data\ImageConfig;
+
+$imageConfig = new ImageConfig(aspectRatio: '16:9', imageSize: '2K');
 $generationConfig = new GenerationConfig(imageConfig: $imageConfig);
 
 $response = $client->generativeModel(model: 'gemini-2.5-flash-image')
     ->withGenerationConfig($generationConfig)
     ->generateContent('Draw a futuristic city');
 
-// Save the image
-file_put_contents('image.png', base64_decode($response->parts()[0]->inlineData->data));
+// The response can contain text and image parts
+foreach ($response->parts() as $part) {
+    if ($part->inlineData !== null) {
+        file_put_contents('image.png', base64_decode($part->inlineData->data));
+    }
+}
 ```
 
 #### Multi-turn Conversations (Chat)
-Using Gemini, you can build freeform conversations across multiple turns.
+Using Gemini, you can build freeform conversations across multiple turns. The chat session keeps the history and sends it with every message.
 
 ```php
 use Gemini\Data\Content;
 use Gemini\Enums\Role;
 
 $chat = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->startChat(history: [
         Content::parse(part: 'The stories you write about what I have to say should be one line. Is that clear?'),
         Content::parse(part: 'Yes, I understand. The stories I write about your input should be one line long.', role: Role::MODEL)
@@ -267,13 +310,15 @@ echo $response->text(); // Amidst rolling hills and winding cobblestone streets,
 
 $response = $chat->sendMessage('Rewrite the same story in 1600s England');
 echo $response->text(); // In the heart of England's lush countryside, amidst emerald fields and thatched-roof cottages, the village of Willowbrook unfolded a tapestry of love, mystery, and the enchantment of ordinary days in the 17th century.
+
+$chat->history; // array<Content>
 ```
 
 #### Chat with Streaming
-You can also stream the response in a chat session. The history is automatically updated with the full response after the stream completes.
+You can also stream the response in a chat session. The history is automatically updated with the full response after the stream completes: text chunks are joined, while function calls, tool calls and thoughts are kept as separate parts, so they can be sent back to the model in the next turn.
 
 ```php
-$chat = $client->generativeModel(model: 'gemini-2.0-flash')->startChat();
+$chat = $client->generativeModel(model: 'gemini-2.5-flash')->startChat();
 
 $stream = $chat->streamSendMessage('Hello');
 
@@ -288,8 +333,8 @@ By default, the model returns a response after completing the entire generation 
 
 ```php
 $stream = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
-    ->streamGenerateContent('Write long a story about a magic backpack.');
+    ->generativeModel(model: 'gemini-2.5-flash')
+    ->streamGenerateContent('Write a long story about a magic backpack.');
 
 foreach ($stream as $response) {
     echo $response->text();
@@ -306,7 +351,7 @@ use Gemini\Enums\DataType;
 use Gemini\Enums\ResponseMimeType;
 
 $result = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->withGenerationConfig(
         generationConfig: new GenerationConfig(
             responseMimeType: ResponseMimeType::APPLICATION_JSON,
@@ -352,7 +397,34 @@ $result->json();
 
 ```
 
-#### Function calling
+##### JSON Schema
+Instead of a `Schema` object, you can pass a [JSON Schema](https://json-schema.org/) as an array with `responseJsonSchema`. In that case, leave `responseSchema` out.
+
+```php
+use Gemini\Data\GenerationConfig;
+use Gemini\Enums\ResponseMimeType;
+
+$result = $client
+    ->generativeModel(model: 'gemini-2.5-flash')
+    ->withGenerationConfig(new GenerationConfig(
+        responseMimeType: ResponseMimeType::APPLICATION_JSON,
+        responseJsonSchema: [
+            'type' => 'object',
+            'properties' => [
+                'city' => ['type' => 'string'],
+                'population' => ['type' => 'integer', 'minimum' => 0],
+            ],
+            'required' => ['city', 'population'],
+        ],
+    ))
+    ->generateContent('Give me data about Istanbul.');
+
+$result->json(associative: true); // ['city' => 'Istanbul', 'population' => 15655924]
+```
+
+An empty PHP array is encoded as a JSON list. Use `new \stdClass` where the schema needs an empty JSON object, e.g. `'properties' => new \stdClass`.
+
+#### Function Calling
 Gemini provides the ability to define and utilize custom functions that the model can call during conversations. This enables the model to perform specific actions or calculations through your defined functions.
 
 ```php
@@ -377,8 +449,8 @@ function handleFunctionCall(FunctionCall $functionCall): Content
                     functionResponse: new FunctionResponse(
                         name: 'addition',
                         response: ['answer' => $functionCall->args['number1'] + $functionCall->args['number2']],
-                    ),
-                    thoughtSignature: 'some-signature' // Optional: Required for some models (e.g. Gemini 3 Pro)
+                        id: $functionCall->id,
+                    )
                 )
             ],
             role: Role::USER
@@ -389,7 +461,7 @@ function handleFunctionCall(FunctionCall $functionCall): Content
 }
 
 $chat = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->withTool(new Tool(
         functionDeclarations: [
             new FunctionDeclaration(
@@ -417,13 +489,60 @@ $chat = $client
 $response = $chat->sendMessage('What is 4 + 3?');
 
 if ($response->parts()[0]->functionCall !== null) {
-    $thoughtSignature = $response->parts()[0]->thoughtSignature; // Access the thought signature
     $functionResponse = handleFunctionCall($response->parts()[0]->functionCall);
 
     $response = $chat->sendMessage($functionResponse);
 }
 
 echo $response->text(); // 4 + 3 = 7
+```
+
+Thinking models return a `thoughtSignature` with the function call part. The chat session keeps it in the history and sends it back automatically. If you manage the history yourself, send the model's parts back unchanged.
+
+Function parameters can also be described with a JSON Schema array instead of a `Schema` object:
+
+```php
+use Gemini\Data\FunctionDeclaration;
+
+new FunctionDeclaration(
+    name: 'get_weather',
+    description: 'Returns the weather for a city.',
+    parametersJsonSchema: [
+        'type' => 'object',
+        'properties' => [
+            'city' => ['type' => 'string'],
+            'unit' => ['type' => 'string', 'enum' => ['celsius', 'fahrenheit']],
+        ],
+        'required' => ['city'],
+    ],
+);
+```
+
+##### Multimodal function responses
+A function response can contain images or documents in `parts`, so the model can look at what your function returned.
+
+```php
+use Gemini\Data\Blob;
+use Gemini\Data\Content;
+use Gemini\Data\FunctionResponse;
+use Gemini\Data\FunctionResponsePart;
+use Gemini\Data\Part;
+use Gemini\Enums\MimeType;
+use Gemini\Enums\Role;
+
+$response = $chat->sendMessage(new Content(
+    parts: [
+        new Part(functionResponse: new FunctionResponse(
+            name: $functionCall->name,
+            response: ['image' => 'product.png'],
+            id: $functionCall->id,
+            parts: [
+                new FunctionResponsePart(inlineData: new Blob(mimeType: MimeType::IMAGE_PNG, data: base64_encode($png))),
+            ],
+        )),
+    ],
+    role: Role::USER,
+));
 ```
 
 #### Code Execution
@@ -434,7 +553,7 @@ use Gemini\Data\CodeExecution;
 use Gemini\Data\Tool;
 
 $response = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->withTool(new Tool(codeExecution: CodeExecution::from()))
     ->generateContent('What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.');
 
@@ -454,16 +573,14 @@ foreach ($response->parts() as $part) {
 #### Grounding with Google Search
 Grounding with Google Search connects the Gemini model to real-time web content and works with all available languages. This allows Gemini to provide more accurate answers and cite verifiable sources beyond its knowledge cutoff.
 
-**For Gemini 2.0 and later models (Recommended):**
-
-Use the simple `GoogleSearch` tool which automatically handles search queries:
+Use the `GoogleSearch` tool, which automatically handles search queries:
 
 ```php
 use Gemini\Data\GoogleSearch;
 use Gemini\Data\Tool;
 
 $response = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->withTool(new Tool(googleSearch: GoogleSearch::from()))
     ->generateContent('Who won the Euro 2024?');
 
@@ -516,7 +633,7 @@ $toolConfig = new ToolConfig(
 );
 
 $response = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->withTool($tool)
     ->withToolConfig($toolConfig)
     ->generateContent('Find coffee shops near me');
@@ -526,7 +643,7 @@ echo $response->text();
 ```
 
 #### Grounding with File Search
-Grounding with File Search enables the model to retrieve and utilize information from your indexed files. This is useful for answering questions based on private or extensive document collections.
+Grounding with File Search enables the model to retrieve and utilize information from documents in your [file search stores](#file-search-stores). This is useful for answering questions based on private or extensive document collections.
 
 ```php
 use Gemini\Data\FileSearch;
@@ -534,19 +651,72 @@ use Gemini\Data\Tool;
 
 $tool = new Tool(
     fileSearch: new FileSearch(
-        fileSearchStoreNames: ['files/my-document-store'],
+        fileSearchStoreNames: ['fileSearchStores/my-search-store'],
         metadataFilter: 'author = "Robert Graves"'
     )
 );
 
 $response = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->withTool($tool)
     ->generateContent('Summarize the document about Greek myths by Robert Graves');
 
 echo $response->text();
 // (Model output summarizing the document)
 ```
+
+#### URL Context
+The URL context tool lets the model read the content of URLs in your prompt.
+
+```php
+use Gemini\Data\Tool;
+use Gemini\Data\UrlContext;
+
+$response = $client
+    ->generativeModel(model: 'gemini-2.5-flash')
+    ->withTool(new Tool(urlContext: new UrlContext))
+    ->generateContent('Summarize https://www.php.net/releases/8.4/en.php in one sentence.');
+
+echo $response->text();
+
+// Check which URLs were retrieved
+foreach ($response->candidates[0]->urlContextMetadata?->urlMetadata ?? [] as $urlMetadata) {
+    echo "{$urlMetadata->retrievedUrl}: {$urlMetadata->urlRetrievalStatus?->value}\n"; // URL_RETRIEVAL_STATUS_SUCCESS
+}
+```
+
+#### Server-side Tool Invocations
+Built-in tools (Google Search, Google Maps, URL context and File Search) are executed by the API. Set `includeServerSideToolInvocations` to receive these calls and their results as `toolCall` and `toolResponse` parts. The chat session sends them back automatically in the next turn.
+
+This requires a model that supports it, such as the Gemini 3 models. Other models reject the request with an `ErrorException`.
+
+```php
+use Gemini\Data\Tool;
+use Gemini\Data\ToolConfig;
+use Gemini\Data\UrlContext;
+
+$chat = $client
+    ->generativeModel(model: 'gemini-3.5-flash')
+    ->withTool(new Tool(urlContext: new UrlContext))
+    ->withToolConfig(new ToolConfig(includeServerSideToolInvocations: true))
+    ->startChat();
+
+$response = $chat->sendMessage('Summarize https://www.php.net/releases/8.4/en.php in one sentence.');
+
+foreach ($response->parts() as $part) {
+    if ($part->toolCall !== null) {
+        echo "Tool call: {$part->toolCall->toolType?->value} " . json_encode($part->toolCall->args) . "\n";
+    }
+    if ($part->toolResponse !== null) {
+        echo "Tool response: " . json_encode($part->toolResponse->response) . "\n";
+    }
+    if ($part->text !== null) {
+        echo $part->text . "\n";
+    }
+}
+```
+
+Since the response contains several parts, read them with `parts()` instead of `text()`.
 
 #### System Instructions
 System instructions let you steer the behavior of the model based on your specific needs and use cases. You can set the role and personality of the model, define the format of responses, and provide goals and guardrails for model behavior.
@@ -555,7 +725,7 @@ System instructions let you steer the behavior of the model based on your specif
 use Gemini\Data\Content;
 
 $response = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->withSystemInstruction(
         Content::parse('You are a helpful assistant that always responds in the style of a pirate. Use nautical terms and pirate slang in all your responses.')
     )
@@ -573,7 +743,7 @@ use Gemini\Data\GenerationConfig;
 use Gemini\Enums\ResponseMimeType;
 
 $response = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->withSystemInstruction(
         Content::parse('You are a JSON API. Always respond with valid JSON objects. Be concise.')
     )
@@ -585,8 +755,8 @@ $response = $client
 print_r($response->json());
 ```
 
-#### Speech generation
-Gemini allows generating [speech from a text](https://ai.google.dev/gemini-api/docs/speech-generation). To use that, make sure to use a model that supports this functionality. The model will output base64 encoded audio string.
+#### Speech Generation
+Gemini allows generating [speech from a text](https://ai.google.dev/gemini-api/docs/speech-generation). To use that, make sure to use a model that supports this functionality. The model will output a base64 encoded audio string.
 
 ##### Single speaker
 
@@ -609,8 +779,12 @@ $response = $client->generativeModel('gemini-2.5-flash-preview-tts')->withGenera
 )->generateContent("Say: Hello world");
 
 // The response contains base64 encoded audio
-$audioData = $response->parts()[0]->inlineData->data;
+$audio = $response->parts()[0]->inlineData;
+$audio->mimeType; // e.g. MimeType::AUDIO_L16_PCM_RATE_24000 (raw 16-bit PCM, 24 kHz, mono)
+$audioData = base64_decode($audio->data);
 ```
+
+The audio is raw PCM. To play it, add a WAV header or convert it, e.g. `ffmpeg -f s16le -ar 24000 -ac 1 -i audio.pcm audio.wav`.
 
 ##### Multi speaker
 
@@ -651,53 +825,79 @@ $audioData = $response->parts()[0]->inlineData->data;
 ```
 
 #### Thinking Mode
-For models that support thinking mode (like Gemini 2.0), you can configure the model to show its reasoning process. This is useful for complex problem-solving and understanding how the model arrives at its answers.
+[Thinking models](https://ai.google.dev/gemini-api/docs/thinking) reason before they answer. Use `ThinkingConfig` to control how much they think and to receive summaries of their thoughts.
+
+Gemini 2.5 models take a `thinkingBudget` (number of tokens), Gemini 3 models take a `thinkingLevel`.
 
 ```php
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\ThinkingConfig;
+use Gemini\Enums\ThinkingLevel;
 
 $response = $client
-    ->generativeModel(model: 'gemini-2.0-flash-thinking-exp')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->withGenerationConfig(
         new GenerationConfig(
             thinkingConfig: new ThinkingConfig(
                 includeThoughts: true,
-                thinkingBudget: 1024
+                thinkingBudget: 1024 // Gemini 3: thinkingLevel: ThinkingLevel::LOW
             )
         )
     )
     ->generateContent('Solve this logic puzzle: If all Bloops are Razzies and all Razzies are Lazzies, are all Bloops definitely Lazzies?');
 
 // Access the model's thoughts and final answer
-foreach ($response->candidates[0]->content->parts as $part) {
+foreach ($response->parts() as $part) {
     if ($part->thought === true) {
-        // This part contains the model's thinking process
+        // This part contains a summary of the model's thinking process
         echo "Model's thinking: " . $part->text . "\n\n";
     } else if ($part->text !== null) {
         // This is the final answer
         echo "Final answer: " . $part->text . "\n";
     }
 }
+
+echo $response->usageMetadata->thoughtsTokenCount; // tokens used for thinking
 ```
 
-#### Count tokens
+Thinking tokens count towards `maxOutputTokens`. If the limit is too low, the model can stop before writing an answer, see [Empty Responses](#empty-responses).
+
+#### Count Tokens
 When using long prompts, it might be useful to count tokens before sending any content to the model.
 
 ```php
 $response = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->countTokens('Write a story about a magic backpack.');
 
 echo $response->totalTokens; // 9
 ```
 
+#### Response Metadata
+Besides the generated content, a response contains information about the request.
+
+```php
+$response = $client->generativeModel(model: 'gemini-2.5-flash')->generateContent('Hello');
+
+$response->responseId; // PqnIaobZOf3fxs0PkPSdiAk
+$response->modelVersion; // gemini-2.5-flash
+$response->modelStatus?->modelStage; // e.g. ModelStage::PREVIEW, when the API reports it
+
+$response->usageMetadata->promptTokenCount; // 1
+$response->usageMetadata->candidatesTokenCount; // 9
+$response->usageMetadata->thoughtsTokenCount; // 20
+$response->usageMetadata->totalTokenCount; // 30
+$response->usageMetadata->serviceTier; // ServiceTier::STANDARD
+
+$response->candidates[0]->finishReason; // FinishReason::STOP
+$response->candidates[0]->finishMessage; // details on why the model stopped, when available
+$response->candidates[0]->safetyRatings; // array<SafetyRating>
+```
+
 #### Configuration
-Every prompt you send to the model includes parameter values that control how the model generates a response. The model can generate different results for different parameter values. Learn more about [model parameters](https://ai.google.dev/docs/concepts#model_parameters).
+Every prompt you send to the model includes parameter values that control how the model generates a response. The model can generate different results for different parameter values. Learn more about [model parameters](https://ai.google.dev/api/generate-content#generationconfig).
 
-Also, you can use safety settings to adjust the likelihood of getting responses that may be considered harmful. By default, safety settings block content with medium and/or high probability of being unsafe content across all dimensions. Learn more about [safety settings](https://ai.google.dev/docs/concepts#safety_setting).
-
-When using tools like `GoogleMaps`, you may also provide additional configuration via `ToolConfig`, such as `RetrievalConfig` for geographical context.
+Also, you can use safety settings to adjust the likelihood of getting responses that may be considered harmful. Learn more about [safety settings](https://ai.google.dev/gemini-api/docs/safety-settings).
 
 ```php
 use Gemini\Data\GenerationConfig;
@@ -725,17 +925,19 @@ $generationConfig = new GenerationConfig(
     topK: 10
 );
 
-$generativeModel = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+$response = $client
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->withSafetySetting($safetySettingDangerousContent)
     ->withSafetySetting($safetySettingHateSpeech)
     ->withGenerationConfig($generationConfig)
     ->generateContent('Write a story about a magic backpack.');
 ```
 
+When using tools like `GoogleMaps`, you may also provide additional configuration via `ToolConfig`, such as `RetrievalConfig` for geographical context. See [Grounding with Google Maps](#grounding-with-google-maps).
+
 ### File Management
 
-The File API lets you store up to 20GB of files per project, with a per-file maximum size of 2GB. Files are stored for 48 hours and can be accessed in API calls.
+The File API lets you store up to 20 GB of files per project, with a per-file maximum size of 2 GB. Files are stored for 48 hours and can be accessed in API calls.
 
 #### File Upload
 To reference larger files and videos with various prompts, upload them to Gemini storage.
@@ -789,10 +991,12 @@ if ($response->nextPageToken) {
 ```
 
 #### Get File Metadata
-Retrieve metadata for a specific file.
+Retrieve metadata for a specific file. It accepts the file ID, the file name or the full URI.
 
 ```php
-$meta = $client->files()->metadataGet('abc123');
+$meta = $client->files()->metadataGet('abc-123');
+// or use the name
+$meta = $client->files()->metadataGet('files/abc-123');
 // or use the full URI
 $meta = $client->files()->metadataGet($file->uri);
 
@@ -802,17 +1006,17 @@ echo "Size: {$meta->sizeBytes} bytes\n";
 ```
 
 #### Delete File
-Delete a file from Gemini storage.
+Delete a file from Gemini storage. It accepts the file ID, the file name or the full URI.
 
 ```php
-$client->files()->delete('files/abc123');
+$client->files()->delete('files/abc-123');
 // or use the full URI
 $client->files()->delete($file->uri);
 ```
 
 ### Cached Content
 
-Context caching allows you to save and reuse precomputed input tokens for frequently used content. This reduces costs and latency for requests with large amounts of shared context.
+Context caching allows you to save and reuse precomputed input tokens for frequently used content. This reduces costs and latency for requests with large amounts of shared context. The content has to meet a [minimum token count](https://ai.google.dev/gemini-api/docs/caching) to be cached.
 
 #### Create Cached Content
 Cache content that you'll reuse across multiple requests.
@@ -821,7 +1025,7 @@ Cache content that you'll reuse across multiple requests.
 use Gemini\Data\Content;
 
 $cachedContent = $client->cachedContents()->create(
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     systemInstruction: Content::parse('You are an expert PHP developer.'),
     parts: [
         'This is a large codebase...',
@@ -865,16 +1069,16 @@ echo "Expires: {$cached->expireTime}\n";
 Update the expiration time of cached content.
 
 ```php
-// Extend by TTL
+// Set a new TTL, counted from now
 $updated = $client->cachedContents()->update(
     name: 'cachedContents/abc123',
-    ttl: '7200s' // Extend by 2 hours
+    ttl: '7200s' // Expires in 2 hours
 );
 
 // Or set absolute expiration time
 $updated = $client->cachedContents()->update(
     name: 'cachedContents/abc123',
-    expireTime: '2024-12-31T23:59:59Z'
+    expireTime: '2030-12-31T23:59:59Z'
 );
 ```
 
@@ -890,7 +1094,7 @@ Use cached content in your requests to save tokens and reduce latency.
 
 ```php
 $response = $client
-    ->generativeModel(model: 'gemini-2.0-flash')
+    ->generativeModel(model: 'gemini-2.5-flash')
     ->withCachedContent('cachedContents/abc123')
     ->generateContent('Explain the main function in this codebase');
 
@@ -898,46 +1102,22 @@ echo $response->text();
 
 // Check token usage
 echo "Cached tokens used: {$response->usageMetadata->cachedContentTokenCount}\n";
-echo "New tokens used: {$response->usageMetadata->promptTokenCount}\n";
+echo "Prompt tokens used (including cached tokens): {$response->usageMetadata->promptTokenCount}\n";
 ```
 
 ### File Search Stores
 
-File search allows you to search files that were uploaded through the File API.
+A file search store holds documents that the model can search with the [File Search tool](#grounding-with-file-search).
 
 #### Create File Search Store
 Create a file search store.
 
 ```php
-use Gemini\Enums\FileState;
-use Gemini\Enums\MimeType;
-use Gemini\Enums\Schema;
-use Gemini\Enums\DataType;
-
-$files = $client->files();
-echo "Uploading\n";
-$meta = $files->upload(
-    filename: 'document.pdf',
-    mimeType: MimeType::APPLICATION_PDF,
-    displayName: 'Document for search'
-);
-echo "Processing";
-do {
-    echo ".";
-    sleep(2);
-    $meta = $files->metadataGet($meta->uri);
-} while (! $meta->state->complete());
-echo "\n";
-
-if ($meta->state == FileState::Failed) {
-    die("Upload failed:\n".json_encode($meta->toArray(), JSON_PRETTY_PRINT));
-}
-
 $fileSearchStore = $client->fileSearchStores()->create(
     displayName: 'My Search Store',
 );
 
-echo "File search store created: {$fileSearchStore->name}\n";
+echo "File search store created: {$fileSearchStore->name}\n"; // fileSearchStores/my-search-store-abc123
 ```
 
 #### Get File Search Store
@@ -964,38 +1144,73 @@ foreach ($response->fileSearchStores as $fileSearchStore) {
 ```
 
 #### Delete File Search Store
-Delete a file search store by name.
+Delete a file search store by name. Set `force` to also delete the documents in it.
 
 ```php
-$client->fileSearchStores()->delete('fileSearchStores/my-search-store');
+$client->fileSearchStores()->delete('fileSearchStores/my-search-store', force: true);
 ```
 
 ### File Search Documents
 
 #### Upload File Search Document
-Upload a local file directly to a file search store.
+Upload a local file directly to a file search store. Custom metadata can be used to filter documents with `metadataFilter` in the [File Search tool](#grounding-with-file-search). Values can be strings, numbers or lists of strings.
 
 ```php
 use Gemini\Enums\MimeType;
 
-$response = $client->fileSearchStores()->upload(
+$operation = $client->fileSearchStores()->upload(
     storeName: 'fileSearchStores/my-search-store',
-    filename: 'document2.pdf',
+    filename: 'document.pdf',
     mimeType: MimeType::APPLICATION_PDF,
-    displayName: 'Another Search Document'
+    displayName: 'Greek Myths',
+    customMetadata: [
+        'author' => 'Robert Graves',
+        'year' => 1955,
+        'tags' => ['mythology', 'greece'],
+    ],
 );
 
-echo "File search document upload operation: {$response->name}\n";
+echo "Upload operation: {$operation->name}\n";
+```
+
+#### Import File Search Document
+Import a file that was uploaded with the [File API](#file-upload) into a file search store.
+
+```php
+$file = $client->files()->upload(filename: 'document.pdf');
+
+$operation = $client->fileSearchStores()->importFile(
+    storeName: 'fileSearchStores/my-search-store',
+    fileName: $file->name,
+    customMetadata: ['author' => 'Robert Graves'],
+);
+```
+
+#### Get Operation
+Uploading and importing are long-running operations. Poll the operation until it is done.
+
+```php
+while ($operation->done === false) {
+    sleep(2);
+    $operation = $client->fileSearchStores()->getOperation($operation->name);
+}
+
+if ($operation->error !== null) {
+    die('Failed: ' . json_encode($operation->error));
+}
+
+echo "Document added\n";
 ```
 
 #### Get File Search Document
 Get a specific file search document by name.
 
 ```php
-$fileSearchDocument = $client->fileSearchStores()->getDocument('fileSearchStores/my-search-store/fileSearchDocuments/my-document');
+$fileSearchDocument = $client->fileSearchStores()->getDocument('fileSearchStores/my-search-store/documents/my-document');
 
 echo "Name: {$fileSearchDocument->name}\n";
 echo "Display Name: {$fileSearchDocument->displayName}\n";
+echo "State: {$fileSearchDocument->state?->value}\n";
 ```
 
 #### List File Search Documents
@@ -1017,17 +1232,17 @@ foreach ($response->documents as $fileSearchDocument) {
 Delete a file search document by name.
 
 ```php
-$client->fileSearchStores()->deleteDocument('fileSearchStores/my-search-store/fileSearchDocuments/my-document');
+$client->fileSearchStores()->deleteDocument('fileSearchStores/my-search-store/documents/my-document');
 ```
 
-### Embedding Resource
+### Embeddings
 Embedding is a technique used to represent information as a list of floating point numbers in an array. With Gemini, you can represent text (words, sentences, and blocks of text) in a vectorized form, making it easier to compare and contrast embeddings. For example, two texts that share a similar subject matter or sentiment should have similar embeddings, which can be identified through mathematical comparison techniques such as cosine similarity.
 
-Use the `text-embedding-004` model with either `embedContents` or `batchEmbedContents`:
+Use an [embedding model](https://ai.google.dev/gemini-api/docs/embeddings) such as `gemini-embedding-001` with either `embedContent` or `batchEmbedContents`:
 
 ```php
 $response = $client
-    ->embeddingModel('text-embedding-004')
+    ->embeddingModel('gemini-embedding-001')
     ->embedContent("Write a story about a magic backpack.");
 
 print_r($response->embedding->values);
@@ -1047,8 +1262,8 @@ print_r($response->embedding->values);
 
 ```php
 $response = $client
-    ->embeddingModel('text-embedding-004')
-    ->batchEmbedContents("Bu bir testtir", "Deneme123");
+    ->embeddingModel('gemini-embedding-001')
+    ->batchEmbedContents("This is a test", "Another text");
 
 print_r($response->embeddings);
 // [
@@ -1109,25 +1324,25 @@ $response->models;
 //[
 //    [0] => Gemini\Data\Model Object
 //        (
-//            [name] => models/gemini-2.0-flash
-//            [version] => 2.0
-//            [displayName] => Gemini 2.0 Flash
-//            [description] => Gemini 2.0 Flash
+//            [name] => models/gemini-2.5-flash
+//            [version] => 001
+//            [displayName] => Gemini 2.5 Flash
+//            [description] => Stable version of Gemini 2.5 Flash
 //            ...
 //        )
 //    [1] => Gemini\Data\Model Object
 //        (
-//            [name] => models/gemini-2.5-pro-preview-05-06
-//            [version] => 2.5-preview-05-06
-//            [displayName] => Gemini 2.5 Pro Preview 05-06
-//            [description] => Preview release (May 6th, 2025) of Gemini 2.5 Pro
+//            [name] => models/gemini-2.5-pro
+//            [version] => 2.5
+//            [displayName] => Gemini 2.5 Pro
+//            [description] => Stable release of Gemini 2.5 Pro
 //            ...
 //        )
 //    [2] => Gemini\Data\Model Object
 //        (
-//            [name] => models/text-embedding-004
-//            [version] => 004
-//            [displayName] => Text Embedding 004
+//            [name] => models/gemini-embedding-001
+//            [version] => 001
+//            [displayName] => Gemini Embedding 001
 //            [description] => Obtain a distributed representation of a text.
 //            ...
 //        )
@@ -1135,7 +1350,7 @@ $response->models;
 ```
 
 ```php
-$response->nextPageToken // Chltb2RlbHMvZ2VtaW5pLTEuMC1wcm8tMDAx
+$response->nextPageToken; // Chltb2RlbHMvZ2VtaW5pLTEuMC1wcm8tMDAx
 ```
 
 #### Get Model
@@ -1143,26 +1358,61 @@ Get information about a model, such as version, display name, input token limit,
 
 ```php
 
-$response = $client->models()->retrieve('models/gemini-2.5-pro-preview-05-06');
+$response = $client->models()->retrieve('models/gemini-2.5-flash');
 
 $response->model;
 //Gemini\Data\Model Object
 //(
-//    [name] => models/gemini-2.5-pro-preview-05-06
-//    [version] => 2.5-preview-05-06
-//    [displayName] => Gemini 2.5 Pro Preview 05-06
-//    [description] => Preview release (May 6th, 2025) of Gemini 2.5 Pro
+//    [name] => models/gemini-2.5-flash
+//    [version] => 001
+//    [displayName] => Gemini 2.5 Flash
+//    [description] => Stable version of Gemini 2.5 Flash
+//    [inputTokenLimit] => 1048576
+//    [outputTokenLimit] => 65536
 //    ...
 //)
 ```
 
 ## Troubleshooting
 
+### Error Handling
+
+Errors returned by the API throw a `Gemini\Exceptions\ErrorException`, with the message, status and code of the API error. Other failures, such as network errors, throw a `Gemini\Exceptions\TransporterException`, and a response that is not valid JSON throws a `Gemini\Exceptions\UnserializableResponse`.
+
+```php
+use Gemini\Exceptions\ErrorException;
+use Gemini\Exceptions\TransporterException;
+
+try {
+    $response = $client->generativeModel(model: 'gemini-2.5-flash')->generateContent('Hello');
+} catch (ErrorException $e) {
+    $e->getErrorMessage(); // The model is overloaded. Please try again later.
+    $e->getErrorStatus(); // UNAVAILABLE
+    $e->getErrorCode(); // 503
+} catch (TransporterException $e) {
+    $e->getPrevious(); // the exception thrown by the HTTP client
+}
+```
+
+Rate limit (`429`) and overload (`503`) errors are usually temporary and can be retried after a short wait.
+
+### Empty Responses
+
+`text()` and `parts()` throw a `ValueError` when the response has no content. The error message contains the reason, which is also available on the response:
+
+```php
+$response->promptFeedback?->blockReason; // the prompt was blocked, e.g. BlockReason::SAFETY
+$response->candidates[0]->finishReason; // e.g. FinishReason::MAX_TOKENS or FinishReason::SAFETY
+$response->candidates[0]->finishMessage; // more details, when available
+```
+
+A common cause is `MAX_TOKENS` with thinking models: the thoughts use the whole `maxOutputTokens` budget before the answer is written. Increase `maxOutputTokens` or lower the [thinking budget or level](#thinking-mode).
+
 ### Timeout
 
 You may run into a timeout when sending requests to the API. The default timeout depends on the HTTP client used.
 
-You can increase the timeout by configuring the HTTP client and passing in to the factory.
+You can increase the timeout by configuring the HTTP client and passing it to the factory.
 
 This example illustrates how to increase the timeout using Guzzle.
 
@@ -1177,11 +1427,11 @@ Gemini::factory()
 
 The package provides a fake implementation of the `Gemini\Client` class that allows you to fake the API responses.
 
-To test your code ensure you swap the `Gemini\Client` class with the `Gemini\Testing\ClientFake` class in your test case.
+To test your code, swap the `Gemini\Client` instance for a `Gemini\Testing\ClientFake` in your test case.
 
 The fake responses are returned in the order they are provided while creating the fake client.
 
-All responses are having a `fake()` method that allows you to easily create a response object by only providing the parameters relevant for your test case.
+All responses have a `fake()` method that creates a response object from only the parameters relevant to your test case.
 
 ```php
 use Gemini\Testing\ClientFake;
@@ -1203,7 +1453,7 @@ $client = new ClientFake([
     ]),
 ]);
 
-$result = $fake->generativeModel(model: 'gemini-2.0-flash')->generateContent('test');
+$result = $client->generativeModel(model: 'gemini-2.5-flash')->generateContent('test');
 
 expect($result->text())->toBe('success');
 ```
@@ -1218,52 +1468,88 @@ $client = new ClientFake([
     GenerateContentResponse::fakeStream(),
 ]);
 
-$result = $client->generativeModel(model: 'gemini-2.0-flash')->streamGenerateContent('Hello');
+$result = $client->generativeModel(model: 'gemini-2.5-flash')->streamGenerateContent('Hello');
 
-expect($response->getIterator()->current())
+expect($result->getIterator()->current())
     ->text()->toBe('In the bustling city of Aethelwood, where the cobblestone streets whispered');
 ```
 
-After the requests have been sent there are various methods to ensure that the expected requests were sent:
+Chats started with `startChat()` work with the fake as well. Each message is sent as a `generateContent` (or `streamGenerateContent`) request with the full history, and consumes the next fake response.
+
+```php
+use Gemini\Testing\ClientFake;
+use Gemini\Responses\GenerativeModel\GenerateContentResponse;
+
+$client = new ClientFake([
+    GenerateContentResponse::fake(),
+    GenerateContentResponse::fake(),
+]);
+
+$chat = $client->generativeModel(model: 'gemini-2.5-flash')->startChat();
+$chat->sendMessage('Hello');
+$chat->sendMessage('How are you?');
+
+$client->generativeModel(model: 'gemini-2.5-flash')->assertFunctionCalled(function (string $method) {
+    return $method === 'startChat';
+});
+
+$client->generativeModel(model: 'gemini-2.5-flash')->assertSent(function (string $method, array $parameters) {
+    return $method === 'generateContent' &&
+        count($parameters) === 3; // Hello, the model's answer, How are you?
+});
+```
+
+After the requests have been sent, use the assertion methods to check that the expected requests were sent:
 
 ```php
 // assert list models request was sent
 use Gemini\Resources\GenerativeModel;
 use Gemini\Resources\Models;
 
-$fake->models()->assertSent(callback: function ($method) {
+$client->models()->assertSent(callback: function ($method) {
     return $method === 'list';
 });
 // or
-$fake->assertSent(resource: Models::class, callback: function ($method) {
+$client->assertSent(resource: Models::class, callback: function ($method) {
     return $method === 'list';
 });
 
-$fake->geminiPro()->assertSent(function (string $method, array $parameters) {
+$client->generativeModel(model: 'gemini-2.5-flash')->assertSent(function (string $method, array $parameters) {
     return $method === 'generateContent' &&
         $parameters[0] === 'Hello';
 });
 // or
-$fake->assertSent(resource: GenerativeModel::class, model: 'gemini-2.0-flash', callback: function (string $method, array $parameters) {
+$client->assertSent(resource: GenerativeModel::class, model: 'gemini-2.5-flash', callback: function (string $method, array $parameters) {
     return $method === 'generateContent' &&
         $parameters[0] === 'Hello';
 });
 
 // assert 2 generative model requests were sent
-$client->assertSent(resource: GenerativeModel::class, model: 'gemini-2.0-flash', callback: 2);
+$client->assertSent(resource: GenerativeModel::class, model: 'gemini-2.5-flash', callback: 2);
 // or
-$client->generativeModel(model: 'gemini-2.0-flash')->assertSent(2);
+$client->generativeModel(model: 'gemini-2.5-flash')->assertSent(2);
 
 // assert no generative model requests were sent
-$client->assertNotSent(resource: GenerativeModel::class, model: 'gemini-2.0-flash');
+$client->assertNotSent(resource: GenerativeModel::class, model: 'gemini-2.5-flash');
 // or
-$client->generativeModel(model: 'gemini-2.0-flash')->assertNotSent();
+$client->generativeModel(model: 'gemini-2.5-flash')->assertNotSent();
 
 // assert no requests were sent
 $client->assertNothingSent();
 ```
 
-To write tests expecting the API request to fail you can provide a `Throwable` object as the response.
+Calls that configure a model, like `withGenerationConfig()`, `withTool()` or `startChat()`, are recorded as function calls:
+
+```php
+use Gemini\Data\GenerationConfig;
+
+$client->generativeModel(model: 'gemini-2.5-flash')->assertFunctionCalled(function (string $method, array $parameters) {
+    return $method === 'withGenerationConfig' &&
+        $parameters[0] instanceof GenerationConfig;
+});
+```
+
+To test a failing request, provide a `Throwable` as the response.
 
 ```php
 use Gemini\Testing\ClientFake;
@@ -1278,5 +1564,5 @@ $client = new ClientFake([
 ]);
 
 // the `ErrorException` will be thrown
-$client->generativeModel(model: 'gemini-2.0-flash')->generateContent('test');
+$client->generativeModel(model: 'gemini-2.5-flash')->generateContent('test');
 ```
