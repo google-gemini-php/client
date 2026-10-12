@@ -6,6 +6,8 @@ use Gemini\Contracts\TransporterContract;
 use Gemini\Enums\Method;
 use Gemini\Foundation\Request;
 use Gemini\Transporters\DTOs\ResponseDTO;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ResponseInterface;
 
 function mockClient(Method $method, string $endpoint, ResponseDTO|ResponseContract|ResponseInterface|string $response, array $params = [], int $times = 1, $methodName = 'request', bool $validateParams = false, string $rootPath = '/v1beta/'): Client
@@ -45,4 +47,19 @@ function mockClient(Method $method, string $endpoint, ResponseDTO|ResponseContra
 function mockStreamClient(Method $method, string $endpoint, ResponseDTO|ResponseContract|ResponseInterface|string $response, array $params = [], bool $validateParams = false): Client
 {
     return mockClient(method: $method, endpoint: $endpoint, response: $response, params: $params, methodName: 'requestStream', validateParams: $validateParams);
+}
+
+/**
+ * Builds a streamed generateContent response with one chunk per entry, each containing the given parts.
+ *
+ * @param  array<array<array<string, mixed>>>  $chunks
+ */
+function streamedChatResponse(array $chunks): Response
+{
+    $chunks = array_map(fn (array $parts): array => [
+        'candidates' => [['content' => ['parts' => $parts, 'role' => 'model'], 'index' => 0]],
+        'usageMetadata' => ['promptTokenCount' => 1, 'totalTokenCount' => 2],
+    ], $chunks);
+
+    return new Response(body: Utils::streamFor(json_encode($chunks)));
 }
