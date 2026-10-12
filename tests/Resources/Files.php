@@ -5,6 +5,7 @@ use Gemini\Enums\MimeType;
 use Gemini\Responses\Files\ListResponse;
 use Gemini\Responses\Files\MetadataResponse;
 use Gemini\Responses\Files\UploadResponse;
+use Gemini\Transporters\DTOs\ResponseDTO;
 
 describe('file upload', function () {
     beforeEach(function () {
@@ -32,6 +33,28 @@ test('metadata get', function () {
 
     expect($result)
         ->toBeInstanceOf(MetadataResponse::class);
+});
+
+test('metadata get with name', function () {
+    $client = mockClient(method: Method::GET, endpoint: 'files/123-456', response: MetadataResponse::fake());
+
+    expect($client->files()->metadataGet('files/123-456'))
+        ->toBeInstanceOf(MetadataResponse::class);
+});
+
+test('metadata get with uri', function () {
+    $client = mockClient(method: Method::GET, endpoint: 'files/123-456', response: MetadataResponse::fake());
+
+    expect($client->files()->metadataGet('https://generativelanguage.googleapis.com/v1beta/files/123-456'))
+        ->toBeInstanceOf(MetadataResponse::class);
+});
+
+test('delete', function () {
+    $client = mockClient(method: Method::DELETE, endpoint: 'files/123-456', response: new ResponseDTO([]), times: 3);
+
+    $client->files()->delete('123-456');
+    $client->files()->delete('files/123-456');
+    $client->files()->delete('https://generativelanguage.googleapis.com/v1beta/files/123-456');
 });
 
 test('files list', function () {

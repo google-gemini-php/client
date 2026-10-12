@@ -25,6 +25,7 @@ final class Part implements Arrayable
      * @param  CodeExecutionResult|null  $codeExecutionResult  Result of executing the ExecutableCode.
      * @param  bool|null  $thought  Optional. Indicates if the part is thought from the model.
      * @param  string|null  $thoughtSignature  Optional. An opaque signature for the thought so it can be reused in subsequent requests. A base64-encoded string.
+     * @param  PartMediaResolution|null  $mediaResolution  Optional. Media resolution for the input media of this part.
      * @param  ToolCall|null  $toolCall  Server-side tool call predicted by the model. The client is expected to echo it back to the API.
      * @param  ToolResponse|null  $toolResponse  The output from a server-side ToolCall execution. The client is expected to echo it back to the API.
      */
@@ -38,12 +39,13 @@ final class Part implements Arrayable
         public readonly ?CodeExecutionResult $codeExecutionResult = null,
         public readonly ?bool $thought = null,
         public readonly ?string $thoughtSignature = null,
+        public readonly ?PartMediaResolution $mediaResolution = null,
         public readonly ?ToolCall $toolCall = null,
         public readonly ?ToolResponse $toolResponse = null,
     ) {}
 
     /**
-     * @param  array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> }, executableCode?: array{ language: string, code: string }, codeExecutionResult?: array{ outcome: string, output: string }, thought?: bool, thoughtSignature?: string, toolCall?: array{ toolType?: string, toolName?: string, args?: array<string, mixed>, id?: string }, toolResponse?: array{ toolType?: string, response?: array<string, mixed>, id?: string } }  $attributes
+     * @param  array{ text: ?string, inlineData: ?array{ mimeType: string, data: string }, fileData: ?array{ fileUri: string, mimeType: string }, functionCall: ?array{ name: string, args: array<string, mixed>|null }, functionResponse: ?array{ name: string, response: array<string, mixed> }, executableCode?: array{ language: string, code: string }, codeExecutionResult?: array{ outcome: string, output: string }, thought?: bool, thoughtSignature?: string, mediaResolution?: array{ level?: string }, toolCall?: array{ toolType?: string, toolName?: string, args?: array<string, mixed>, id?: string }, toolResponse?: array{ toolType?: string, response?: array<string, mixed>, id?: string } }  $attributes
      */
     public static function from(array $attributes): self
     {
@@ -57,6 +59,7 @@ final class Part implements Arrayable
             codeExecutionResult: isset($attributes['codeExecutionResult']) ? CodeExecutionResult::from($attributes['codeExecutionResult']) : null,
             thought: $attributes['thought'] ?? null,
             thoughtSignature: $attributes['thoughtSignature'] ?? null,
+            mediaResolution: isset($attributes['mediaResolution']) ? PartMediaResolution::from($attributes['mediaResolution']) : null,
             toolCall: isset($attributes['toolCall']) ? ToolCall::from($attributes['toolCall']) : null,
             toolResponse: isset($attributes['toolResponse']) ? ToolResponse::from($attributes['toolResponse']) : null,
         );
@@ -100,6 +103,10 @@ final class Part implements Arrayable
 
         if ($this->thoughtSignature !== null) {
             $data['thoughtSignature'] = $this->thoughtSignature;
+        }
+
+        if ($this->mediaResolution?->level !== null) {
+            $data['mediaResolution'] = $this->mediaResolution->toArray();
         }
 
         if ($this->toolCall !== null) {

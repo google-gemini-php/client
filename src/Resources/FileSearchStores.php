@@ -12,7 +12,9 @@ use Gemini\Requests\FileSearchStores\DeleteRequest;
 use Gemini\Requests\FileSearchStores\Documents\DeleteRequest as DeleteDocumentRequest;
 use Gemini\Requests\FileSearchStores\Documents\GetRequest as GetDocumentRequest;
 use Gemini\Requests\FileSearchStores\Documents\ListRequest as ListDocumentsRequest;
+use Gemini\Requests\FileSearchStores\GetOperationRequest;
 use Gemini\Requests\FileSearchStores\GetRequest;
+use Gemini\Requests\FileSearchStores\ImportFileRequest;
 use Gemini\Requests\FileSearchStores\ListRequest;
 use Gemini\Requests\FileSearchStores\UploadRequest;
 use Gemini\Responses\FileSearchStores\Documents\DocumentResponse;
@@ -64,6 +66,25 @@ final class FileSearchStores implements FileSearchStoresContract
     {
         /** @var ResponseDTO<array{ name: string, metadata?: array<string, mixed>, done?: bool, response?: array<string, mixed>, error?: array<string, mixed> }> $response */
         $response = $this->transporter->request(new UploadRequest($storeName, $filename, $displayName, $mimeType, $customMetadata));
+
+        return UploadResponse::from($response->data());
+    }
+
+    /**
+     * @param  array<string, string|int|float|array<string>>  $customMetadata
+     */
+    public function importFile(string $storeName, string $fileName, array $customMetadata = []): UploadResponse
+    {
+        /** @var ResponseDTO<array{ name: string, metadata?: array<string, mixed>, done?: bool, response?: array<string, mixed>, error?: array<string, mixed> }> $response */
+        $response = $this->transporter->request(new ImportFileRequest($storeName, $fileName, $customMetadata));
+
+        return UploadResponse::from($response->data());
+    }
+
+    public function getOperation(string $name): UploadResponse
+    {
+        /** @var ResponseDTO<array{ name: string, metadata?: array<string, mixed>, done?: bool, response?: array<string, mixed>, error?: array<string, mixed> }> $response */
+        $response = $this->transporter->request(new GetOperationRequest($name));
 
         return UploadResponse::from($response->data());
     }

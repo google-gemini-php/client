@@ -18,6 +18,8 @@ use Gemini\Responses\GenerativeModel\CountTokensResponse;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
 use Gemini\Responses\StreamResponse;
 use Gemini\Testing\Resources\Concerns\Testable;
+use Gemini\Testing\Transporters\TestTransporter;
+use LogicException;
 
 final class GenerativeModelTestResource implements GenerativeModelContract
 {
@@ -45,7 +47,15 @@ final class GenerativeModelTestResource implements GenerativeModelContract
 
     public function startChat(array $history = []): ChatSession
     {
-        return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+        $this->recordFunctionCall(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+
+        return new ChatSession(
+            model: new GenerativeModel(
+                transporter: new TestTransporter(model: $this),
+                model: $this->model ?? throw new LogicException('A model is required to start a chat.'),
+            ),
+            history: $history,
+        );
     }
 
     public function withSystemInstruction(Content $systemInstruction): self

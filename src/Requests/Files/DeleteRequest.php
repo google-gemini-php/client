@@ -19,7 +19,7 @@ class DeleteRequest extends Request
     protected Method $method = Method::DELETE;
 
     /**
-     * @param  string  $nameOrUri  Either the just file name or the complete metadata URI from an upload.
+     * @param  string  $nameOrUri  The file ID (abc-123), its name (files/abc-123) or the complete URI from an upload.
      */
     public function __construct(
         protected readonly string $nameOrUri
@@ -27,7 +27,7 @@ class DeleteRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        if (str_starts_with($this->nameOrUri, 'http')) {
+        if (str_starts_with($this->nameOrUri, 'http') || str_starts_with($this->nameOrUri, 'files/')) {
             return $this->nameOrUri;
         }
 
