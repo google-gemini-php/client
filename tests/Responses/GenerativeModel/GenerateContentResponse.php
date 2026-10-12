@@ -223,6 +223,29 @@ test('max tokens finish reason without parts', function () {
         });
 });
 
+test('incomplete usage metadata', function () {
+    $response = GenerateContentResponse::from([
+        'candidates' => [
+            [
+                'content' => ['parts' => [['text' => 'Yellow.']], 'role' => 'model'],
+                'finishReason' => FinishReason::STOP->value,
+            ],
+        ],
+        'usageMetadata' => [
+            'candidatesTokenCount' => 10,
+            'thoughtsTokenCount' => 667,
+            'serviceTier' => 'standard',
+        ],
+    ]);
+
+    expect($response->usageMetadata)
+        ->promptTokenCount->toBe(0)
+        ->totalTokenCount->toBe(0)
+        ->candidatesTokenCount->toBe(10)
+        ->thoughtsTokenCount->toBe(667)
+        ->and($response->text())->toBe('Yellow.');
+});
+
 test('fake', function () {
     $response = GenerateContentResponse::fake();
 
