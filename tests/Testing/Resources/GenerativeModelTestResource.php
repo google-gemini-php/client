@@ -2,10 +2,13 @@
 
 declare(strict_types=1);
 
+use Gemini\Data\Content;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\SafetySetting;
 use Gemini\Enums\HarmBlockThreshold;
 use Gemini\Enums\HarmCategory;
+use Gemini\Exceptions\ErrorException;
+use Gemini\Resources\ChatSession;
 use Gemini\Responses\GenerativeModel\CountTokensResponse;
 use Gemini\Responses\GenerativeModel\GenerateContentResponse;
 use Gemini\Testing\ClientFake;
@@ -92,4 +95,106 @@ it('records both content request and function call', function () {
         return $method === 'withGenerationConfig' &&
             $parameters[0] === $generationConfig;
     });
+});
+
+it('records a "startChat" function call and the chat messages', function () {
+    $fake = new ClientFake([
+        GenerateContentResponse::fake([
+            'candidates' => [['content' => ['parts' => [['text' => 'Hi there!']]]]],
+        ]),
+    ]);
+
+    $chat = $fake->generativeModel('models/gemini-2.5-flash')->startChat(history: [Content::parse('Hello')]);
+    $response = $chat->sendMessage('How are you?');
+
+    expect($chat)->toBeInstanceOf(ChatSession::class)
+        ->and($response->text())->toBe('Hi there!')
+        ->and($chat->history)->toHaveCount(3);
+
+    $fake->generativeModel('models/gemini-2.5-flash')->assertFunctionCalled(function (string $method, array $parameters) {
+        return $method === 'startChat' &&
+            $parameters[0][0]->parts[0]->text === 'Hello';
+    });
+    $fake->generativeModel('models/gemini-2.5-flash')->assertSent(function (string $method, array $parameters) {
+        return $method === 'generateContent' &&
+            count($parameters) === 2 &&
+            $parameters[0]->parts[0]->text === 'Hello' &&
+            $parameters[1]->parts[0]->text === 'How are you?';
+    });
+});
+
+it('sends the whole chat history on every turn', function () {
+    $fake = new ClientFake([
+        GenerateContentResponse::fake(['candidates' => [['content' => ['parts' => [['text' => 'First answer']]]]]]),
+        GenerateContentResponse::fake(['candidates' => [['content' => ['parts' => [['text' => 'Second answer']]]]]]),
+    ]);
+
+    $chat = $fake->generativeModel('models/gemini-2.5-flash')->startChat();
+    $chat->sendMessage('First question');
+    $response = $chat->sendMessage('Second question');
+
+    expect($response->text())->toBe('Second answer');
+
+    $fake->generativeModel('models/gemini-2.5-flash')->assertSent(function (string $method, array $parameters) {
+        return $method === 'generateContent' &&
+            array_map(fn (Content $content): string => $content->role->value.': '.$content->parts[0]->text, $parameters) === [
+                'user: First question',
+                'model: First answer',
+                'user: Second question',
+            ];
+    });
+});
+
+it('streams chat messages', function () {
+    $fake = new ClientFake([
+        GenerateContentResponse::fakeStream(),
+    ]);
+
+    $chat = $fake->generativeModel('models/gemini-2.5-flash')->startChat();
+    $chunks = iterator_to_array($chat->streamSendMessage('Tell me a story'), false);
+
+    expect($chunks)->not->toBeEmpty()
+        ->each->toBeInstanceOf(GenerateContentResponse::class)
+        ->and($chat->history)->toHaveCount(2)
+        ->and($chat->history[1]->parts[0]->text)->toStartWith('In the bustling city of Aethelwood');
+
+    $fake->generativeModel('models/gemini-2.5-flash')->assertSent(function (string $method, array $parameters) {
+        return $method === 'streamGenerateContent' &&
+            $parameters[0]->parts[0]->text === 'Tell me a story';
+    });
+});
+
+it('counts tokens on the model of a chat', function () {
+    $fake = new ClientFake([
+        CountTokensResponse::fake(['totalTokens' => 42]),
+    ]);
+
+    $chat = $fake->generativeModel('models/gemini-2.5-flash')->startChat();
+
+    expect($chat->model->countTokens('Hello')->totalTokens)->toBe(42);
+
+    $fake->generativeModel('models/gemini-2.5-flash')->assertSent(function (string $method, array $parameters) {
+        return $method === 'countTokens' &&
+            $parameters[0]->parts[0]->text === 'Hello';
+    });
+});
+
+it('throws faked exceptions in a chat', function () {
+    $fake = new ClientFake([
+        new ErrorException(['message' => 'The model is overloaded.', 'status' => 'UNAVAILABLE', 'code' => 503]),
+    ]);
+
+    $chat = $fake->generativeModel('models/gemini-2.5-flash')->startChat();
+
+    expect(fn () => $chat->sendMessage('Hello'))->toThrow(ErrorException::class, 'The model is overloaded.');
+});
+
+it('returns the faked chat response', function () {
+    $fake = new ClientFake([
+        $queued = GenerateContentResponse::fake(),
+    ]);
+
+    $response = $fake->generativeModel('models/gemini-2.5-flash')->startChat()->sendMessage('Hello');
+
+    expect($response->toArray())->toBe($queued->toArray());
 });

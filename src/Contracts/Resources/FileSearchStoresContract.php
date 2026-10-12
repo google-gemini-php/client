@@ -51,6 +51,22 @@ interface FileSearchStoresContract
     public function upload(string $storeName, string $filename, ?MimeType $mimeType = null, ?string $displayName = null, array $customMetadata = []): UploadResponse;
 
     /**
+     * Import a file from the File API to a file search store. The returned operation can be polled with getOperation().
+     *
+     * @param  array<string, string|int|float|array<string>>  $customMetadata
+     *
+     * @see https://ai.google.dev/api/file-search/file-search-stores#method:-fileSearchStores.importfile
+     */
+    public function importFile(string $storeName, string $fileName, array $customMetadata = []): UploadResponse;
+
+    /**
+     * Get the latest state of an upload or import operation.
+     *
+     * @see https://ai.google.dev/api/file-search/file-search-stores#method:-fileSearchStores.operations.get
+     */
+    public function getOperation(string $name): UploadResponse;
+
+    /**
      * List documents in a file search store.
      *
      * @see https://ai.google.dev/api/file-search/documents#method:-fileSearchStores.documents.list
