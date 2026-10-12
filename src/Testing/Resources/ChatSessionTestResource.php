@@ -37,6 +37,8 @@ final class ChatSessionTestResource implements ChatSessionContract
      */
     public function startChat(array $history = []): ChatSessionTestResource
     {
-        return $this->record(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+        $this->recordFunctionCall(method: __FUNCTION__, args: func_get_args(), model: $this->model);
+
+        return new self(fake: $this->fake, model: $this->model);
     }
 }

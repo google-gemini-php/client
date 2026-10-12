@@ -11,7 +11,7 @@ use Gemini\Exceptions\TransporterException;
 use Gemini\Exceptions\UnserializableResponse;
 use Gemini\Foundation\Request;
 use Gemini\Transporters\DTOs\ResponseDTO;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\BadResponseException;
 use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
@@ -82,7 +82,7 @@ final class HttpTransporter implements TransporterContract
         try {
             return $callable();
         } catch (ClientExceptionInterface $clientException) {
-            if ($clientException instanceof ClientException) {
+            if ($clientException instanceof BadResponseException) {
                 $this->throwIfJsonError(response: $clientException->getResponse(), contents: $clientException->getResponse());
             }
 
