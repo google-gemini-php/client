@@ -266,6 +266,65 @@ test('request client exception errors wrapped in a list', function () {
         });
 });
 
+test('request rate limit errors give the retry delay and details', function (string $retryDelay, int $expected) {
+    $request = new ListModelRequest;
+
+    $response = new Response(429, ['Content-Type' => 'application/json; charset=utf-8'], json_encode([
+        'error' => [
+            'code' => 429,
+            'message' => 'You exceeded your current quota, please check your plan and billing details.',
+            'status' => 'RESOURCE_EXHAUSTED',
+            'details' => [
+                [
+                    '@type' => 'type.googleapis.com/google.rpc.QuotaFailure',
+                    'violations' => [['quotaMetric' => 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId' => 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaValue' => '15']],
+                ],
+                ['@type' => 'type.googleapis.com/google.rpc.Help', 'links' => [['description' => 'Learn more about Gemini API quotas', 'url' => 'https://ai.google.dev/gemini-api/docs/rate-limits']]],
+                ['@type' => 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay' => $retryDelay],
+            ],
+        ],
+    ]));
+
+    $this->client
+        ->shouldReceive('sendRequest')
+        ->once()
+        ->andThrow(new ClientException('Too Many Requests', $request->toRequest(baseUrl: 'generativelanguage.googleapis.com'), $response));
+
+    expect(fn () => $this->http->request($request))
+        ->toThrow(function (ErrorException $e) use ($expected) {
+            expect($e->getErrorCode())->toBe(429)
+                ->and($e->getRetryDelay())->toBe($expected)
+                ->and($e->getErrorDetails())->toHaveCount(3)
+                ->and($e->getErrorDetails()[0]['violations'][0]['quotaId'])->toBe('GenerateRequestsPerMinutePerProjectPerModel-FreeTier');
+        });
+})->with([
+    'whole seconds' => ['20s', 20],
+    'fraction rounded up' => ['34.4s', 35],
+]);
+
+test('request errors without details have no retry delay', function () {
+    $request = new ListModelRequest;
+
+    $response = new Response(503, ['Content-Type' => 'application/json; charset=utf-8'], json_encode([
+        'error' => [
+            'code' => 503,
+            'message' => 'The model is overloaded. Please try again later.',
+            'status' => 'UNAVAILABLE',
+        ],
+    ]));
+
+    $this->client
+        ->shouldReceive('sendRequest')
+        ->once()
+        ->andReturn($response);
+
+    expect(fn () => $this->http->request($request))
+        ->toThrow(function (ErrorException $e) {
+            expect($e->getRetryDelay())->toBeNull()
+                ->and($e->getErrorDetails())->toBe([]);
+        });
+});
+
 test('request client exception keeps the response body readable', function () {
     $request = new ListModelRequest;
 

@@ -1389,6 +1389,8 @@ try {
     $e->getErrorMessage(); // The model is overloaded. Please try again later.
     $e->getErrorStatus(); // UNAVAILABLE
     $e->getErrorCode(); // 503
+    $e->getRetryDelay(); // seconds to wait, given with a 429 (e.g. 34), otherwise null
+    $e->getErrorDetails(); // the error's details, e.g. the google.rpc.QuotaFailure of a 429
 } catch (TransporterException $e) {
     $e->getPrevious(); // the exception thrown by the HTTP client
 }
