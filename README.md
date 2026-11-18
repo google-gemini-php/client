@@ -8,7 +8,7 @@
 
 ------
 
-**Gemini PHP** is a community-maintained PHP API client for the [Gemini API](https://ai.google.dev/gemini-api/docs). It covers text, image, video, audio and document input, streaming, chats, structured output, function calling, built-in tools (Google Search, Google Maps, URL context, File Search, code execution), image and speech generation, thinking models, files, context caching, file search stores, embeddings and models, and ships with a fake client for testing.
+**Gemini PHP** is a community-maintained PHP API client for the [Gemini API](https://ai.google.dev/gemini-api/docs). It covers text, image, video, audio and document input, streaming, chats, structured output, function calling, built-in tools (Google Search, Google Maps, URL context, File Search, code execution), image and speech generation, thinking models, decisions API, files, context caching, file search stores, embeddings and models, and ships with a fake client for testing.
 
 - Fatih AYDIN [github.com/aydinfatih](https://github.com/aydinfatih)
 - Vytautas Smilingis [github.com/Plytas](https://github.com/Plytas)
@@ -67,6 +67,12 @@
       - [Get File Search Document](#get-file-search-document)
       - [List File Search Documents](#list-file-search-documents)
       - [Delete File Search Document](#delete-file-search-document)
+    - [Decisions API](#decisions-api)
+      - [Binary Questions (`noul`)](#binary-questions-noul)
+      - [Multiple Choice Questions (`choice`)](#multiple-choice-questions-choice)
+      - [Rubric Score Questions (`score`)](#rubric-score-questions-score)
+      - [Multimodal Input](#multimodal-input)
+      - [Testing Decisions](#testing-decisions)
     - [Embeddings](#embeddings)
     - [Models](#models)
         - [List Models](#list-models)
@@ -1233,6 +1239,157 @@ Delete a file search document by name.
 
 ```php
 $client->fileSearchStores()->deleteDocument('fileSearchStores/my-search-store/documents/my-document');
+```
+
+### Decisions API
+
+The [Gemini Decisions API](https://ai.google.dev) (powered by `gemini-decision-1`) evaluates up to 1,000 closed-set, structured questions against a single shared multimodal input (text, PDF, audio, image, video) in parallel with low latency (~150–250ms).
+
+Because it computes calibrated probabilities and confidence scores rather than generating freeform prose token-by-token, **it produces zero output tokens** (billed only on input tokens).
+
+```php
+use Gemini\Data\Decisions\ChoiceQuestion;
+use Gemini\Data\Decisions\NoulQuestion;
+use Gemini\Data\Decisions\ScoreQuestion;
+
+$response = $client->decisions()->create(
+    input: 'Customer message: The coffee maker arrived with a shattered glass carafe. Requesting a replacement ASAP.',
+    questions: [
+        'is_damaged' => NoulQuestion::make('Did the item arrive physically damaged?'),
+        'route_queue' => ChoiceQuestion::make(
+            instructions: 'Which team should handle this inquiry?',
+            criteria: [
+                'billing' => 'Payment, invoice, or refund questions',
+                'replacements' => 'Damaged, missing, or incorrect items',
+                'general' => 'General inquiries',
+            ]
+        ),
+        'severity' => ScoreQuestion::make(
+            instructions: 'Rate the customer frustration and severity level',
+            legend: [
+                1 => 'Minor issue / low urgency',
+                2 => 'Moderate inconvenience',
+                3 => 'Critical / broken product demanding immediate action',
+            ]
+        ),
+    ]
+);
+
+// Inspect binary (yes/no) answer
+$isDamaged = $response->answer('is_damaged');
+$isDamaged->isYes(); // true
+$isDamaged->noul;    // 0.99
+$isDamaged->confidence; // 0.99
+$isDamaged->probabilities; // ['yes' => 0.99, 'no' => 0.01]
+
+// Inspect choice answer
+$queue = $response->answer('route_queue');
+$queue->choice;      // 'replacements'
+$queue->confidence;  // 0.95
+$queue->probabilities; // ['billing' => 0.01, 'replacements' => 0.95, 'general' => 0.04]
+
+// Inspect rubric score answer
+$severity = $response->answer('severity');
+$severity->score;    // 2.85
+$severity->confidence; // 0.87
+$severity->legend;   // [1 => 'Minor issue / low urgency', ...]
+```
+
+#### Binary Questions (`noul`)
+
+Use `NoulQuestion::make()` for boolean/yes-no classification. You can optionally provide `criteria` with `true_description` and `false_description` to guide the model:
+
+```php
+use Gemini\Data\Decisions\NoulQuestion;
+
+$question = NoulQuestion::make(
+    instructions: 'Does this message request a monetary refund?',
+    criteria: [
+        'true_description' => 'The user explicitly requests a money return or refund.',
+        'false_description' => 'The user asks for a replacement, troubleshooting, or general questions.',
+    ]
+);
+```
+
+#### Multiple Choice Questions (`choice`)
+
+Use `ChoiceQuestion::make()` to select from 2 to 255 discrete routing options or categories:
+
+```php
+use Gemini\Data\Decisions\ChoiceQuestion;
+
+$question = ChoiceQuestion::make(
+    instructions: 'Classify the sentiment of this review',
+    criteria: [
+        'positive' => 'Enthusiastic or happy customer',
+        'neutral' => 'Balanced or factual feedback',
+        'negative' => 'Unhappy or critical review',
+    ]
+);
+```
+
+#### Rubric Score Questions (`score`)
+
+Use `ScoreQuestion::make()` to rate input against an ordinal scale of 2 to 255 levels. The answer returns a probability-weighted expected numeric score and confidence:
+
+```php
+use Gemini\Data\Decisions\ScoreQuestion;
+
+$question = ScoreQuestion::make(
+    instructions: 'Rate the churn risk of this account interaction',
+    legend: [
+        0 => 'No churn signal',
+        1 => 'Mild frustration',
+        2 => 'Mentions competing products',
+        3 => 'Explicitly threatens to cancel',
+    ]
+);
+```
+
+#### Multimodal Input
+
+You can evaluate questions against multimodal inputs such as uploaded files or images:
+
+```php
+use Gemini\Data\Blob;
+use Gemini\Data\Decisions\NoulQuestion;
+use Gemini\Enums\MimeType;
+
+$imageBlob = Blob::from(
+    data: base64_encode(file_get_contents('receipt.jpg')),
+    mimeType: MimeType::IMAGE_JPEG,
+);
+
+$response = $client->decisions()->create(
+    input: $imageBlob,
+    questions: [
+        'is_receipt' => NoulQuestion::make('Is this image a sales receipt?'),
+        'has_tax' => NoulQuestion::make('Does the receipt show a sales tax line item?'),
+    ]
+);
+```
+
+#### Testing Decisions
+
+The fake client supports decisions mocking with `DecisionsResponse::fake()` and assertions via `assertSent`:
+
+```php
+use Gemini\Testing\ClientFake;
+use Gemini\Responses\Decisions\DecisionsResponse;
+use Gemini\Resources\Decisions;
+use Gemini\Data\Decisions\NoulQuestion;
+
+$fake = new ClientFake([
+    DecisionsResponse::fake(),
+]);
+
+$response = $fake->decisions()->create('Test input context', [
+    'is_urgent' => NoulQuestion::make('Is this message urgent?'),
+]);
+
+$fake->assertSent(resource: Decisions::class, callback: function (string $method, array $parameters) {
+    return $method === 'create' && $parameters[0] === 'Test input context';
+});
 ```
 
 ### Embeddings

@@ -1,5 +1,6 @@
 <?php
 
+use Gemini\Resources\Decisions;
 use Gemini\Resources\Files;
 use Gemini\Resources\GenerativeModel;
 use Gemini\Resources\Models;
@@ -20,4 +21,10 @@ it('has files', function () {
     $gemini = Gemini::client(apiKey: 'foo');
 
     expect($gemini->files())->toBeInstanceOf(Files::class);
+});
+
+it('has decisions', function () {
+    $gemini = Gemini::client(apiKey: 'foo');
+
+    expect($gemini->decisions())->toBeInstanceOf(Decisions::class);
 });
