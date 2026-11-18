@@ -22,6 +22,7 @@ enum ModelType: string
     case GEMINI_FLASH = 'models/gemini-1.5-flash';
     case EMBEDDING = 'models/embedding-001';
     case TEXT_EMBEDDING = 'models/text-embedding-004';
+    case GEMINI_DECISION = 'models/gemini-decision-1';
 
     /**
      * @deprecated Alias of \Gemini\GeminiHelper::generateGeminiModel()

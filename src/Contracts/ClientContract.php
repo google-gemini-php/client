@@ -7,6 +7,7 @@ namespace Gemini\Contracts;
 use BackedEnum;
 use Gemini\Contracts\Resources\CachedContentsContract;
 use Gemini\Contracts\Resources\ChatSessionContract;
+use Gemini\Contracts\Resources\DecisionsContract;
 use Gemini\Contracts\Resources\EmbeddingModalContract;
 use Gemini\Contracts\Resources\FilesContract;
 use Gemini\Contracts\Resources\FileSearchStoresContract;
@@ -38,4 +39,6 @@ interface ClientContract
     public function cachedContents(): CachedContentsContract;
 
     public function fileSearchStores(): FileSearchStoresContract;
+
+    public function decisions(): DecisionsContract;
 }
